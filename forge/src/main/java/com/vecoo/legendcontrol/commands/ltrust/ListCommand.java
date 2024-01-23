@@ -6,6 +6,7 @@ import com.envyful.api.command.annotate.executor.CommandProcessor;
 import com.envyful.api.command.annotate.executor.Sender;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.vecoo.legendcontrol.LegendControl;
+import com.vecoo.legendcontrol.utils.data.UtilsTrust;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.UsernameCache;
@@ -14,8 +15,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
-import static com.vecoo.legendcontrol.utils.data.UtilsTrust.*;
 
 @Command(
         value = "list",
@@ -27,7 +26,7 @@ public class ListCommand {
     @CommandProcessor
     public void onCommand(@Sender EntityPlayerMP player, String[] args) {
         try {
-            HashMap<UUID, List<UUID>> dataMap = getDataMap();
+            HashMap<UUID, List<UUID>> dataMap = UtilsTrust.getDataMap();
             int size = dataMap.get(player.getUniqueID()).size();
 
             if (size == 0) {

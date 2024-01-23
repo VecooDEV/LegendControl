@@ -59,38 +59,48 @@ public class LegendarySpawnListener {
     }
 
     @SubscribeEvent
-    public void onLegendSpawn(LegendarySpawnEvent.DoSpawn event) {
-        EntityPixelmon spawnEntity = event.action.getOrCreateEntity();
-        EntityPlayerMP player = (EntityPlayerMP) event.action.spawnLocation.cause;
+    public void onLegendarySpawnControl(LegendarySpawnEvent.DoSpawn event) {
+        if (LegendControl.getInstance().getConfig().isNewLegendarySpawn()) {
+            EntityPixelmon spawnEntity = event.action.getOrCreateEntity();
+            EntityPlayerMP player = (EntityPlayerMP) event.action.spawnLocation.cause;
 
-        int random = ThreadLocalRandom.current().nextInt(100);
-        int num = LegendControl.getInstance().getConfig().getLegendProtectedTime();
+            int random = ThreadLocalRandom.current().nextInt(100);
+            int num = LegendControl.getInstance().getConfig().getLegendProtectedTime();
 
-        if (random > legendaryChance) {
-            legendaryChance += LegendControl.getInstance().getConfig().getStepSpawnChance();
-            event.setCanceled(true);
-        } else {
+            if (random > legendaryChance) {
+                legendaryChance += LegendControl.getInstance().getConfig().getStepSpawnChance();
+                event.setCanceled(true);
+            } else {
+                player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
+                        LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary())));
+                legendMap.put(spawnEntity, player.getUniqueID());
+                legendaryChance = LegendControl.getInstance().getConfig().getBaseChance();
+
+                if (num > 0 && LegendControl.getInstance().getConfig().isLegendaryDefender()) {
+                    Task.builder()
+                            .execute(() -> {
+                                legendMap.remove(spawnEntity);
+                                if (spawnEntity.hasOwner() || spawnEntity.isDead) {
+                                    return;
+                                }
+                                FMLServerHandler.instance().getServer().getPlayerList().sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
+                                        LegendControl.getInstance().getLocale().getMessages().getProtection()
+                                                .replace("%pokemon%", spawnEntity.getSpecies().name))));
+                            })
+                            .delay(20L * num)
+                            .interval(20L * num)
+                            .build();
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onLegendarySpawnNotify(LegendarySpawnEvent.DoSpawn event) {
+        if (LegendControl.getInstance().getConfig().isNotifyLegendarySpawn() && !LegendControl.getInstance().getConfig().isNewLegendarySpawn()) {
+            EntityPlayerMP player = (EntityPlayerMP) event.action.spawnLocation.cause;
             player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
                     LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary())));
-            legendMap.put(spawnEntity, player.getUniqueID());
-            legendaryChance = LegendControl.getInstance().getConfig().getBaseChance();
-
-            if (num > 0) {
-                Task.builder()
-                        .execute(() -> {
-                            legendMap.remove(spawnEntity);
-                            if (spawnEntity.hasOwner() || spawnEntity.isDead) {
-                                return;
-                            }
-                            FMLServerHandler.instance().getServer().getPlayerList().sendMessage(new TextComponentString(UtilChatColour.translateColourCodes(
-                                    '&',
-                                    LegendControl.getInstance().getLocale().getMessages().getProtection()
-                                            .replace("%pokemon%", spawnEntity.getSpecies().name))));
-                        })
-                        .delay(20L * num)
-                        .interval(20L * num)
-                        .build();
-            }
         }
     }
 
@@ -131,9 +141,7 @@ public class LegendarySpawnListener {
                 playerParticipant = (PlayerParticipant) participant2;
             }
 
-            WildPixelmonParticipant wildPokemon = participant1 instanceof PlayerParticipant
-                    ? (WildPixelmonParticipant) participant2
-                    : (WildPixelmonParticipant) participant1;
+            WildPixelmonParticipant wildPokemon = participant1 instanceof PlayerParticipant ? (WildPixelmonParticipant) participant2 : (WildPixelmonParticipant) participant1;
 
             EntityPlayerMP player = (EntityPlayerMP) playerParticipant.getEntity();
             EntityPixelmon pixelmon = (EntityPixelmon) wildPokemon.getEntity();

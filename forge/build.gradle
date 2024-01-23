@@ -13,7 +13,6 @@ buildscript {
     }
 }
 
-forgeVersion = "1.12.2"
 apply plugin: 'net.minecraftforge.gradle'
 
 minecraft {
@@ -55,14 +54,12 @@ shadowJar {
     configurations = [project.configurations.shadow]
     archiveName = rootProject.name + '.jar'
 
+    minimize()
     relocate('org.spongepowered.configurate', 'com.vecoo.legendcontrol.shade.configurate')
     relocate('org.yaml.snakeyaml', 'com.vecoo.legendcontrol.shade.snakeyaml')
     relocate('io.leangen.geantyref', 'com.vecoo.legendcontrol.shade.geantyref')
     relocate('com.google.gson', 'com.vecoo.legendcontrol.shade.gson')
-    relocate('com.zaxxer', 'com.vecoo.legendcontrol.shade.hikari')
-    relocate('org.slf4j', 'com.vecoo.legendcontrol.shade.slf4j')
     relocate('com.envyful.api', 'com.vecoo.legendcontrol.shade.envy.api')
-    relocate('org.bstats', 'com.vecoo.legendcontrol.shade.bstats')
 
     exclude "**/module-info.class"
 }

@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static com.vecoo.legendcontrol.utils.data.UtilsTrust.*;
-
 @Command(
         value = "add",
         description = "§7/ltrust add <player>"
@@ -32,7 +30,7 @@ public class AddCommand {
                           @Completable(PlayerTabCompleter.class)
                           @Argument EntityPlayerMP target, String[] args) {
         try {
-            HashMap<UUID, List<UUID>> dataMap = getDataMap();
+            HashMap<UUID, List<UUID>> dataMap = UtilsTrust.getDataMap();
             UUID uuidSender = sender.getUniqueID();
             UUID uuidTarget = target.getUniqueID();
 
@@ -59,7 +57,6 @@ public class AddCommand {
             sender.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
                     LegendControl.getInstance().getLocale().getMessages().getPlayerAdded()
                             .replace("%player%", target.getName()))));
-
         } catch (IOException e) {
             e.printStackTrace();
         }

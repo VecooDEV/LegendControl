@@ -28,10 +28,6 @@ public class Task {
         return expired;
     }
 
-    public void setExpired() {
-        expired = true;
-    }
-
     void tick() {
         if (!expired) {
             this.ticksRemaining = Math.max(0, --ticksRemaining);

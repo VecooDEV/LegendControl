@@ -16,6 +16,12 @@ public class LegendControlConfig extends AbstractYamlConfig {
 
     private int stepSpawnChance = 5;
 
+    private boolean notifyLegendarySpawn = true;
+
+    private boolean newLegendarySpawn = true;
+
+    private boolean legendaryDefender = true;
+
     public int getTrustLimit() {
         return this.trustLimit;
     }
@@ -30,5 +36,17 @@ public class LegendControlConfig extends AbstractYamlConfig {
 
     public int getStepSpawnChance() {
         return stepSpawnChance;
+    }
+
+    public boolean isNotifyLegendarySpawn() {
+        return notifyLegendarySpawn;
+    }
+
+    public boolean isNewLegendarySpawn() {
+        return newLegendarySpawn;
+    }
+
+    public boolean isLegendaryDefender() {
+        return legendaryDefender;
     }
 }

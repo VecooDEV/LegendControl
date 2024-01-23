@@ -17,7 +17,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
                 "lc"
         }
 )
-@Permissible("legendcontrol.command.lc")
+@Permissible("legendcontrol.lc")
 @SubCommands({SetChanceCommand.class, AddChanceCommand.class, ReloadCommand.class})
 public class LegendControlCommand {
 

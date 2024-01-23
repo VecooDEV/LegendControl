@@ -1,6 +1,7 @@
 package com.vecoo.legendcontrol.commands;
 
 import com.envyful.api.command.annotate.Command;
+import com.envyful.api.command.annotate.Permissible;
 import com.envyful.api.command.annotate.SubCommands;
 import com.envyful.api.command.annotate.executor.CommandProcessor;
 import com.envyful.api.command.annotate.executor.Sender;
@@ -18,6 +19,7 @@ import net.minecraft.util.text.TextComponentString;
                     "ltrust"
         }
 )
+@Permissible("legendcontrol.ltrust")
 @SubCommands({AddCommand.class, RemoveCommand.class, RemoveAllCommand.class, ListCommand.class})
 public class LegendaryTrustCommand {
 

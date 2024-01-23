@@ -16,8 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import static com.vecoo.legendcontrol.utils.data.UtilsTrust.getDataMap;
-
 @Command(
         value = "removeall",
         description = "§7/ltrust removeall"
@@ -28,11 +26,10 @@ public class RemoveAllCommand {
     @CommandProcessor
     public void onCommand(@Sender EntityPlayerMP player, String[] args) {
         try {
-            HashMap<UUID, List<UUID>> dataMap = getDataMap();
+            HashMap<UUID, List<UUID>> dataMap = UtilsTrust.getDataMap();
 
             if (dataMap.get(player.getUniqueID()).size() == 0) {
-                player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes(
-                        '&',
+                player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
                         LegendControl.getInstance().getLocale().getMessages().getEmptyTrust())));
                 return;
             }
@@ -46,7 +43,6 @@ public class RemoveAllCommand {
 
             player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
                     LegendControl.getInstance().getLocale().getMessages().getRemovedAll())));
-
         } catch (IOException e) {
             e.printStackTrace();
         }
