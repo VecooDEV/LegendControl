@@ -13,6 +13,10 @@ buildscript {
     }
 }
 
+plugins {
+    id("com.github.jengelman.gradle.plugins:shadow") version "6.1.0"
+}
+
 apply plugin: 'net.minecraftforge.gradle'
 
 minecraft {

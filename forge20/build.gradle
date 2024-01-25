@@ -1,0 +1,64 @@
+plugins {
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+forgeVersion = "1.20.2"
+
+minecraft {
+    mappings channel: 'official', version: '1.20.2'
+    copyIdeResources = true
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.2-48.0.30'
+
+    implementation 'pixelmon:Pixelmon-1.20.2-9.2.4-server:9.2.4'
+
+    shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
+
+    shadow group: 'com.envyful.api', name: 'commons', version: '5.0.3'
+    shadow (group: 'com.envyful.api', name: 'forge20', version: '5.0.3') {
+        transitive = false;
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    setArchiveClassifier('')
+    setArchiveBaseName("${rootProject.name}-Forge")
+
+    minimize()
+    relocate('org.spongepowered.configurate', 'com.vecoo.legendcontrol.shade.configurate')
+    relocate('org.yaml.snakeyaml', 'com.vecoo.legendcontrol.shade.snakeyaml')
+    relocate('io.leangen.geantyref', 'com.vecoo.legendcontrol.shade.geantyref')
+    relocate('com.zaxxer', 'com.vecoo.legendcontrol.shade.hikari')
+    relocate('org.slf4j', 'com.vecoo.legendcontrol.shade.slf4j')
+    relocate('com.envyful.api', 'com.vecoo.legendcontrol.shade.envy.api')
+    relocate('org.bstats', 'com.vecoo.legendcontrol.bstats')
+    relocate('org.apache.logging', 'com.vecoo.legendcontrol.shade.log4j')
+    relocate('io.netty', 'com.vecoo.legendcontrol.shade.netty')
+    relocate('io.lettuce', 'com.vecoo.legendcontrol.shade.lettuce')
+    relocate('com.cronutils', 'com.vecoo.legendcontrol.shade.cronutils')
+    relocate('com.sun.el', 'com.vecoo.legendcontrol.shade.sun.el')
+    relocate('org.reactivestreams', 'com.vecoo.legendcontrol.shade.reactivestreams')
+    relocate('reactor', 'com.vecoo.legendcontrol.shade.reactor')
+
+    exclude "com/google/**"
+    exclude "javax/**"
+    exclude "**/module-info.class"
+    exclude "**/*.properties"
+    exclude "**/*.xml"
+    exclude "META-INF/versions/9/**"
+    exclude "META-INF/native-image/**"
+    exclude "META-INF/services/**"
+}
+
+jar.finalizedBy('shadowJar')
+shadowJar.finalizedBy('reobfJar')
+build.finalizedBy('versionedRelease')

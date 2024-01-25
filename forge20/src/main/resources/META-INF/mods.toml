@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="legendcontrol"
+version="1.0.1"
+displayName="LegendControl"
+authors="Vecoo"
+description="Addition"
+
+[[dependencies.legendcontrol]]
+modId="forge"
+mandatory=true
+versionRange="[48.0,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.legendcontrol]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.2,1.21)"
+ordering="NONE"
+side="BOTH"
