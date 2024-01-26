@@ -1,4 +1,6 @@
 /release/
-/forge/build/
+/forge12/build/
 /.idea/
 /.gradle/
+/forge16/build/
+/forge20/build/

@@ -1,5 +1,6 @@
 package com.vecoo.legendcontrol.listener;
 
+import com.pixelmonmod.pixelmon.api.command.PixelmonCommandUtils;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.KeyEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleStartedEvent;
@@ -14,10 +15,10 @@ import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.util.Task;
-import com.vecoo.legendcontrol.util.UtilChatColour;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ChatType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class LegendarySpawnListener {
     public static HashMap<PixelmonEntity, UUID> legendMap = new HashMap<>();
     public static int legendaryChance;
 
-    private boolean checkLegendMap(ServerPlayer player, PixelmonEntity pixelmon) {
+    private boolean checkLegendMap(ServerPlayerEntity player, PixelmonEntity pixelmon) {
         if (legendMap.containsKey(pixelmon) && !player.isCreative()) {
             UUID invoker = legendMap.get(pixelmon);
             List<UUID> allowedPlayers = new ArrayList<>();
@@ -41,8 +42,8 @@ public class LegendarySpawnListener {
             }
 
             if (!invoker.equals(player.getUUID()) && !allowedPlayers.contains(player.getUUID())) {
-                player.sendSystemMessage(UtilChatColour.colour(
-                        LegendControl.getInstance().getLocale().getMessages().getIncorrectCause()));
+                PixelmonCommandUtils.sendMessage(player,
+                        LegendControl.getInstance().getLocale().getMessages().getIncorrectCause());
                 return true;
             }
         }
@@ -53,7 +54,7 @@ public class LegendarySpawnListener {
     public void onLegendarySpawnControl(LegendarySpawnEvent.DoSpawn event) {
         if (LegendControl.getInstance().getConfig().isNewLegendarySpawn()) {
             PixelmonEntity spawnEntity = event.action.getOrCreateEntity();
-            ServerPlayer player = (ServerPlayer) event.action.spawnLocation.cause;
+            ServerPlayerEntity player = (ServerPlayerEntity) event.action.spawnLocation.cause;
 
             int random = ThreadLocalRandom.current().nextInt(100);
             int num = LegendControl.getInstance().getConfig().getLegendProtectedTime();
@@ -63,8 +64,8 @@ public class LegendarySpawnListener {
                 event.setCanceled(true);
             } else {
                 if (LegendControl.getInstance().getConfig().isLegendaryDefender()) {
-                    player.sendSystemMessage(UtilChatColour.colour(
-                            LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary()));
+                    PixelmonCommandUtils.sendMessage(player,
+                            LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary());
                 }
                 legendMap.put(spawnEntity, player.getUUID());
                 legendaryChance = LegendControl.getInstance().getConfig().getBaseChance();
@@ -72,9 +73,9 @@ public class LegendarySpawnListener {
                 if (num > 0 && LegendControl.getInstance().getConfig().isLegendaryDefender()) {
                     Task.builder()
                             .execute(() -> {
-                                LegendControl.getInstance().getServer().getPlayerList().broadcastSystemMessage(UtilChatColour.colour(
+                                LegendControl.getInstance().getServer().getPlayerList().broadcastMessage(PixelmonCommandUtils.format(
                                         LegendControl.getInstance().getLocale().getMessages().getProtection()
-                                                .replace("%pokemon%", spawnEntity.getSpecies().getName())), false);
+                                                .replace("%pokemon%", spawnEntity.getSpecies().getName())), ChatType.CHAT, player.getUUID());
                                 legendMap.remove(spawnEntity);
                             })
                             .delay(20L * num)
@@ -88,18 +89,18 @@ public class LegendarySpawnListener {
     @SubscribeEvent
     public void onLegendarySpawnNotify(LegendarySpawnEvent.DoSpawn event) {
         if (LegendControl.getInstance().getConfig().isNotifyLegendarySpawn() && !LegendControl.getInstance().getConfig().isNewLegendarySpawn()) {
-            ServerPlayer player = (ServerPlayer) event.action.spawnLocation.cause;
-            player.sendSystemMessage(UtilChatColour.colour(
-                    LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary()));
+            ServerPlayerEntity player = (ServerPlayerEntity) event.action.spawnLocation.cause;
+            PixelmonCommandUtils.sendMessage(player,
+                    LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary());
         }
     }
 
     @SubscribeEvent
     public void onBattleKey(KeyEvent event) {
         if (event.key == EnumKeyPacketMode.ActionKeyEntity && !legendMap.isEmpty()) {
-            ServerPlayer player = event.player;
+            ServerPlayerEntity player = event.player;
 
-            for (Pokemon pokemon : StorageProxy.getStorageManager().getParty(event.player).join()) {
+            for (Pokemon pokemon : StorageProxy.getStorageManager().getParty(event.player).getTeam()) {
                 pokemon.ifEntityExists(entityPixelmon -> {
                     final Entity target = entityPixelmon.getTarget();
                     if (target instanceof PixelmonEntity) {
@@ -133,7 +134,7 @@ public class LegendarySpawnListener {
 
             WildPixelmonParticipant wildPokemon = participant1 instanceof PlayerParticipant ? (WildPixelmonParticipant) participant2 : (WildPixelmonParticipant) participant1;
 
-            ServerPlayer player = (ServerPlayer) playerParticipant.getEntity();
+            ServerPlayerEntity player = (ServerPlayerEntity) playerParticipant.getEntity();
             PixelmonEntity pixelmon = (PixelmonEntity) wildPokemon.getEntity();
 
             if (checkLegendMap(player, pixelmon)) {
@@ -144,13 +145,13 @@ public class LegendarySpawnListener {
 
     @SubscribeEvent
     public void onCapture(CaptureEvent.StartCapture event) {
-        ServerPlayer player = event.getPlayer();
+        ServerPlayerEntity player = event.getPlayer();
         PixelmonEntity pixelmon = event.getPokemon();
 
         if (checkLegendMap(player, pixelmon)) {
             event.setCanceled(true);
             ItemStack pokeball = event.getPokeBall().getBallType().getBallItem();
-            player.getInventory().add(pokeball);
+            player.inventory.add(pokeball);
         }
     }
 

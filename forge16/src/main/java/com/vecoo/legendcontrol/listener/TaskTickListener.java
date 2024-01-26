@@ -1,5 +1,6 @@
-package com.vecoo.legendcontrol.util;
+package com.vecoo.legendcontrol.listener;
 
+import com.vecoo.legendcontrol.util.Task;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -25,7 +26,7 @@ public class TaskTickListener {
         }
     }
 
-    static void addTask(@Nonnull Task task) {
+    public static void addTask(@Nonnull Task task) {
         if (!active) {
             MinecraftForge.EVENT_BUS.register(TaskTickListener.class);
             active = true;

@@ -10,14 +10,13 @@ import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
 import com.vecoo.legendcontrol.providers.LegendaryProvider;
 import com.vecoo.legendcontrol.providers.TrustProvider;
-import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
@@ -40,10 +39,6 @@ public class LegendControl {
         MinecraftForge.EVENT_BUS.register(new LegendarySpawnListener());
         Pixelmon.EVENT_BUS.register(new LegendarySpawnListener());
 
-        Utils.registerPermission("command.checkleg");
-        Utils.registerPermission("command.ltrust");
-        Utils.registerPermission("command.lc");
-
         this.loadConfig();
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -62,7 +57,7 @@ public class LegendControl {
     }
 
     @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
+    public void onServerStarting(FMLServerStartingEvent event) {
         server = event.getServer();
         LegendarySpawnListener.legendaryChance = legendaryProvider.getLegendaryChance().getLegendaryChance();
     }
@@ -75,7 +70,7 @@ public class LegendControl {
     }
 
     @SubscribeEvent
-    public void onServerStopping(ServerStoppingEvent event) {
+    public void onServerStopping(FMLServerStoppingEvent event) {
         legendaryProvider.getLegendaryChance().setLegendaryChance(LegendarySpawnListener.legendaryChance);
     }
 

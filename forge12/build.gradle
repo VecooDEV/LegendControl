@@ -14,8 +14,12 @@ buildscript {
 }
 
 plugins {
-    id("com.github.jengelman.gradle.plugins:shadow") version "6.1.0"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+forgeVersion = "1.12.2"
+
 
 apply plugin: 'net.minecraftforge.gradle'
 

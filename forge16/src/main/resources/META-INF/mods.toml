@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[48,)"
+loaderVersion="[36,)"
 license="All Rights Reserved"
 
 [[mods]]
@@ -13,20 +13,20 @@ description="Sidemod for Pixelmon. Changed spawn system for legendary Pokemon."
 [[dependencies.legendcontrol]]
 modId="forge"
 mandatory=true
-versionRange="[48.0,)"
+versionRange="[36,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.legendcontrol]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.20,)"
+versionRange="[1.16,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.legendcontrol]]
 modId="pixelmon"
 mandatory=true
-versionRange="[9,)"
+versionRange="[9.1,)"
 ordering="NONE"
 side="BOTH"

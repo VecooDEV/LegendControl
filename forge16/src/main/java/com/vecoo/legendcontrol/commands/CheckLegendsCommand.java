@@ -1,45 +1,44 @@
 package com.vecoo.legendcontrol.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.pixelmonmod.pixelmon.api.command.PixelmonCommandUtils;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
-import com.vecoo.legendcontrol.util.UtilChatColour;
-import com.vecoo.legendcontrol.util.Utils;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 
 public class CheckLegendsCommand {
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("checkleg").requires((p -> Utils.hasPermission(p.getPlayer(), "command.checkleg")))
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+        dispatcher.register(Commands.literal("checkleg")
                 .executes(e -> execute(e.getSource())));
     }
 
-    private static int execute(CommandSourceStack source) {
+    private static int execute(CommandSource source) {
         if (PixelmonConfigProxy.getSpawning().getLegendarySpawnChance() < 1.0F) {
-            source.sendSystemMessage(UtilChatColour.colour((LegendControl.getInstance().getLocale().getMessages().getErrorConfig())));
+            PixelmonCommandUtils.sendMessage(source, LegendControl.getInstance().getLocale().getMessages().getErrorConfig());
             return 0;
         }
 
         int ticks = PixelmonConfigProxy.getSpawning().getLegendarySpawnTicks();
         if (ticks / 20 < 60) {
-            source.sendSystemMessage(UtilChatColour.colour(
+            PixelmonCommandUtils.sendMessage(source,
                     LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
                             .replace("%chance%", LegendarySpawnListener.legendaryChance + "%")
                             .replace("%time1%", ticks / 20 + "")
-                            .replace("%time2%", ticks / 20 * 2 + " seconds")));
+                            .replace("%time2%", ticks / 20 * 2 + " seconds"));
         } else if (ticks / 20 / 60 < 60) {
-            source.sendSystemMessage(UtilChatColour.colour(
+            PixelmonCommandUtils.sendMessage(source,
                     LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
                             .replace("%chance%", LegendarySpawnListener.legendaryChance + "%")
                             .replace("%time1%", ticks / 20 / 60 + "")
-                            .replace("%time2%", ticks / 20 / 60 * 2 + " minutes")));
+                            .replace("%time2%", ticks / 20 / 60 * 2 + " minutes"));
         } else {
-            source.sendSystemMessage(UtilChatColour.colour(
+            PixelmonCommandUtils.sendMessage(source,
                     LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
                             .replace("%chance%", LegendarySpawnListener.legendaryChance + "%")
                             .replace("%time1%", ticks / 20 / 60 / 60 + "")
-                            .replace("%time2%", ticks / 20 / 60 / 60 * 2 + " hours")));
+                            .replace("%time2%", ticks / 20 / 60 / 60 * 2 + " hours"));
         }
         return 1;
     }
