@@ -4,11 +4,11 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="legendcontrol"
-version="1.1.0"
+version="1.2.0"
 displayName="LegendControl"
 logoFile ="logo.png"
 authors="Vecoo"
-description="Sidemod for Pixelmon. Changed spawn system for legendary Pokemon."
+description="Sidemode for Pixelmon. Changing the spawn elements of legendary Pokémon."
 
 [[dependencies.legendcontrol]]
 modId="forge"
@@ -27,6 +27,6 @@ side="BOTH"
 [[dependencies.legendcontrol]]
 modId="pixelmon"
 mandatory=true
-versionRange="[9,)"
+versionRange="[9.2,)"
 ordering="NONE"
 side="BOTH"

@@ -7,7 +7,7 @@ import com.vecoo.legendcontrol.commands.LegendControlCommand;
 import com.vecoo.legendcontrol.commands.LegendaryTrustCommand;
 import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
-import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
+import com.vecoo.legendcontrol.listener.LegendControlListener;
 import com.vecoo.legendcontrol.providers.LegendaryProvider;
 import com.vecoo.legendcontrol.providers.TrustProvider;
 import com.vecoo.legendcontrol.util.Utils;
@@ -15,7 +15,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -37,14 +36,15 @@ public class LegendControl {
     public LegendControl() {
         instance = this;
 
-        MinecraftForge.EVENT_BUS.register(new LegendarySpawnListener());
-        Pixelmon.EVENT_BUS.register(new LegendarySpawnListener());
+        MinecraftForge.EVENT_BUS.register(new LegendControlListener());
+        Pixelmon.EVENT_BUS.register(new LegendControlListener());
 
         Utils.registerPermission("command.checkleg");
         Utils.registerPermission("command.ltrust");
-        Utils.registerPermission("command.lc");
+        Utils.registerPermission("command.main");
 
         this.loadConfig();
+
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -64,19 +64,13 @@ public class LegendControl {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         server = event.getServer();
-        LegendarySpawnListener.legendaryChance = legendaryProvider.getLegendaryChance().getLegendaryChance();
     }
 
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
         CheckLegendsCommand.register(event.getDispatcher());
-        LegendControlCommand.register(event.getDispatcher());
         LegendaryTrustCommand.register(event.getDispatcher());
-    }
-
-    @SubscribeEvent
-    public void onServerStopping(ServerStoppingEvent event) {
-        legendaryProvider.getLegendaryChance().setLegendaryChance(LegendarySpawnListener.legendaryChance);
+        LegendControlCommand.register(event.getDispatcher());
     }
 
     public static LegendControl getInstance() {

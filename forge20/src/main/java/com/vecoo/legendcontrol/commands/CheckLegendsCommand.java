@@ -3,7 +3,6 @@ package com.vecoo.legendcontrol.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
 import com.vecoo.legendcontrol.util.UtilChatColour;
 import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.commands.CommandSourceStack;
@@ -25,19 +24,19 @@ public class CheckLegendsCommand {
         if (ticks / 20 < 60) {
             source.sendSystemMessage(UtilChatColour.colour(
                     LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
-                            .replace("%chance%", LegendarySpawnListener.legendaryChance + "%")
+                            .replace("%chance%", LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().getChance() + "%")
                             .replace("%time1%", ticks / 20 + "")
                             .replace("%time2%", ticks / 20 * 2 + " seconds")));
         } else if (ticks / 20 / 60 < 60) {
             source.sendSystemMessage(UtilChatColour.colour(
                     LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
-                            .replace("%chance%", LegendarySpawnListener.legendaryChance + "%")
+                            .replace("%chance%", LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().getChance() + "%")
                             .replace("%time1%", ticks / 20 / 60 + "")
                             .replace("%time2%", ticks / 20 / 60 * 2 + " minutes")));
         } else {
             source.sendSystemMessage(UtilChatColour.colour(
                     LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
-                            .replace("%chance%", LegendarySpawnListener.legendaryChance + "%")
+                            .replace("%chance%", LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().getChance() + "%")
                             .replace("%time1%", ticks / 20 / 60 / 60 + "")
                             .replace("%time2%", ticks / 20 / 60 / 60 * 2 + " hours")));
         }

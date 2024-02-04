@@ -20,27 +20,27 @@ public class LocaleConfig extends AbstractYamlConfig {
 
     @ConfigSerializable
     public static class Messages {
-        private String reload = "(!) Configs have been reloaded.";
+        private String reload = "&e(!) Configs have been reloaded.";
 
-        private String addTrust = "(!) Player %player% has been successfully added to your trust list.";
-        private String removeTrust = "(!) Player %player% has been removed from your trust list.";
-        private String removeAllTrust = "(!) All players have been removed from your trust list.";
-        private String emptyTrust = "(!) Your trust list is empty.";
-        private String listTrustTitle = "Trust list (%amount%)";
-        private String listTrust = "- %player%";
-        private String incorrectCause = "(!) At the moment, the legendary Pokemon is protected. Try to enter the battle after a while.";
-        private String protection = "(!) Pokemon %pokemon%'s protection has expired.";
+        private String addTrust = "&e(!) Player %player% has been successfully added to your trust list.";
+        private String removeTrust = "&e(!) Player %player% has been removed from your trust list.";
+        private String removeAllTrust = "&e(!) All players have been removed from your trust list.";
+        private String emptyTrust = "&e(!) Your trust list is empty.";
+        private String listTrustTitle = "&e&lTrust list (%amount%)";
+        private String listTrust = "&e- %player%";
+        private String incorrectCause = "&e(!) At the moment, the legendary Pokemon is protected. Try to enter the battle after a while.";
+        private String protection = "&e(!) Pokemon %pokemon%'s protection has expired.";
 
-        private String spawnPlayerLegendary = "(!) A legendary Pokemon has appeared near you!";
-        private String checkLegendary = "(!) Chance: %chance% (%time1%-%time2%)";
-        private String changeChanceLegendary = "(!) New chance: %chance%.";
+        private String spawnPlayerLegendary = "&e(!) A legendary Pokemon has appeared near you!";
+        private String checkLegendary = "&e(!) Chance: %chance% (%time1%-%time2%)";
+        private String changeChanceLegendary = "&e(!) New chance: %chance%.";
 
-        private String cantSelfTrust = "(!) You cannot add yourself to the trust list.";
-        private String alreadyTrusted = "(!) This player is already on your trust list.";
-        private String notPlayerTrust = "(!) This player is not yet on your trust list.";
-        private String trustLimit = "(!) You have reached the maximum number of players on the trust list.";
-        private String errorChance = "(!) The total chance should not exceed 100.";
-        private String errorConfig = "(!) Set the chance of legendary Pokemon to 100% in Pixelmon configs or disable the modified system of appearance of legendary Pokemon in the mod.";
+        private String cantSelfTrust = "&c(!) You cannot add yourself to the trust list.";
+        private String alreadyTrusted = "&c(!) This player is already on your trust list.";
+        private String notPlayerTrust = "&c(!) This player is not yet on your trust list.";
+        private String trustLimit = "&c(!) You have reached the maximum number of players on the trust list.";
+        private String errorChance = "&c(!) The total chance should not exceed 100.";
+        private String errorConfig = "&c(!) Set the chance of legendary Pokemon to 100% in Pixelmon configs or disable the modified system of appearance of legendary Pokemon in the mod.";
 
         public Messages() {
         }

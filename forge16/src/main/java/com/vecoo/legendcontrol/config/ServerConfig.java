@@ -1,8 +1,13 @@
 package com.vecoo.legendcontrol.config;
 
+import com.google.common.collect.Lists;
+import com.pixelmonmod.api.pokemon.PokemonSpecification;
+import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
 import com.pixelmonmod.pixelmon.api.config.api.data.ConfigPath;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.AbstractYamlConfig;
 import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
+
+import java.util.List;
 
 @ConfigPath("config/LegendControl/config.yml")
 @ConfigSerializable
@@ -21,6 +26,11 @@ public class ServerConfig extends AbstractYamlConfig {
     private boolean newLegendarySpawn = true;
 
     private boolean legendaryDefender = true;
+
+    private List<String> blacklistLegendary = Lists.newArrayList(
+            "regieleki", "regidrago");
+
+    private transient List<PokemonSpecification> blacklistLegendaryCache = null;
 
     public int getTrustLimit() {
         return this.trustLimit;
@@ -49,5 +59,16 @@ public class ServerConfig extends AbstractYamlConfig {
     public boolean isLegendaryDefender() {
         return legendaryDefender;
     }
-}
 
+    public List<PokemonSpecification> getBlockedLegendary() {
+        if (this.blacklistLegendaryCache == null) {
+            List<PokemonSpecification> blocked = Lists.newArrayList();
+
+            for (String blackList : this.blacklistLegendary) {
+                blocked.add(PokemonSpecificationProxy.create(blackList));
+            }
+            this.blacklistLegendaryCache = blocked;
+        }
+        return this.blacklistLegendaryCache;
+    }
+}

@@ -3,19 +3,24 @@ package com.vecoo.legendcontrol.providers;
 import com.vecoo.legendcontrol.LegendControl;
 
 public class LegendaryChance {
-    private int legendaryChance;
+    private int chance;
 
-    public LegendaryChance(int legendaryChance) {
-        this.legendaryChance = legendaryChance;
+    public LegendaryChance(int chance) {
+        this.chance = chance;
         LegendControl.getInstance().getLegendaryProvider().updateLegendaryChance(this);
     }
 
-    public int getLegendaryChance() {
-        return legendaryChance;
+    public int getChance() {
+        return chance;
     }
 
-    public void setLegendaryChance(int legendaryChance) {
-        this.legendaryChance = legendaryChance;
+    public void setChance(int chance) {
+        this.chance = chance;
+        LegendControl.getInstance().getLegendaryProvider().updateLegendaryChance(this);
+    }
+
+    public void addChance(int chance) {
+        this.chance += chance;
         LegendControl.getInstance().getLegendaryProvider().updateLegendaryChance(this);
     }
 }

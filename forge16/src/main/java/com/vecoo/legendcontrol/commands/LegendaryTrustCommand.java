@@ -1,10 +1,11 @@
 package com.vecoo.legendcontrol.commands;
 
+import com.envyful.api.forge.chat.UtilChatColour;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.pixelmonmod.pixelmon.api.command.PixelmonCommandUtils;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.providers.PlayerTrust;
+import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 public class LegendaryTrustCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        dispatcher.register(Commands.literal("ltrust")
+        dispatcher.register(Commands.literal("ltrust").requires((p -> Utils.hasPermission(p.getEntity(), "legendcontrol.command.ltrust")))
                 .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.players()).
                         executes(e -> executeAdd(e.getSource(), EntityArgument.getPlayer(e, "player")))))
                 .then(Commands.literal("remove").then(Commands.argument("player", EntityArgument.players()).
@@ -30,28 +31,28 @@ public class LegendaryTrustCommand {
         PlayerTrust senderTrust = LegendControl.getInstance().getTrustProvider().getPlayerTrust(sender);
 
         if (sender.equals(target.getUUID())) {
-            PixelmonCommandUtils.sendMessage(source,
-                    LegendControl.getInstance().getLocale().getMessages().getCantSelfTrust());
+            source.sendSuccess(UtilChatColour.colour(
+                    LegendControl.getInstance().getLocale().getMessages().getCantSelfTrust()), false);
             return 0;
         }
 
         if (senderTrust.getPlayerList().contains(target.getUUID())) {
-            PixelmonCommandUtils.sendMessage(source,
-                    LegendControl.getInstance().getLocale().getMessages().getAlreadyTrusted());
+            source.sendSuccess(UtilChatColour.colour(
+                    LegendControl.getInstance().getLocale().getMessages().getAlreadyTrusted()), false);
             return 0;
         }
 
         if (senderTrust.getPlayerList().size() > LegendControl.getInstance().getConfig().getTrustLimit() && LegendControl.getInstance().getConfig().getTrustLimit() != 0) {
-            PixelmonCommandUtils.sendMessage(source,
-                    LegendControl.getInstance().getLocale().getMessages().getTrustLimit());
+            source.sendSuccess(UtilChatColour.colour(
+                    LegendControl.getInstance().getLocale().getMessages().getTrustLimit()), false);
             return 0;
         }
 
         senderTrust.addPlayerList(target.getUUID());
 
-        PixelmonCommandUtils.sendMessage(source,
+        source.sendSuccess(UtilChatColour.colour(
                 LegendControl.getInstance().getLocale().getMessages().getAddTrust()
-                        .replace("%player%", target.getName().getString()));
+                        .replace("%player%", target.getName().getString())), false);
         return 1;
     }
 
@@ -60,22 +61,22 @@ public class LegendaryTrustCommand {
         PlayerTrust senderTrust = LegendControl.getInstance().getTrustProvider().getPlayerTrust(sender);
 
         if (senderTrust.getPlayerList().size() == 0) {
-            PixelmonCommandUtils.sendMessage(source,
-                    LegendControl.getInstance().getLocale().getMessages().getEmptyTrust());
+            source.sendSuccess(UtilChatColour.colour(
+                    LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), false);
             return 0;
         }
 
         if (!senderTrust.getPlayerList().contains(target.getUUID())) {
-            PixelmonCommandUtils.sendMessage(source,
-                    LegendControl.getInstance().getLocale().getMessages().getNotPlayerTrust());
+            source.sendSuccess(UtilChatColour.colour(
+                    LegendControl.getInstance().getLocale().getMessages().getNotPlayerTrust()), false);
             return 0;
         }
 
         senderTrust.removePlayerList(target.getUUID());
 
-        PixelmonCommandUtils.sendMessage(source,
+        source.sendSuccess(UtilChatColour.colour(
                 LegendControl.getInstance().getLocale().getMessages().getRemoveTrust()
-                        .replace("%player%", target.getName().getString()));
+                        .replace("%player%", target.getName().getString())), false);
         return 1;
     }
 
@@ -84,8 +85,8 @@ public class LegendaryTrustCommand {
         PlayerTrust senderTrust = LegendControl.getInstance().getTrustProvider().getPlayerTrust(sender);
 
         if (senderTrust.getPlayerList().size() == 0) {
-            PixelmonCommandUtils.sendMessage(source,
-                    LegendControl.getInstance().getLocale().getMessages().getEmptyTrust());
+            source.sendSuccess(UtilChatColour.colour(
+                    LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), false);
             return 0;
         }
 
@@ -96,8 +97,8 @@ public class LegendaryTrustCommand {
             senderTrust.removePlayerList(uuid);
         }
 
-        PixelmonCommandUtils.sendMessage(source,
-                LegendControl.getInstance().getLocale().getMessages().getRemoveAllTrust());
+        source.sendSuccess(UtilChatColour.colour(
+                LegendControl.getInstance().getLocale().getMessages().getRemoveAllTrust()), false);
         return 1;
     }
 
@@ -107,21 +108,21 @@ public class LegendaryTrustCommand {
         int size = senderTrust.getPlayerList().size();
 
         if (size == 0) {
-            PixelmonCommandUtils.sendMessage(source,
-                    LegendControl.getInstance().getLocale().getMessages().getEmptyTrust());
+            source.sendSuccess(UtilChatColour.colour(
+                    LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), false);
             return 0;
         }
 
-        PixelmonCommandUtils.sendMessage(source,
+        source.sendSuccess(UtilChatColour.colour(
                 LegendControl.getInstance().getLocale().getMessages().getListTrustTitle()
-                        .replace("%amount%", size + ""));
+                        .replace("%amount%", size + "")), false);
 
         for (UUID uuid : senderTrust.getPlayerList()) {
             String playerName = UsernameCache.getLastKnownUsername(uuid);
             if (playerName != null) {
-                PixelmonCommandUtils.sendMessage(source,
+                source.sendSuccess(UtilChatColour.colour(
                         LegendControl.getInstance().getLocale().getMessages().getListTrust()
-                                .replace("%player%", playerName));
+                                .replace("%player%", playerName)), false);
             }
         }
         return 1;

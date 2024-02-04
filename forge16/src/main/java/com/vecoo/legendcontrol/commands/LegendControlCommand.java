@@ -1,16 +1,16 @@
 package com.vecoo.legendcontrol.commands;
 
+import com.envyful.api.forge.chat.UtilChatColour;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.pixelmonmod.pixelmon.api.command.PixelmonCommandUtils;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
+import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
 public class LegendControlCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        dispatcher.register(Commands.literal("lc").requires((p -> p.hasPermission(2)))
+        dispatcher.register(Commands.literal("lc").requires((p -> Utils.hasPermission(p.getEntity(), "legendcontrol.command.main")))
                 .then(Commands.literal("add").then(Commands.argument("amount", IntegerArgumentType.integer(0, 100)).
                         executes(e -> executeAdd(e.getSource(), IntegerArgumentType.getInteger(e, "amount")))))
                 .then(Commands.literal("set").then(Commands.argument("amount", IntegerArgumentType.integer(0, 100)).
@@ -19,32 +19,32 @@ public class LegendControlCommand {
     }
 
     private static int executeAdd(CommandSource source, int chance) {
-        if (LegendarySpawnListener.legendaryChance + chance > 100) {
-            PixelmonCommandUtils.sendMessage(source,
-                    LegendControl.getInstance().getLocale().getMessages().getErrorChance());
+        if (LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().getChance() + chance > 100) {
+            source.sendSuccess(UtilChatColour.colour(
+                    LegendControl.getInstance().getLocale().getMessages().getErrorChance()), false);
             return 0;
         }
 
-        LegendarySpawnListener.legendaryChance += chance;
+        LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().addChance(chance);
 
-        PixelmonCommandUtils.sendMessage(source,
+        source.sendSuccess(UtilChatColour.colour(
                 LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
-                        .replace("%chance%", LegendarySpawnListener.legendaryChance + "%"));
+                        .replace("%chance%", LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().getChance() + "%")), false);
         return 1;
     }
 
     private static int executeSet(CommandSource source, int chance) {
-        LegendarySpawnListener.legendaryChance = chance;
-        PixelmonCommandUtils.sendMessage(source,
+        LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().setChance(chance);
+        source.sendSuccess(UtilChatColour.colour(
                 LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
-                        .replace("%chance%", chance + "%"));
+                        .replace("%chance%", chance + "%")), false);
         return 1;
     }
 
     private static int executeReload(CommandSource source) {
         LegendControl.getInstance().loadConfig();
-        PixelmonCommandUtils.sendMessage(source,
-                LegendControl.getInstance().getLocale().getMessages().getReload());
+        source.sendSuccess(UtilChatColour.colour(
+                LegendControl.getInstance().getLocale().getMessages().getReload()), false);
         return 1;
     }
 }

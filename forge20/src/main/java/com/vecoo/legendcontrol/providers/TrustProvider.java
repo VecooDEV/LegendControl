@@ -23,13 +23,6 @@ public class TrustProvider {
         return trustMap.get(player);
     }
 
-    public boolean getKey(UUID player) {
-        if (trustMap.get(player) == null) {
-            new PlayerTrust(player);
-        }
-        return trustMap.containsKey(player);
-    }
-
     public void updatePlayerTrust(PlayerTrust playerHistory) {
         trustMap.put(playerHistory.getPlayer(), playerHistory);
         if (!write(playerHistory)) {
