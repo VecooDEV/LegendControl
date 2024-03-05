@@ -19,9 +19,13 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.20.2-48.0.30'
 
     implementation 'pixelmon:Pixelmon-1.20.2-9.2.4-server:9.2.4'
+
+    shadow fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 shadowJar {
+    minimize()
+    relocate('com.vecoo.extraapi', 'com.vecoo.legendcontrol.shade.extraapi')
     configurations = [project.configurations.shadow]
     setArchiveClassifier('')
     setArchiveBaseName("${rootProject.name}-Forge")

@@ -2,7 +2,7 @@ subprojects {
     apply plugin: 'java'
 
     group = 'com.vecoo.legendcontrol'
-    version = '1.2.0'
+    version = '1.2.1'
 
     ext {
         forgeVersion = "none"
@@ -14,7 +14,6 @@ subprojects {
 
     repositories {
         mavenCentral()
-        maven { url = "https://maven.envyware.co.uk/releases" }
         ivy {
             setUrl('https://download.nodecdn.net/containers/reforged/server/release')
             metadataSources {

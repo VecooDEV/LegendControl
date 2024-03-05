@@ -19,32 +19,15 @@ dependencies {
 
     implementation 'pixelmon:Pixelmon-1.16.5-9.1.10-server:9.1.10'
 
-    shadow (group: 'com.envyful.api', name: 'commons', version: '5.0.3')
-    shadow (group: 'com.envyful.api', name: 'forge16', version: '5.0.3') {
-        transitive = false;
-    }
+    shadow fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 shadowJar {
+    minimize()
+    relocate('com.vecoo.extraapi', 'com.vecoo.legendcontrol.shade.extraapi')
     configurations = [project.configurations.shadow]
     setArchiveClassifier('')
     setArchiveBaseName("${rootProject.name}-Forge")
-
-    minimize()
-    relocate('org.spongepowered.configurate', 'com.vecoo.legendcontrol.shade.configurate')
-    relocate('com.envyful.api', 'com.vecoo.legendcontrol.shade.envy.api')
-    relocate('org.apache.logging', 'com.vecoo.legendcontrol.shade.log4j')
-    relocate('io.lettuce', 'com.vecoo.legendcontrol.shade.lettuce')
-    relocate('reactor', 'com.vecoo.legendcontrol.shade.reactor')
-
-    exclude "com/google/**"
-    exclude "javax/**"
-    exclude "**/module-info.class"
-    exclude "**/*.properties"
-    exclude "**/*.xml"
-    exclude "META-INF/versions/9/**"
-    exclude "META-INF/native-image/**"
-    exclude "META-INF/services/**"
 }
 
 jar.finalizedBy('shadowJar')

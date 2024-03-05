@@ -27,6 +27,12 @@ public class ServerConfig extends AbstractYamlConfig {
 
     private boolean legendaryDefender = true;
 
+    private int permissionCheckLegends = 0;
+
+    private int permissionLegendaryTrust = 0;
+
+    private int permissionLegendControl = 2;
+
     private List<String> blacklistLegendary = Lists.newArrayList(
             "regieleki", "regidrago");
 
@@ -36,7 +42,7 @@ public class ServerConfig extends AbstractYamlConfig {
         return this.trustLimit;
     }
 
-    public int getLegendProtectedTime() {
+    public int getProtectedTime() {
         return this.protectedTime;
     }
 
@@ -70,5 +76,17 @@ public class ServerConfig extends AbstractYamlConfig {
             this.blacklistLegendaryCache = blocked;
         }
         return this.blacklistLegendaryCache;
+    }
+
+    public int getPermissionCheckLegends() {
+        return this.permissionCheckLegends;
+    }
+
+    public int getPermissionLegendaryTrust() {
+        return this.permissionLegendaryTrust;
+    }
+
+    public int getPermissionLegendControl() {
+        return this.permissionLegendControl;
     }
 }

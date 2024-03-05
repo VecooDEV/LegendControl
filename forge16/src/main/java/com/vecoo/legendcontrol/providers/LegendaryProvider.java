@@ -1,8 +1,8 @@
 package com.vecoo.legendcontrol.providers;
 
 import com.google.gson.Gson;
+import com.vecoo.extraapi.gson.UtilGson;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.util.GsonUtils;
 
 import java.io.File;
 import java.util.HashMap;
@@ -31,21 +31,21 @@ public class LegendaryProvider {
     }
 
     private boolean write(LegendaryChance player) {
-        Gson gson = GsonUtils.newGson();
-        CompletableFuture<Boolean> future = GsonUtils.writeFileAsync(filePath, "LegendaryChance" + ".json",
+        Gson gson = UtilGson.newGson();
+        CompletableFuture<Boolean> future = UtilGson.writeFileAsync(filePath, "LegendaryChance" + ".json",
                 gson.toJson(player));
         return future.join();
     }
 
     public void init() {
-        File dir = GsonUtils.checkForDirectory(filePath);
+        File dir = UtilGson.checkForDirectory(filePath);
         String[] list = dir.list();
         if (list.length == 0) {
             return;
         }
         for (String file : list) {
-            GsonUtils.readFileAsync(filePath, file, el -> {
-                Gson gson = GsonUtils.newGson();
+            UtilGson.readFileAsync(filePath, file, el -> {
+                Gson gson = UtilGson.newGson();
                 LegendaryChance chance = gson.fromJson(el, LegendaryChance.class);
                 chanceMap.put("chance", chance);
             });

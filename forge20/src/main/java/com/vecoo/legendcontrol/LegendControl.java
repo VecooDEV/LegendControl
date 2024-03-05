@@ -2,6 +2,7 @@ package com.vecoo.legendcontrol;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
+import com.vecoo.extraapi.player.UtilPlayer;
 import com.vecoo.legendcontrol.commands.CheckLegendsCommand;
 import com.vecoo.legendcontrol.commands.LegendControlCommand;
 import com.vecoo.legendcontrol.commands.LegendaryTrustCommand;
@@ -10,7 +11,6 @@ import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.listener.LegendControlListener;
 import com.vecoo.legendcontrol.providers.LegendaryProvider;
 import com.vecoo.legendcontrol.providers.TrustProvider;
-import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -39,9 +39,9 @@ public class LegendControl {
         MinecraftForge.EVENT_BUS.register(new LegendControlListener());
         Pixelmon.EVENT_BUS.register(new LegendControlListener());
 
-        Utils.registerPermission("command.checkleg");
-        Utils.registerPermission("command.ltrust");
-        Utils.registerPermission("command.main");
+        UtilPlayer.registerPermission(MOD_ID, "command.checkleg");
+        UtilPlayer.registerPermission(MOD_ID, "command.ltrust");
+        UtilPlayer.registerPermission(MOD_ID, "command.main");
 
         this.loadConfig();
 

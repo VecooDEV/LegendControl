@@ -15,7 +15,7 @@ public class TaskTickListener {
     private static List<Task> tasks = new ArrayList<>();
 
     @SubscribeEvent
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
+    public void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             for (Task task : new ArrayList<>(tasks)) {
                 task.tick();
@@ -28,7 +28,7 @@ public class TaskTickListener {
 
     public static void addTask(@Nonnull Task task) {
         if (!active) {
-            MinecraftForge.EVENT_BUS.register(TaskTickListener.class);
+            MinecraftForge.EVENT_BUS.register(new TaskTickListener());
             active = true;
         }
         tasks.add(task);

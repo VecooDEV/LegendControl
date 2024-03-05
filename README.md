@@ -27,4 +27,4 @@ A: Should work.
 
 ## Download
 * [Modrinth](https://modrinth.com/mod/legendcontrol)
-* [CurseForge](https://www.curseforge.com/minecraft/mc-mods/legendcontrol) (The release here will be much less frequent)
+* [CurseForge](https://www.curseforge.com/minecraft/mc-mods/legendcontrol)

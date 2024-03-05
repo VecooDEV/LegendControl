@@ -42,6 +42,10 @@ public class LocaleConfig extends AbstractYamlConfig {
         private String errorChance = "&c(!) The total chance should not exceed 100.";
         private String errorConfig = "&c(!) Set the chance of legendary Pokemon to 100% in Pixelmon configs or disable the modified system of appearance of legendary Pokemon in the mod.";
 
+        private String seconds = " seconds";
+        private String minutes = " minutes";
+        private String hours = " hours";
+
         public Messages() {
         }
 
@@ -115,6 +119,18 @@ public class LocaleConfig extends AbstractYamlConfig {
 
         public String getErrorConfig() {
             return this.errorConfig;
+        }
+
+        public String getSeconds() {
+            return this.seconds;
+        }
+
+        public String getMinutes() {
+            return this.minutes;
+        }
+
+        public String getHours() {
+            return this.hours;
         }
     }
 }

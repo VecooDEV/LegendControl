@@ -13,10 +13,10 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import com.vecoo.extraapi.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.util.Task;
-import com.vecoo.legendcontrol.util.UtilChatColour;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +35,7 @@ public class LegendControlListener {
             UUID invoker = legendMap.get(pokemon);
 
             if (!invoker.equals(player.getUUID()) && !LegendControl.getInstance().getTrustProvider().getPlayerTrust(invoker).getPlayerList().contains(player.getUUID())) {
-                player.sendSystemMessage(UtilChatColour.colour(
+                player.sendSystemMessage(UtilChat.formatMessage(
                         LegendControl.getInstance().getLocale().getMessages().getIncorrectCause()));
                 return false;
             }
@@ -72,7 +72,7 @@ public class LegendControlListener {
         }
 
         if (LegendControl.getInstance().getConfig().isNotifyLegendarySpawn()) {
-            player.sendSystemMessage(UtilChatColour.colour(
+            player.sendSystemMessage(UtilChat.formatMessage(
                     LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary()));
         }
 
@@ -85,9 +85,8 @@ public class LegendControlListener {
         if (num > 0 && config.isLegendaryDefender()) {
             Task.builder()
                     .execute(() -> {
-                        LegendControl.getInstance().getServer().getPlayerList().broadcastSystemMessage(UtilChatColour.colour(
-                                LegendControl.getInstance().getLocale().getMessages().getProtection()
-                                        .replace("%pokemon%", pokemon.getSpecies().getName())), false);
+                        UtilChat.broadcast(LegendControl.getInstance().getLocale().getMessages().getProtection()
+                                .replace("%pokemon%", pokemon.getSpecies().getName()), LegendControl.getInstance().getServer());
                         legendMap.remove(pokemon);
                     })
                     .delay(20L * num)

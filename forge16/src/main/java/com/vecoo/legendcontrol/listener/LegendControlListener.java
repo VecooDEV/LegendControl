@@ -1,7 +1,7 @@
 package com.vecoo.legendcontrol.listener;
 
-import com.envyful.api.forge.chat.UtilChatColour;
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
+import com.pixelmonmod.pixelmon.api.command.PixelmonCommandUtils;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.KeyEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleStartedEvent;
@@ -22,6 +22,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public class LegendControlListener {
             UUID invoker = legendMap.get(pokemon);
 
             if (!invoker.equals(player.getUUID()) && !LegendControl.getInstance().getTrustProvider().getPlayerTrust(invoker).getPlayerList().contains(player.getUUID())) {
-                player.sendMessage(UtilChatColour.colour(
+                player.sendMessage(PixelmonCommandUtils.format(TextFormatting.RED,
                         LegendControl.getInstance().getLocale().getMessages().getIncorrectCause()), Util.NIL_UUID);
                 return false;
             }
@@ -74,7 +75,7 @@ public class LegendControlListener {
         }
 
         if (LegendControl.getInstance().getConfig().isNotifyLegendarySpawn()) {
-            player.sendMessage(UtilChatColour.colour(
+            player.sendMessage(PixelmonCommandUtils.format(TextFormatting.YELLOW,
                     LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary()), Util.NIL_UUID);
         }
 
@@ -82,12 +83,12 @@ public class LegendControlListener {
 
         LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().setChance(config.getBaseChance());
 
-        int num = config.getLegendProtectedTime();
+        int num = config.getProtectedTime();
 
         if (num > 0 && config.isLegendaryDefender()) {
             Task.builder()
                     .execute(() -> {
-                        LegendControl.getInstance().getServer().getPlayerList().broadcastMessage(UtilChatColour.colour(
+                        LegendControl.getInstance().getServer().getPlayerList().broadcastMessage(PixelmonCommandUtils.format(TextFormatting.YELLOW,
                                 LegendControl.getInstance().getLocale().getMessages().getProtection()
                                         .replace("%pokemon%", pokemon.getSpecies().getName())), ChatType.CHAT, Util.NIL_UUID);
                         legendMap.remove(pokemon);
