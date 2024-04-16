@@ -5,10 +5,10 @@ import com.envyful.api.command.annotate.Permissible;
 import com.envyful.api.command.annotate.SubCommands;
 import com.envyful.api.command.annotate.executor.CommandProcessor;
 import com.envyful.api.command.annotate.executor.Sender;
-import com.vecoo.legendcontrol.commands.lc.AddChanceCommand;
+import com.vecoo.legendcontrol.commands.lc.AddCommand;
 import com.vecoo.legendcontrol.commands.lc.ReloadCommand;
-import com.vecoo.legendcontrol.commands.lc.SetChanceCommand;
-import net.minecraft.entity.player.EntityPlayerMP;
+import com.vecoo.legendcontrol.commands.lc.SetCommand;
+import net.minecraft.command.ICommandSender;
 
 @Command(
         value = "legendcontrol",
@@ -18,10 +18,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
         }
 )
 @Permissible("legendcontrol.lc")
-@SubCommands({SetChanceCommand.class, AddChanceCommand.class, ReloadCommand.class})
+@SubCommands({AddCommand.class, ReloadCommand.class, SetCommand.class})
 public class LegendControlCommand {
 
     @CommandProcessor
-    public void onCommand(@Sender EntityPlayerMP player) {
+    public void onCommand(@Sender ICommandSender player) {
     }
 }

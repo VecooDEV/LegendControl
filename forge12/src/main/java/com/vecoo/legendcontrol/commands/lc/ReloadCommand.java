@@ -2,6 +2,7 @@ package com.vecoo.legendcontrol.commands.lc;
 
 import com.envyful.api.command.annotate.Child;
 import com.envyful.api.command.annotate.Command;
+import com.envyful.api.command.annotate.Permissible;
 import com.envyful.api.command.annotate.executor.CommandProcessor;
 import com.envyful.api.command.annotate.executor.Sender;
 import com.envyful.api.forge.chat.UtilChatColour;
@@ -13,6 +14,7 @@ import net.minecraft.util.text.TextComponentString;
         value = "reload",
         description = "Reloads the configs"
 )
+@Permissible("legendcontrol.lc.reload")
 @Child
 public class ReloadCommand {
 
@@ -21,6 +23,6 @@ public class ReloadCommand {
         LegendControl.getInstance().loadConfig();
 
         player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
-                LegendControl.getInstance().getLocale().getMessages().getReloadedConfigs())));
+                LegendControl.getInstance().getLocale().getMessages().getReload())));
     }
 }

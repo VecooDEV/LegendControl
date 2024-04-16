@@ -13,14 +13,6 @@ buildscript {
     }
 }
 
-plugins {
-    id("com.github.johnrengelman.shadow") version "6.1.0"
-}
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
-forgeVersion = "1.12.2"
-
-
 apply plugin: 'net.minecraftforge.gradle'
 
 minecraft {
@@ -68,6 +60,8 @@ shadowJar {
     relocate('io.leangen.geantyref', 'com.vecoo.legendcontrol.shade.geantyref')
     relocate('com.google.gson', 'com.vecoo.legendcontrol.shade.gson')
     relocate('com.envyful.api', 'com.vecoo.legendcontrol.shade.envy.api')
+    relocate('org.slf4j', 'com.vecoo.legendcontrol.shade.slf4j')
+    relocate('com.zaxxer.hikari', 'com.vecoo.legendcontrol.shade.zaxxer.hikari')
 
     exclude "**/module-info.class"
 }
@@ -76,6 +70,12 @@ reobf {
     shadowJar {
         classpath = sourceSets.main.compileClasspath
     }
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 jar.finalizedBy('reobfJar')

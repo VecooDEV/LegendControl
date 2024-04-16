@@ -7,111 +7,90 @@ import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import com.vecoo.legendcontrol.commands.CheckLegendsCommand;
 import com.vecoo.legendcontrol.commands.LegendControlCommand;
 import com.vecoo.legendcontrol.commands.LegendaryTrustCommand;
-import com.vecoo.legendcontrol.config.LegendControlConfig;
-import com.vecoo.legendcontrol.config.LegendControlLocale;
-import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
-import com.vecoo.legendcontrol.listener.PlayerLoggedInListener;
-import com.vecoo.legendcontrol.utils.TaskTickListener;
-import com.vecoo.legendcontrol.utils.data.UtilsLegendary;
-import com.vecoo.legendcontrol.utils.data.UtilsTrust;
+import com.vecoo.legendcontrol.config.ServerConfig;
+import com.vecoo.legendcontrol.config.LocaleConfig;
+import com.vecoo.legendcontrol.listener.LegendControlListener;
+import com.vecoo.legendcontrol.storage.player.PlayerProvider;
+import com.vecoo.legendcontrol.storage.server.ServerProvider;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 
 @Mod(
         modid = "legendcontrol",
         name = "LegendControl",
-        version = "1.0.0",
+        version = "1.2.6",
         acceptableRemoteVersions = "*"
 )
 public class LegendControl {
-
     private static LegendControl instance;
+
+    private MinecraftServer server;
 
     private ForgeCommandFactory commandFactory = new ForgeCommandFactory();
 
-    public static File fileTrust;
-    public static File fileLegendary;
+    private ServerConfig config;
+    private LocaleConfig locale;
 
-    private LegendControlConfig config;
-    private LegendControlLocale locale;
+    private PlayerProvider playerProvider;
+    private ServerProvider serverProvider;
 
     @Mod.EventHandler
-    public void onServerStarting(FMLPreInitializationEvent event) throws IOException {
+    public void onPreInitialization(FMLPreInitializationEvent event) {
         instance = this;
 
-        this.loadConfig();
-
-        MinecraftForge.EVENT_BUS.register(new LegendarySpawnListener());
-        Pixelmon.EVENT_BUS.register(new LegendarySpawnListener());
-
-        MinecraftForge.EVENT_BUS.register(new TaskTickListener());
-        MinecraftForge.EVENT_BUS.register(new PlayerLoggedInListener());
-
-        File directory = new File(event.getModConfigurationDirectory(), "LegendControl/data");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        fileTrust = new File(directory, "trust.json");
-        fileLegendary = new File(directory, "legendary.json");
-        if (!fileTrust.exists()) {
-            fileTrust.createNewFile();
-            UtilsTrust.writeNewGSON();
-        }
-        if (!fileLegendary.exists()) {
-            fileLegendary.createNewFile();
-            UtilsLegendary.writeNewGSON();
-        }
-        UtilsTrust.readFromGSON();
-        UtilsLegendary.readFromGSON();
+        MinecraftForge.EVENT_BUS.register(new LegendControlListener());
+        Pixelmon.EVENT_BUS.register(new LegendControlListener());
 
         PixelmonConfig.legendarySpawnChance = 100;
 
-        HashMap<String, Integer> dataMap = UtilsLegendary.getDataMap();
-        if (dataMap.get("LegendaryChance") == null) {
-            LegendarySpawnListener.legendaryChance = getConfig().getBaseChance();
-        } else {
-            LegendarySpawnListener.legendaryChance = dataMap.get("LegendaryChance");
-        }
+        this.loadConfig();
     }
 
     public void loadConfig() {
         try {
-            this.config = YamlConfigFactory.getInstance(LegendControlConfig.class);
-            this.locale = YamlConfigFactory.getInstance(LegendControlLocale.class);
-        } catch (IOException e) {
+            this.config = YamlConfigFactory.getInstance(ServerConfig.class);
+            this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
+            this.playerProvider = new PlayerProvider();
+            this.playerProvider.init();
+            this.serverProvider = new ServerProvider();
+            this.serverProvider.init();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
+        this.server = event.getServer();
         this.commandFactory.registerCommand(event.getServer(), new LegendaryTrustCommand());
         this.commandFactory.registerCommand(event.getServer(), new LegendControlCommand());
         this.commandFactory.registerCommand(event.getServer(), new CheckLegendsCommand());
-    }
-
-    @Mod.EventHandler
-    public void onServerStopping(FMLServerStoppingEvent event) throws IOException {
-        UtilsLegendary.writeToGSON("LegendaryChance", LegendarySpawnListener.legendaryChance);
     }
 
     public static LegendControl getInstance() {
         return instance;
     }
 
-    public LegendControlConfig getConfig() {
+    public MinecraftServer getServer() {
+        return this.server;
+    }
+
+    public ServerConfig getConfig() {
         return this.config;
     }
 
-    public LegendControlLocale getLocale() {
+    public LocaleConfig getLocale() {
         return this.locale;
+    }
+
+    public PlayerProvider getPlayerProvider() {
+        return this.playerProvider;
+    }
+
+    public ServerProvider getServerProvider() {
+        return this.serverProvider;
     }
 }

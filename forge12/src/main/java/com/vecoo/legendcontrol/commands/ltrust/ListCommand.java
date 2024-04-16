@@ -2,17 +2,16 @@ package com.vecoo.legendcontrol.commands.ltrust;
 
 import com.envyful.api.command.annotate.Child;
 import com.envyful.api.command.annotate.Command;
+import com.envyful.api.command.annotate.Permissible;
 import com.envyful.api.command.annotate.executor.CommandProcessor;
 import com.envyful.api.command.annotate.executor.Sender;
 import com.envyful.api.forge.chat.UtilChatColour;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.utils.data.UtilsTrust;
+import com.vecoo.legendcontrol.storage.player.PlayerFactory;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.UsernameCache;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,35 +19,31 @@ import java.util.UUID;
         value = "list",
         description = "§7/ltrust list"
 )
+@Permissible("legendcontrol.ltrust.list")
 @Child
 public class ListCommand {
 
     @CommandProcessor
     public void onCommand(@Sender EntityPlayerMP player, String[] args) {
-        try {
-            HashMap<UUID, List<UUID>> dataMap = UtilsTrust.getDataMap();
-            int size = dataMap.get(player.getUniqueID()).size();
+        List<UUID> players = PlayerFactory.getPlayers(player.getUniqueID());
 
-            if (size == 0) {
-                player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
-                        LegendControl.getInstance().getLocale().getMessages().getEmptyTrust())));
-                return;
-            }
-
+        if (players.isEmpty()) {
             player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
-                    LegendControl.getInstance().getLocale().getMessages().getListingPlayers()
-                            .replace("%amount%", size + ""))));
+                    LegendControl.getInstance().getLocale().getMessages().getEmptyTrust())));
+            return;
+        }
 
-            for (UUID uuid : dataMap.get(player.getUniqueID())) {
-                String nick = UsernameCache.getLastKnownUsername(uuid);
-                if (nick != null) {
-                    player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
-                                    LegendControl.getInstance().getLocale().getMessages().getTrustList())
-                            .replace("%player%", nick)));
-                }
+        player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
+                LegendControl.getInstance().getLocale().getMessages().getListTrustTitle()
+                        .replace("%amount%", players.size() + ""))));
+
+        for (UUID uuid : players) {
+            String playerName = UsernameCache.getLastKnownUsername(uuid);
+            if (playerName != null) {
+                player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
+                                LegendControl.getInstance().getLocale().getMessages().getListTrust())
+                        .replace("%player%", playerName)));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

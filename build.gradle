@@ -1,19 +1,34 @@
+buildscript {
+    repositories {
+        maven { url 'https://plugins.gradle.org/m2' }
+    }
+
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
+    }
+}
+
 subprojects {
+    apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'java'
 
     group = 'com.vecoo.legendcontrol'
-    version = '1.2.1'
+    version = '1.2.6'
 
-    ext {
-        forgeVersion = "none"
-    }
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-    jar {
-        setArchiveBaseName("${rootProject.name}-Forge")
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
     }
 
     repositories {
         mavenCentral()
+        maven { url = "https://jitpack.io" }
+        maven {
+            name = 'sponge'
+            url = 'https://repo.spongepowered.org/maven'
+        }
         ivy {
             setUrl('https://download.nodecdn.net/containers/reforged/server/release')
             metadataSources {
@@ -26,16 +41,12 @@ subprojects {
     }
 
     task versionedRelease(type: Copy) {
-        dependsOn('shadowJar')
-        delete fileTree('../release/') {
-            include '**/*.jar'
-        }
         group "build"
-        from("./build/libs/${rootProject.name}-Forge-${version}.jar")
+        from('./build/libs/' + rootProject.name + '.jar')
         into('../release/')
         include '*.jar'
         rename { String filename ->
-            filename.replace("-${version}.jar", "-${project.version}-${forgeVersion}.jar")
+            filename.replace(".jar", "-${project.version}.jar")
         }
     }
 }

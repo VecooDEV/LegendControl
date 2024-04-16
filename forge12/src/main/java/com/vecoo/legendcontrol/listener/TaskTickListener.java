@@ -1,5 +1,6 @@
-package com.vecoo.legendcontrol.utils;
+package com.vecoo.legendcontrol.listener;
 
+import com.vecoo.legendcontrol.util.Task;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -9,12 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskTickListener {
-
     private static boolean active;
     private static List<Task> tasks = new ArrayList<>();
 
     @SubscribeEvent
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
+    public void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             for (Task task : new ArrayList<>(tasks)) {
                 task.tick();
@@ -25,9 +25,9 @@ public class TaskTickListener {
         }
     }
 
-    static void addTask(@Nonnull Task task) {
+    public static void addTask(@Nonnull Task task) {
         if (!active) {
-            MinecraftForge.EVENT_BUS.register(TaskTickListener.class);
+            MinecraftForge.EVENT_BUS.register(new TaskTickListener());
             active = true;
         }
         tasks.add(task);

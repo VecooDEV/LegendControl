@@ -1,10 +1,11 @@
-package com.vecoo.legendcontrol.utils;
+package com.vecoo.legendcontrol.util;
+
+import com.vecoo.legendcontrol.listener.TaskTickListener;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class Task {
-
     private Consumer<Task> consumer;
 
     private long interval;
@@ -28,7 +29,7 @@ public class Task {
         return expired;
     }
 
-    void tick() {
+    public void tick() {
         if (!expired) {
             this.ticksRemaining = Math.max(0, --ticksRemaining);
 
