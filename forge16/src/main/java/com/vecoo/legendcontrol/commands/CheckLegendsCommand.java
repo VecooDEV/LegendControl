@@ -10,7 +10,7 @@ import net.minecraft.command.Commands;
 
 public class CheckLegendsCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        dispatcher.register(Commands.literal("checkleg").requires(p -> p.hasPermission(2))
+        dispatcher.register(Commands.literal("checkleg").requires(p -> p.hasPermission(0))
                 .executes(e -> execute(e.getSource())));
     }
 

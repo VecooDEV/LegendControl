@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class LegendaryTrustCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        dispatcher.register(Commands.literal("ltrust").requires(p -> p.hasPermission(2))
+        dispatcher.register(Commands.literal("ltrust").requires(p -> p.hasPermission(0))
                 .then(Commands.literal("add").then(Commands.argument("player", StringArgumentType.string()).
                         executes(e -> executeAdd(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))
                         .suggests((s, builder) -> {
