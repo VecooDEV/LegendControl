@@ -1,4 +1,4 @@
-package com.vecoo.legendcontrol.providers;
+package com.vecoo.legendcontrol.storage;
 
 import com.google.gson.Gson;
 import com.vecoo.extraapi.gson.UtilGson;

@@ -1,4 +1,4 @@
-package com.vecoo.legendcontrol.providers;
+package com.vecoo.legendcontrol.storage;
 
 import com.vecoo.legendcontrol.LegendControl;
 

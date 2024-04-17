@@ -3,7 +3,7 @@ package com.vecoo.legendcontrol.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.api.command.PixelmonCommandUtils;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.providers.PlayerTrust;
+import com.vecoo.legendcontrol.storage.PlayerTrust;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;

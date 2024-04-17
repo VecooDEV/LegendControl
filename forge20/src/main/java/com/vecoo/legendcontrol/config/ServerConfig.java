@@ -12,7 +12,6 @@ import java.util.List;
 @ConfigPath("config/LegendControl/config.yml")
 @ConfigSerializable
 public class ServerConfig extends AbstractYamlConfig {
-
     private int trustLimit = 15;
 
     private int protectedTime = 300;
@@ -21,11 +20,17 @@ public class ServerConfig extends AbstractYamlConfig {
 
     private int stepSpawnChance = 5;
 
+    private int maxPlayersIP = 3;
+
     private boolean notifyLegendarySpawn = true;
 
     private boolean newLegendarySpawn = true;
 
     private boolean legendaryDefender = true;
+
+    private boolean legendaryRepeat = true;
+
+    private boolean repeatSpawnToPlayer = true;
 
     private List<String> blacklistLegendary = Lists.newArrayList(
             "regieleki", "regidrago");
@@ -36,7 +41,7 @@ public class ServerConfig extends AbstractYamlConfig {
         return this.trustLimit;
     }
 
-    public int getLegendProtectedTime() {
+    public int getProtectedTime() {
         return this.protectedTime;
     }
 
@@ -46,6 +51,10 @@ public class ServerConfig extends AbstractYamlConfig {
 
     public int getStepSpawnChance() {
         return stepSpawnChance;
+    }
+
+    public int getMaxPlayersIP() {
+        return this.maxPlayersIP;
     }
 
     public boolean isNotifyLegendarySpawn() {
@@ -58,6 +67,14 @@ public class ServerConfig extends AbstractYamlConfig {
 
     public boolean isLegendaryDefender() {
         return legendaryDefender;
+    }
+
+    public boolean isLegendaryRepeat() {
+        return this.legendaryRepeat;
+    }
+
+    public boolean isRepeatSpawnToPlayer() {
+        return this.repeatSpawnToPlayer;
     }
 
     public List<PokemonSpecification> getBlockedLegendary() {

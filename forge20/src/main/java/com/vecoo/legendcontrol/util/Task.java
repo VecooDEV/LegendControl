@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class Task {
-
     private Consumer<Task> consumer;
 
     private long interval;
@@ -77,6 +76,18 @@ public class Task {
             }
             this.interval = interval;
             return this;
+        }
+
+        public Builder iterations(long iterations) {
+            if (iterations < -1) {
+                throw new IllegalArgumentException("iterations must not be below -1");
+            }
+            this.iterations = iterations;
+            return this;
+        }
+
+        public Builder infinite() {
+            return iterations(-1);
         }
 
         public Task build() {

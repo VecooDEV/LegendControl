@@ -7,7 +7,6 @@ import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
 @ConfigPath("config/LegendControl/locale.yml")
 @ConfigSerializable
 public class LocaleConfig extends AbstractYamlConfig {
-
     private Messages messages = new Messages();
 
     public LocaleConfig() {
@@ -22,8 +21,8 @@ public class LocaleConfig extends AbstractYamlConfig {
     public static class Messages {
         private String reload = "&e(!) Configs have been reloaded.";
 
-        private String addTrust = "&e(!) Player %player% has been successfully added to your trust list.";
-        private String removeTrust = "&e(!) Player %player% has been removed from your trust list.";
+        private String addTrust = "&e(!) Player %target% has been successfully added to your trust list.";
+        private String removeTrust = "&e(!) Player %target% has been removed from your trust list.";
         private String removeAllTrust = "&e(!) All players have been removed from your trust list.";
         private String emptyTrust = "&e(!) Your trust list is empty.";
         private String listTrustTitle = "&e&lTrust list (%amount%)";
@@ -41,6 +40,7 @@ public class LocaleConfig extends AbstractYamlConfig {
         private String trustLimit = "&c(!) You have reached the maximum number of players on the trust list.";
         private String errorChance = "&c(!) The total chance should not exceed 100.";
         private String errorConfig = "&c(!) Set the chance of legendary Pokemon to 100% in Pixelmon configs or disable the modified system of appearance of legendary Pokemon in the mod.";
+        private String playerNotFound = "&c(!) Player %target% not found.";
 
         private String seconds = " seconds";
         private String minutes = " minutes";
@@ -119,6 +119,10 @@ public class LocaleConfig extends AbstractYamlConfig {
 
         public String getErrorConfig() {
             return this.errorConfig;
+        }
+
+        public String getPlayerNotFound() {
+            return this.playerNotFound;
         }
 
         public String getSeconds() {
