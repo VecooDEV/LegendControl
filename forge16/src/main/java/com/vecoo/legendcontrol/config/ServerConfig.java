@@ -12,7 +12,6 @@ import java.util.List;
 @ConfigPath("config/LegendControl/config.yml")
 @ConfigSerializable
 public class ServerConfig extends AbstractYamlConfig {
-
     private int trustLimit = 15;
 
     private int protectedTime = 300;
@@ -21,17 +20,17 @@ public class ServerConfig extends AbstractYamlConfig {
 
     private int stepSpawnChance = 5;
 
+    private int maxPlayersIP = 3;
+
     private boolean notifyLegendarySpawn = true;
 
     private boolean newLegendarySpawn = true;
 
     private boolean legendaryDefender = true;
 
-    private int permissionCheckLegends = 0;
+    private boolean legendaryRepeat = true;
 
-    private int permissionLegendaryTrust = 0;
-
-    private int permissionLegendControl = 2;
+    private boolean repeatSpawnToPlayer = true;
 
     private List<String> blacklistLegendary = Lists.newArrayList(
             "regieleki", "regidrago");
@@ -54,6 +53,10 @@ public class ServerConfig extends AbstractYamlConfig {
         return stepSpawnChance;
     }
 
+    public int getMaxPlayersIP() {
+        return this.maxPlayersIP;
+    }
+
     public boolean isNotifyLegendarySpawn() {
         return notifyLegendarySpawn;
     }
@@ -66,6 +69,14 @@ public class ServerConfig extends AbstractYamlConfig {
         return legendaryDefender;
     }
 
+    public boolean isLegendaryRepeat() {
+        return this.legendaryRepeat;
+    }
+
+    public boolean isRepeatSpawnToPlayer() {
+        return this.repeatSpawnToPlayer;
+    }
+
     public List<PokemonSpecification> getBlockedLegendary() {
         if (this.blacklistLegendaryCache == null) {
             List<PokemonSpecification> blocked = Lists.newArrayList();
@@ -76,17 +87,5 @@ public class ServerConfig extends AbstractYamlConfig {
             this.blacklistLegendaryCache = blocked;
         }
         return this.blacklistLegendaryCache;
-    }
-
-    public int getPermissionCheckLegends() {
-        return this.permissionCheckLegends;
-    }
-
-    public int getPermissionLegendaryTrust() {
-        return this.permissionLegendaryTrust;
-    }
-
-    public int getPermissionLegendControl() {
-        return this.permissionLegendControl;
     }
 }

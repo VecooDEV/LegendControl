@@ -8,8 +8,8 @@ import com.vecoo.legendcontrol.commands.LegendaryTrustCommand;
 import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.listener.LegendControlListener;
-import com.vecoo.legendcontrol.storage.LegendaryProvider;
-import com.vecoo.legendcontrol.storage.TrustProvider;
+import com.vecoo.legendcontrol.storage.server.ServerProvider;
+import com.vecoo.legendcontrol.storage.player.PlayerProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -19,7 +19,6 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
-
     public static final String MOD_ID = "legendcontrol";
 
     private static LegendControl instance;
@@ -29,8 +28,8 @@ public class LegendControl {
     private ServerConfig config;
     private LocaleConfig locale;
 
-    private LegendaryProvider legendaryProvider;
-    private TrustProvider trustProvider;
+    private PlayerProvider playerProvider;
+    private ServerProvider serverProvider;
 
     public LegendControl() {
         instance = this;
@@ -47,10 +46,10 @@ public class LegendControl {
         try {
             this.config = YamlConfigFactory.getInstance(ServerConfig.class);
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
-            this.legendaryProvider = new LegendaryProvider();
-            this.legendaryProvider.init();
-            this.trustProvider = new TrustProvider();
-            this.trustProvider.init();
+            this.playerProvider = new PlayerProvider();
+            this.playerProvider.init();
+            this.serverProvider = new ServerProvider();
+            this.serverProvider.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,8 +63,8 @@ public class LegendControl {
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
         CheckLegendsCommand.register(event.getDispatcher());
-        LegendControlCommand.register(event.getDispatcher());
         LegendaryTrustCommand.register(event.getDispatcher());
+        LegendControlCommand.register(event.getDispatcher());
     }
 
     public static LegendControl getInstance() {
@@ -84,11 +83,11 @@ public class LegendControl {
         return this.locale;
     }
 
-    public LegendaryProvider getLegendaryProvider() {
-        return this.legendaryProvider;
+    public ServerProvider getServerProvider() {
+        return this.serverProvider;
     }
 
-    public TrustProvider getTrustProvider() {
-        return this.trustProvider;
+    public PlayerProvider getPlayerProvider() {
+        return this.playerProvider;
     }
 }

@@ -1,7 +1,6 @@
 package com.vecoo.legendcontrol.listener;
 
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
-import com.pixelmonmod.pixelmon.api.command.PixelmonCommandUtils;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.KeyEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleStartedEvent;
@@ -16,13 +15,14 @@ import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
+import com.vecoo.legendcontrol.storage.player.PlayerFactory;
+import com.vecoo.legendcontrol.storage.server.ServerFactory;
 import com.vecoo.legendcontrol.util.Task;
+import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
@@ -30,16 +30,14 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LegendControlListener {
-
     public static HashMap<PixelmonEntity, UUID> legendMap = new HashMap<>();
 
     private boolean hasMap(ServerPlayerEntity player, PixelmonEntity pokemon) {
         if (legendMap.containsKey(pokemon) && !player.abilities.instabuild) {
-            UUID invoker = legendMap.get(pokemon);
+            UUID invokerUUID = legendMap.get(pokemon);
 
-            if (!invoker.equals(player.getUUID()) && !LegendControl.getInstance().getTrustProvider().getPlayerTrust(invoker).getPlayerList().contains(player.getUUID())) {
-                player.sendMessage(PixelmonCommandUtils.format(TextFormatting.RED,
-                        LegendControl.getInstance().getLocale().getMessages().getIncorrectCause()), Util.NIL_UUID);
+            if (!invokerUUID.equals(player.getUUID()) && !PlayerFactory.hasPlayer(invokerUUID, player.getUUID())) {
+                player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getIncorrectCause()), Util.NIL_UUID);
                 return false;
             }
         }
@@ -58,39 +56,50 @@ public class LegendControlListener {
     @SubscribeEvent
     public void onLegendarySpawnControl(LegendarySpawnEvent.DoSpawn event) {
         ServerConfig config = LegendControl.getInstance().getConfig();
-        PixelmonEntity pokemon = event.action.getOrCreateEntity();
         ServerPlayerEntity player = (ServerPlayerEntity) event.action.spawnLocation.cause;
+        PixelmonEntity pokemon = event.action.getOrCreateEntity();
 
-        if (ThreadLocalRandom.current().nextInt(100) > LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().getChance()
-                && config.isNewLegendarySpawn()) {
-            LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().addChance(config.getStepSpawnChance());
+        if (ThreadLocalRandom.current().nextInt(100) > ServerFactory.getLegendaryChance() && config.isNewLegendarySpawn()) {
+            ServerFactory.addLegendaryChance(config.getStepSpawnChance());
             event.setCanceled(true);
             return;
         }
 
         if (isBlackListed(event.action.getOrCreateEntity().getPokemon())) {
-            LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().addChance(config.getStepSpawnChance());
+            ServerFactory.addLegendaryChance(config.getStepSpawnChance());
+            event.setCanceled(true);
+            return;
+        }
+
+        if (!config.isLegendaryRepeat() && ServerFactory.getLastLegend().equals(pokemon.getPokemonName())) {
+            ServerFactory.addLegendaryChance(config.getStepSpawnChance());
+            event.setCanceled(true);
+            return;
+        }
+
+        if (!config.isRepeatSpawnToPlayer() && ServerFactory.getPlayersIP().contains(player.getIpAddress())) {
+            ServerFactory.addLegendaryChance(config.getStepSpawnChance());
             event.setCanceled(true);
             return;
         }
 
         if (LegendControl.getInstance().getConfig().isNotifyLegendarySpawn()) {
-            player.sendMessage(PixelmonCommandUtils.format(TextFormatting.YELLOW,
-                    LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary()), Util.NIL_UUID);
+            player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary()), Util.NIL_UUID);
         }
 
         legendMap.put(pokemon, player.getUUID());
 
-        LegendControl.getInstance().getLegendaryProvider().getLegendaryChance().setChance(config.getBaseChance());
+        ServerFactory.setLegendaryChance(config.getBaseChance());
+        ServerFactory.setLastLegend(pokemon.getPokemonName());
+        ServerFactory.replacePlayerIP(player.getIpAddress());
 
         int num = config.getProtectedTime();
 
         if (num > 0 && config.isLegendaryDefender()) {
             Task.builder()
                     .execute(() -> {
-                        LegendControl.getInstance().getServer().getPlayerList().broadcastMessage(PixelmonCommandUtils.format(TextFormatting.YELLOW,
-                                LegendControl.getInstance().getLocale().getMessages().getProtection()
-                                        .replace("%pokemon%", pokemon.getSpecies().getName())), ChatType.CHAT, Util.NIL_UUID);
+                        Utils.broadcast(LegendControl.getInstance().getLocale().getMessages().getProtection()
+                                .replace("%pokemon%", pokemon.getPokemonName()), LegendControl.getInstance().getServer());
                         legendMap.remove(pokemon);
                     })
                     .delay(20L * num)

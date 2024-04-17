@@ -16,7 +16,7 @@ public class CheckLegendsCommand {
 
     private static int execute(CommandSourceStack source) {
         if (PixelmonConfigProxy.getSpawning().getLegendarySpawnChance() < 1.0F) {
-            source.sendSystemMessage(Utils.formatMessage((LegendControl.getInstance().getLocale().getMessages().getErrorConfig())));
+            source.sendSystemMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getErrorConfig()));
             return 0;
         }
 

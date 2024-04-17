@@ -8,6 +8,7 @@ forgeVersion = "1.16.5"
 
 minecraft {
     mappings channel: 'official', version: '1.16.5'
+    copyIdeResources = true
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -15,19 +16,15 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {}
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
 
-    implementation 'pixelmon:Pixelmon-1.16.5-9.1.10-server:9.1.10'
-
-    shadow fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'pixelmon:Pixelmon-1.16.5-9.1.11-server:9.1.11'
 }
 
 shadowJar {
-    minimize()
-    relocate('com.vecoo.extraapi', 'com.vecoo.legendcontrol.shade.extraapi')
     configurations = [project.configurations.shadow]
     setArchiveClassifier('')
-    setArchiveBaseName("${rootProject.name}-Forge")
+    setArchiveBaseName("${rootProject.name}")
 }
 
 jar.finalizedBy('shadowJar')

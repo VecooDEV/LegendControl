@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskTickListener {
-
     private static boolean active;
     private static List<Task> tasks = new ArrayList<>();
 

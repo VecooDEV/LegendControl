@@ -82,7 +82,6 @@ public class LegendControlListener {
             return;
         }
 
-
         if (config.isNotifyLegendarySpawn()) {
             player.sendSystemMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary()));
         }

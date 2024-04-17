@@ -1,124 +1,137 @@
 package com.vecoo.legendcontrol.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.pixelmonmod.pixelmon.api.command.PixelmonCommandUtils;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.storage.PlayerTrust;
+import com.vecoo.legendcontrol.storage.player.PlayerFactory;
+import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.UsernameCache;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 public class LegendaryTrustCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        dispatcher.register(Commands.literal("ltrust").requires(p -> p.hasPermission(LegendControl.getInstance().getConfig().getPermissionLegendaryTrust()))
-                .then(Commands.literal("add").then(Commands.argument("player", EntityArgument.players()).
-                        executes(e -> executeAdd(e.getSource().getPlayerOrException(), EntityArgument.getPlayer(e, "player")))))
-                .then(Commands.literal("remove").then(Commands.argument("player", EntityArgument.players()).
-                                executes(e -> executeRemove(e.getSource().getPlayerOrException(), EntityArgument.getPlayer(e, "player"))))
+        dispatcher.register(Commands.literal("ltrust").requires(p -> p.hasPermission(2))
+                .then(Commands.literal("add").then(Commands.argument("player", StringArgumentType.string()).
+                        executes(e -> executeAdd(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))
+                        .suggests((s, builder) -> {
+                            for (String nick : s.getSource().getOnlinePlayerNames()) {
+                                builder.suggest(nick);
+                            }
+                            return builder.buildFuture();
+                        })))
+                .then(Commands.literal("remove").then(Commands.argument("player", StringArgumentType.string()).
+                                executes(e -> executeRemove(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))
+                                .suggests((s, builder) -> {
+                                    for (String nick : s.getSource().getOnlinePlayerNames()) {
+                                        builder.suggest(nick);
+                                    }
+                                    return builder.buildFuture();
+                                }))
                         .then(Commands.literal("all").executes(e -> executeRemoveAll(e.getSource().getPlayerOrException()))))
                 .then(Commands.literal("list").executes(e -> executeList(e.getSource().getPlayerOrException()))));
     }
 
-    private static int executeAdd(ServerPlayerEntity sender, ServerPlayerEntity target) {
-        PlayerTrust senderTrust = LegendControl.getInstance().getTrustProvider().getPlayerTrust(sender.getUUID());
-
-        if (sender.getUUID().equals(target.getUUID())) {
-            sender.sendMessage(PixelmonCommandUtils.format(TextFormatting.RED,
-                    LegendControl.getInstance().getLocale().getMessages().getCantSelfTrust()), Util.NIL_UUID);
+    private static int executeAdd(ServerPlayerEntity player, String target) {
+        if (!Utils.hasUUID(target)) {
+            player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
+                    .replace("%target%", target)), Util.NIL_UUID);
             return 0;
         }
 
-        if (senderTrust.getPlayerList().contains(target.getUUID())) {
-            sender.sendMessage(PixelmonCommandUtils.format(TextFormatting.RED,
-                    LegendControl.getInstance().getLocale().getMessages().getAlreadyTrusted()), Util.NIL_UUID);
+        UUID targerUUID = Utils.getUUID(target);
+        List<UUID> players = PlayerFactory.getPlayers(player.getUUID());
+
+        if (player.getUUID().equals(targerUUID)) {
+            player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getCantSelfTrust()), Util.NIL_UUID);
             return 0;
         }
 
-        if (senderTrust.getPlayerList().size() > LegendControl.getInstance().getConfig().getTrustLimit() && LegendControl.getInstance().getConfig().getTrustLimit() != 0) {
-            sender.sendMessage(PixelmonCommandUtils.format(TextFormatting.RED,
-                    LegendControl.getInstance().getLocale().getMessages().getTrustLimit()), Util.NIL_UUID);
+        if (players.contains(targerUUID)) {
+            player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getAlreadyTrusted()), Util.NIL_UUID);
             return 0;
         }
 
-        senderTrust.addPlayerList(target.getUUID());
+        if (players.size() > LegendControl.getInstance().getConfig().getTrustLimit() && LegendControl.getInstance().getConfig().getTrustLimit() != 0) {
+            player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getTrustLimit()), Util.NIL_UUID);
+            return 0;
+        }
 
-        sender.sendMessage(PixelmonCommandUtils.format(TextFormatting.YELLOW,
-                LegendControl.getInstance().getLocale().getMessages().getAddTrust()
-                        .replace("%player%", target.getName().getString())), Util.NIL_UUID);
+        PlayerFactory.addPlayer(player.getUUID(), targerUUID);
+
+        player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getAddTrust()
+                .replace("%target%", target)), Util.NIL_UUID);
         return 1;
     }
 
-    private static int executeRemove(ServerPlayerEntity sender, ServerPlayerEntity target) {
-        PlayerTrust senderTrust = LegendControl.getInstance().getTrustProvider().getPlayerTrust(sender.getUUID());
-
-        if (senderTrust.getPlayerList().isEmpty()) {
-            sender.sendMessage(PixelmonCommandUtils.format(TextFormatting.RED,
-                    LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
+    private static int executeRemove(ServerPlayerEntity player, String target) {
+        if (!Utils.hasUUID(target)) {
+            player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
+                    .replace("%target%", target)), Util.NIL_UUID);
             return 0;
         }
 
-        if (!senderTrust.getPlayerList().contains(target.getUUID())) {
-            sender.sendMessage(PixelmonCommandUtils.format(TextFormatting.RED,
-                    LegendControl.getInstance().getLocale().getMessages().getNotPlayerTrust()), Util.NIL_UUID);
+        UUID targetUUID = Utils.getUUID(target);
+        List<UUID> players = PlayerFactory.getPlayers(player.getUUID());
+
+        if (players.isEmpty()) {
+            player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
             return 0;
         }
 
-        senderTrust.removePlayerList(target.getUUID());
+        if (!players.contains(targetUUID)) {
+            player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getNotPlayerTrust()), Util.NIL_UUID);
+            return 0;
+        }
 
-        sender.sendMessage(PixelmonCommandUtils.format(TextFormatting.YELLOW,
-                LegendControl.getInstance().getLocale().getMessages().getRemoveTrust()
-                        .replace("%player%", target.getName().getString())), Util.NIL_UUID);
+        PlayerFactory.removePlayer(player.getUUID(), targetUUID);
+
+        player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveTrust()
+                .replace("%target%", target)), Util.NIL_UUID);
         return 1;
     }
 
     private static int executeRemoveAll(ServerPlayerEntity player) {
-        PlayerTrust senderTrust = LegendControl.getInstance().getTrustProvider().getPlayerTrust(player.getUUID());
+        List<UUID> players = PlayerFactory.getPlayers(player.getUUID());
 
-        if (senderTrust.getPlayerList().isEmpty()) {
-            player.sendMessage(PixelmonCommandUtils.format(TextFormatting.RED,
-                    LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
+        if (players.isEmpty()) {
+            player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
             return 0;
         }
 
-        Iterator<UUID> iterator = senderTrust.getPlayerList().iterator();
+        Iterator<UUID> iterator = players.iterator();
         while (iterator.hasNext()) {
             UUID uuid = iterator.next();
             iterator.remove();
-            senderTrust.removePlayerList(uuid);
+            PlayerFactory.removePlayer(player.getUUID(), uuid);
         }
 
-        player.sendMessage(PixelmonCommandUtils.format(TextFormatting.YELLOW,
-                LegendControl.getInstance().getLocale().getMessages().getRemoveAllTrust()), Util.NIL_UUID);
+        player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveAllTrust()), Util.NIL_UUID);
         return 1;
     }
 
     private static int executeList(ServerPlayerEntity player) {
-        PlayerTrust senderTrust = LegendControl.getInstance().getTrustProvider().getPlayerTrust(player.getUUID());
-        int size = senderTrust.getPlayerList().size();
+        List<UUID> players = PlayerFactory.getPlayers(player.getUUID());
 
-        if (size == 0) {
-            player.sendMessage(PixelmonCommandUtils.format(TextFormatting.YELLOW,
-                    LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
+        if (players.isEmpty()) {
+            player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
             return 0;
         }
 
-        player.sendMessage(PixelmonCommandUtils.format(TextFormatting.YELLOW,
-                LegendControl.getInstance().getLocale().getMessages().getListTrustTitle()
-                        .replace("%amount%", size + "")), Util.NIL_UUID);
+        player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getListTrustTitle()
+                .replace("%amount%", players.size() + "")), Util.NIL_UUID);
 
-        for (UUID uuid : senderTrust.getPlayerList()) {
+        for (UUID uuid : players) {
             String playerName = UsernameCache.getLastKnownUsername(uuid);
             if (playerName != null) {
-                player.sendMessage(PixelmonCommandUtils.format(TextFormatting.YELLOW,
-                        LegendControl.getInstance().getLocale().getMessages().getListTrust()
-                                .replace("%player%", playerName)), Util.NIL_UUID);
+                player.sendMessage(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getListTrust()
+                        .replace("%player%", playerName)), Util.NIL_UUID);
             }
         }
         return 1;
