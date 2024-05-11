@@ -19,7 +19,6 @@ import java.util.UUID;
         value = "removeall",
         description = "§7/ltrust removeall"
 )
-@Permissible("legendcontrol.ltrust.removeall")
 @Child
 public class RemoveAllCommand {
 

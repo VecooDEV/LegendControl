@@ -57,60 +57,60 @@ public class LegendControlListener {
 
     @SubscribeEvent
     public void onLegendarySpawnControl(LegendarySpawnEvent.DoSpawn event) {
-        if (LegendControl.getInstance().getConfig().isNewLegendarySpawn()) {
-            ServerConfig config = LegendControl.getInstance().getConfig();
-            EntityPlayerMP player = (EntityPlayerMP) event.action.spawnLocation.cause;
-            EntityPixelmon pokemon = event.action.getOrCreateEntity();
+        ServerConfig config = LegendControl.getInstance().getConfig();
+        EntityPlayerMP player = (EntityPlayerMP) event.action.spawnLocation.cause;
+        EntityPixelmon pokemon = event.action.getOrCreateEntity();
 
-            if (ThreadLocalRandom.current().nextInt(100) > ServerFactory.getLegendaryChance() && config.isNewLegendarySpawn()) {
-                ServerFactory.addLegendaryChance(config.getStepSpawnChance());
-                event.setCanceled(true);
-                return;
-            }
+        if (ThreadLocalRandom.current().nextDouble(100) > ServerFactory.getLegendaryChance() && config.isNewLegendarySpawn()) {
+            ServerFactory.addLegendaryChance(config.getStepSpawnChance());
+            event.setCanceled(true);
+            return;
+        }
 
-            if (isBlackListed(event.action.getOrCreateEntity().getPokemonData())) {
-                ServerFactory.addLegendaryChance(config.getStepSpawnChance());
-                event.setCanceled(true);
-                return;
-            }
+        if (isBlackListed(event.action.getOrCreateEntity().getPokemonData())) {
+            ServerFactory.addLegendaryChance(config.getStepSpawnChance());
+            event.setCanceled(true);
+            return;
+        }
 
-            if (!config.isLegendaryRepeat() && ServerFactory.getLastLegend().equals(pokemon.getName())) {
-                ServerFactory.addLegendaryChance(config.getStepSpawnChance());
-                event.setCanceled(true);
-                return;
-            }
+        if (!config.isLegendaryRepeat() && ServerFactory.getLastLegend().equals(pokemon.getName())) {
+            ServerFactory.addLegendaryChance(config.getStepSpawnChance());
+            event.setCanceled(true);
+            return;
+        }
 
-            if (!config.isRepeatSpawnToPlayer() && ServerFactory.getPlayersIP().contains(player.getPlayerIP())) {
-                ServerFactory.addLegendaryChance(config.getStepSpawnChance());
-                event.setCanceled(true);
-                return;
-            }
+        if (!config.isRepeatSpawnToPlayer() && ServerFactory.getPlayersIP().contains(player.getPlayerIP())) {
+            ServerFactory.addLegendaryChance(config.getStepSpawnChance());
+            event.setCanceled(true);
+            return;
+        }
 
-            if (LegendControl.getInstance().getConfig().isNotifyLegendarySpawn()) {
-                player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
-                        LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary())));
-            }
+        if (LegendControl.getInstance().getConfig().isNotifyLegendarySpawn()) {
+            player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
+                    LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary())));
+        }
 
-            legendMap.put(pokemon, player.getUniqueID());
+        legendMap.put(pokemon, player.getUniqueID());
 
-            ServerFactory.setLegendaryChance(config.getBaseChance());
-            ServerFactory.setLastLegend(pokemon.getName());
-            ServerFactory.replacePlayerIP(player.getPlayerIP());
+        ServerFactory.setLegendaryChance(config.getBaseChance());
+        ServerFactory.setLastLegend(pokemon.getName());
+        ServerFactory.replacePlayerIP(player.getPlayerIP());
 
-            int num = config.getProtectedTime();
+        int num = config.getProtectedTime();
 
-            if (num > 0 && config.isLegendaryDefender()) {
-                Task.builder()
-                        .execute(() -> {
+        if (num > 0 && config.isLegendaryDefender()) {
+            Task.builder()
+                    .execute(() -> {
+                        if (pokemon.isEntityAlive() && legendMap.containsKey(pokemon)) {
                             LegendControl.getInstance().getServer().getPlayerList().sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
                                     LegendControl.getInstance().getLocale().getMessages().getProtection()
                                             .replace("%pokemon%", pokemon.getSpecies().getLocalizedName()))));
-                            legendMap.remove(pokemon);
-                        })
-                        .delay(20L * num)
-                        .interval(20L * num)
-                        .build();
-            }
+                        }
+                        legendMap.remove(pokemon);
+                    })
+                    .delay(20L * num)
+                    .interval(20L * num)
+                    .build();
         }
     }
 
@@ -136,8 +136,7 @@ public class LegendControlListener {
             BattleParticipant participant1 = event.participant1[0];
             BattleParticipant participant2 = event.participant2[0];
             if (participant1 instanceof WildPixelmonParticipant || participant2 instanceof WildPixelmonParticipant) {
-                if (participant1 instanceof WildPixelmonParticipant
-                        && participant2 instanceof WildPixelmonParticipant) {
+                if (participant1 instanceof WildPixelmonParticipant && participant2 instanceof WildPixelmonParticipant) {
                     return;
                 }
 
@@ -166,6 +165,7 @@ public class LegendControlListener {
             if (!hasMap(player, event.getPokemon())) {
                 event.setCanceled(true);
                 ItemPokeball pokeball = event.pokeball.getType().getItem();
+                legendMap.remove(event.getPokemon());
                 player.inventory.addItemStackToInventory(new ItemStack(pokeball, 1));
             }
         }

@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 @Mod(
         modid = "legendcontrol",
         name = "LegendControl",
-        version = "1.2.6",
+        version = "1.3.0",
         acceptableRemoteVersions = "*"
 )
 public class LegendControl {
@@ -41,12 +41,12 @@ public class LegendControl {
     public void onPreInitialization(FMLPreInitializationEvent event) {
         instance = this;
 
-        MinecraftForge.EVENT_BUS.register(new LegendControlListener());
-        Pixelmon.EVENT_BUS.register(new LegendControlListener());
+        this.loadConfig();
 
         PixelmonConfig.legendarySpawnChance = 100;
 
-        this.loadConfig();
+        MinecraftForge.EVENT_BUS.register(new LegendControlListener());
+        Pixelmon.EVENT_BUS.register(new LegendControlListener());
     }
 
     public void loadConfig() {

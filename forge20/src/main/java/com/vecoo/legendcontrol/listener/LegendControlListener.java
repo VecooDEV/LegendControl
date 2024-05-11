@@ -58,7 +58,7 @@ public class LegendControlListener {
         ServerPlayer player = (ServerPlayer) event.action.spawnLocation.cause;
         PixelmonEntity pokemon = event.action.getOrCreateEntity();
 
-        if (ThreadLocalRandom.current().nextInt(100) > ServerFactory.getLegendaryChance() && config.isNewLegendarySpawn()) {
+        if (ThreadLocalRandom.current().nextDouble(100) > ServerFactory.getLegendaryChance() && config.isNewLegendarySpawn()) {
             ServerFactory.addLegendaryChance(config.getStepSpawnChance());
             event.setCanceled(true);
             return;
@@ -97,8 +97,10 @@ public class LegendControlListener {
         if (num > 0 && config.isLegendaryDefender()) {
             Task.builder()
                     .execute(() -> {
-                        Utils.broadcast(LegendControl.getInstance().getLocale().getMessages().getProtection()
-                                .replace("%pokemon%", pokemon.getSpecies().getName()), LegendControl.getInstance().getServer());
+                        if (pokemon.isAlive() && legendMap.containsKey(pokemon)) {
+                            Utils.broadcast(LegendControl.getInstance().getLocale().getMessages().getProtection()
+                                    .replace("%pokemon%", pokemon.getSpecies().getName()), LegendControl.getInstance().getServer());
+                        }
                         legendMap.remove(pokemon);
                     })
                     .delay(20L * num)
@@ -158,6 +160,7 @@ public class LegendControlListener {
             if (!hasMap(player, event.getPokemon())) {
                 ItemStack pokeball = event.getPokeBall().getBallType().getBallItem();
                 player.getInventory().add(pokeball);
+                legendMap.remove(event.getPokemon());
                 event.setCanceled(true);
             }
         }

@@ -2,7 +2,6 @@ package com.vecoo.legendcontrol.commands.lc;
 
 import com.envyful.api.command.annotate.Child;
 import com.envyful.api.command.annotate.Command;
-import com.envyful.api.command.annotate.Permissible;
 import com.envyful.api.command.annotate.executor.Argument;
 import com.envyful.api.command.annotate.executor.CommandProcessor;
 import com.envyful.api.command.annotate.executor.Sender;
@@ -13,24 +12,25 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.TextComponentString;
 
 @Command(
-        value = "set",
-        description = "§7/lc set <chance>"
+        value = "remove",
+        description = "§7/lc remove <chance>"
 )
 @Child
-public class SetCommand {
+public class RemoveCommand {
 
     @CommandProcessor
     public void onCommand(@Sender ICommandSender player,
                           @Argument double chance, String[] args) {
-        if (chance >= 0 && chance <= 100) {
-            ServerFactory.setLegendaryChance(chance);
-
-            player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
-                    LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
-                            .replace("%chance%", chance + "%"))));
-        } else {
+        if (chance >= 100 || ServerFactory.getLegendaryChance() - chance < 0) {
             player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
                     LegendControl.getInstance().getLocale().getMessages().getErrorChance())));
+            return;
         }
+
+        ServerFactory.removeLegendaryChance(chance);
+
+        player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
+                LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
+                        .replace("%chance%", ServerFactory.getLegendaryChance() + "%"))));
     }
 }

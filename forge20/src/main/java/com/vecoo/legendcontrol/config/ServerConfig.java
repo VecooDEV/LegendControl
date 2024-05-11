@@ -16,9 +16,9 @@ public class ServerConfig extends AbstractYamlConfig {
 
     private int protectedTime = 300;
 
-    private int baseChance = 10;
+    private double baseChance = 10.0;
 
-    private int stepSpawnChance = 5;
+    private double stepSpawnChance = 5.0;
 
     private int maxPlayersIP = 3;
 
@@ -45,12 +45,12 @@ public class ServerConfig extends AbstractYamlConfig {
         return this.protectedTime;
     }
 
-    public int getBaseChance() {
+    public double getBaseChance() {
         return this.baseChance;
     }
 
-    public int getStepSpawnChance() {
-        return stepSpawnChance;
+    public double getStepSpawnChance() {
+        return this.stepSpawnChance;
     }
 
     public int getMaxPlayersIP() {
@@ -58,15 +58,15 @@ public class ServerConfig extends AbstractYamlConfig {
     }
 
     public boolean isNotifyLegendarySpawn() {
-        return notifyLegendarySpawn;
+        return this.notifyLegendarySpawn;
     }
 
     public boolean isNewLegendarySpawn() {
-        return newLegendarySpawn;
+        return this.newLegendarySpawn;
     }
 
     public boolean isLegendaryDefender() {
-        return legendaryDefender;
+        return this.legendaryDefender;
     }
 
     public boolean isLegendaryRepeat() {

@@ -34,11 +34,10 @@ public class LegendControl {
     public LegendControl() {
         instance = this;
 
-        MinecraftForge.EVENT_BUS.register(new LegendControlListener());
-        Pixelmon.EVENT_BUS.register(new LegendControlListener());
-
         this.loadConfig();
 
+        MinecraftForge.EVENT_BUS.register(new LegendControlListener());
+        Pixelmon.EVENT_BUS.register(new LegendControlListener());
         MinecraftForge.EVENT_BUS.register(this);
     }
 

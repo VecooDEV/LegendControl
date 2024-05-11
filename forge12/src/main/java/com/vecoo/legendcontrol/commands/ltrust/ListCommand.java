@@ -19,7 +19,6 @@ import java.util.UUID;
         value = "list",
         description = "§7/ltrust list"
 )
-@Permissible("legendcontrol.ltrust.list")
 @Child
 public class ListCommand {
 

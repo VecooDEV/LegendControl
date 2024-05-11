@@ -22,7 +22,6 @@ import java.util.UUID;
         value = "remove",
         description = "§7/ltrust remove <player>"
 )
-@Permissible("legendcontrol.ltrust.remove")
 @Child
 public class RemoveCommand {
 
@@ -32,6 +31,12 @@ public class RemoveCommand {
         if (Utils.hasUUID(target)) {
             UUID targetUUID = Utils.getUUID(target);
             List<UUID> players = PlayerFactory.getPlayers(player.getUniqueID());
+
+            if (players.isEmpty()) {
+                player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
+                        LegendControl.getInstance().getLocale().getMessages().getEmptyTrust())));
+                return;
+            }
 
             if (!players.contains(targetUUID)) {
                 player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',

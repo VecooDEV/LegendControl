@@ -20,23 +20,24 @@ public class CheckLegendsCommand {
             return 0;
         }
 
-        int ticks = PixelmonConfigProxy.getSpawning().getLegendarySpawnTicks();
-        if (ticks / 20 < 60) {
-            source.sendSuccess(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
-                    .replace("%chance%", ServerFactory.getLegendaryChance() + "%")
-                    .replace("%time1%", ticks / 20 + "")
-                    .replace("%time2%", ticks / 20 * 2 + LegendControl.getInstance().getLocale().getMessages().getSeconds())), false);
-        } else if (ticks / 20 / 60 < 60) {
-            source.sendSuccess(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
-                    .replace("%chance%", ServerFactory.getLegendaryChance() + "%")
-                    .replace("%time1%", ticks / 20 / 60 + "")
-                    .replace("%time2%", ticks / 20 / 60 * 2 + LegendControl.getInstance().getLocale().getMessages().getMinutes())), false);
+        int seconds = PixelmonConfigProxy.getSpawning().getLegendarySpawnTicks() / 20;
+        int minutes = seconds / 20;
+        int hours = minutes / 60;
+
+        if (seconds < 60) {
+            sendMessage(source, seconds, LegendControl.getInstance().getLocale().getMessages().getSeconds());
+        } else if (minutes < 60) {
+            sendMessage(source, minutes, LegendControl.getInstance().getLocale().getMessages().getMinutes());
         } else {
-            source.sendSuccess(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
-                    .replace("%chance%", ServerFactory.getLegendaryChance() + "%")
-                    .replace("%time1%", ticks / 20 / 60 / 60 + "")
-                    .replace("%time2%", ticks / 20 / 60 / 60 * 2 + LegendControl.getInstance().getLocale().getMessages().getHours())), false);
+            sendMessage(source, hours, LegendControl.getInstance().getLocale().getMessages().getHours());
         }
         return 1;
+    }
+
+    private static void sendMessage(CommandSource source, int time, String timeUnit) {
+        source.sendSuccess(Utils.formatMessage(LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
+                .replace("%chance%", ServerFactory.getLegendaryChance() + "%")
+                .replace("%time1%", String.valueOf(time))
+                .replace("%time2%", time * 2 + timeUnit)), false);
     }
 }

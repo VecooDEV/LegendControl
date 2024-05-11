@@ -14,7 +14,6 @@ import net.minecraft.util.text.TextComponentString;
         value = "reload",
         description = "Reloads the configs"
 )
-@Permissible("legendcontrol.lc.reload")
 @Child
 public class ReloadCommand {
 

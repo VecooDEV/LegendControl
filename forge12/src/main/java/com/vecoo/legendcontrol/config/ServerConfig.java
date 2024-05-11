@@ -15,9 +15,9 @@ public class ServerConfig extends AbstractYamlConfig {
 
     private int protectedTime = 300;
 
-    private int baseChance = 10;
+    private double baseChance = 10.0;
 
-    private int stepSpawnChance = 5;
+    private double stepSpawnChance = 5.0;
 
     private int maxPlayersIP = 3;
 
@@ -44,11 +44,11 @@ public class ServerConfig extends AbstractYamlConfig {
         return this.protectedTime;
     }
 
-    public int getBaseChance() {
+    public double getBaseChance() {
         return this.baseChance;
     }
 
-    public int getStepSpawnChance() {
+    public double getStepSpawnChance() {
         return this.stepSpawnChance;
     }
 

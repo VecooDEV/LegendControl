@@ -9,25 +9,19 @@ import java.util.concurrent.CompletableFuture;
 
 public class ServerProvider {
     private String filePath = "/config/server/LegendControl/";
-    private HashMap<String, ServerStorage> map;
+    private ServerStorage serverStorage;
 
-    public ServerProvider() {
-        this.map = new HashMap<>();
-    }
-
-    public ServerStorage getServerStorage(String storage) {
-        if (this.map.get(storage) == null) {
+    public ServerStorage getServerStorage() {
+        if (this.serverStorage == null) {
             new ServerStorage(LegendControl.getInstance().getConfig().getBaseChance(), "-");
         }
-        return this.map.get(storage);
+        return this.serverStorage;
     }
 
     public void updateServerStorage(ServerStorage storage) {
-        for (String name : storage.getStorageName()) {
-            this.map.put(name, storage);
-            if (!write(storage)) {
-                getServerStorage(name);
-            }
+        this.serverStorage = storage;
+        if (!write(storage)) {
+            getServerStorage();
         }
     }
 
@@ -40,10 +34,7 @@ public class ServerProvider {
     public void init() {
         UtilGson.readFileAsync(filePath, "ServerStorage.json", el -> {
             Gson gson = UtilGson.newGson();
-            ServerStorage storage = gson.fromJson(el, ServerStorage.class);
-            for (String name : storage.getStorageName()) {
-                this.map.put(name, storage);
-            }
+            this.serverStorage = gson.fromJson(el, ServerStorage.class);
         });
     }
 }

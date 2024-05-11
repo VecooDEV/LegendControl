@@ -38,7 +38,7 @@ public class LocaleConfig extends AbstractYamlConfig {
         private String alreadyTrusted = "&c(!) This player is already on your trust list.";
         private String notPlayerTrust = "&c(!) This player is not yet on your trust list.";
         private String trustLimit = "&c(!) You have reached the maximum number of players on the trust list.";
-        private String errorChance = "&c(!) The total chance should not exceed 100.";
+        private String errorChance = "&c(!) The overall chance should not be less than 0% or greater than 100%.";
         private String errorConfig = "&c(!) Set the chance of legendary Pokemon to 100% in Pixelmon configs or disable the modified system of appearance of legendary Pokemon in the mod.";
         private String playerNotFound = "&c(!) Player %target% not found.";
 

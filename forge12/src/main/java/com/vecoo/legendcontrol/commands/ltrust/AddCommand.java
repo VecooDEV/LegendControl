@@ -22,7 +22,6 @@ import java.util.UUID;
         value = "add",
         description = "§7/ltrust add <player>"
 )
-@Permissible("legendcontrol.ltrust.add")
 @Child
 public class AddCommand {
 

@@ -16,13 +16,12 @@ import net.minecraft.util.text.TextComponentString;
         value = "add",
         description = "§7/lc add <chance>"
 )
-@Permissible("legendcontrol.lc.add")
 @Child
 public class AddCommand {
 
     @CommandProcessor
     public void onCommand(@Sender ICommandSender player,
-                          @Argument int chance, String[] args) {
+                          @Argument double chance, String[] args) {
         if (chance <= 0 || ServerFactory.getLegendaryChance() + chance > 100) {
             player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
                     LegendControl.getInstance().getLocale().getMessages().getErrorChance())));

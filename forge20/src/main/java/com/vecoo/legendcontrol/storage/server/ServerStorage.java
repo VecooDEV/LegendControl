@@ -1,28 +1,23 @@
 package com.vecoo.legendcontrol.storage.server;
 
-import com.google.common.collect.Lists;
 import com.vecoo.legendcontrol.LegendControl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServerStorage {
-    private int legendaryChance;
+    private double legendaryChance;
     private String lastLegend;
     private List<String> playersIP;
 
-    public ServerStorage(int legendaryChance, String latLegend) {
+    public ServerStorage(double legendaryChance, String lastLegend) {
         this.legendaryChance = legendaryChance;
-        this.lastLegend = latLegend;
+        this.lastLegend = lastLegend;
         this.playersIP = new ArrayList<>();
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
-    public List<String> getStorageName() {
-        return Lists.newArrayList("legendaryChance", "lastLegend", "playersIP");
-    }
-
-    public int getLegendaryChance() {
+    public double getLegendaryChance() {
         return this.legendaryChance;
     }
 
@@ -44,7 +39,7 @@ public class ServerStorage {
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
-    public void setLegendaryChance(int legendaryChance) {
+    public void setLegendaryChance(double legendaryChance) {
         this.legendaryChance = legendaryChance;
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
