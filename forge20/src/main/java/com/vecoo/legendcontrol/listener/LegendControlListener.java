@@ -58,13 +58,13 @@ public class LegendControlListener {
         ServerPlayer player = (ServerPlayer) event.action.spawnLocation.cause;
         PixelmonEntity pokemon = event.action.getOrCreateEntity();
 
-        if (ThreadLocalRandom.current().nextDouble(100) > ServerFactory.getLegendaryChance() && config.isNewLegendarySpawn()) {
+        if (ThreadLocalRandom.current().nextFloat(100F) > ServerFactory.getLegendaryChance() && config.isNewLegendarySpawn()) {
             ServerFactory.addLegendaryChance(config.getStepSpawnChance());
             event.setCanceled(true);
             return;
         }
 
-        if (isBlackListed(event.action.getOrCreateEntity().getPokemon())) {
+        if (isBlackListed(event.action.getOrCreateEntity().getPokemon()) && config.isBlacklistLegendary()) {
             ServerFactory.addLegendaryChance(config.getStepSpawnChance());
             event.setCanceled(true);
             return;

@@ -5,7 +5,7 @@ import com.vecoo.legendcontrol.LegendControl;
 import java.util.List;
 
 public class ServerFactory {
-    public static double getLegendaryChance() {
+    public static float getLegendaryChance() {
         return LegendControl.getInstance().getServerProvider().getServerStorage().getLegendaryChance();
     }
 
@@ -17,19 +17,19 @@ public class ServerFactory {
         return LegendControl.getInstance().getServerProvider().getServerStorage().getPlayersIP();
     }
 
-    public static void addLegendaryChance(double legendaryChance) {
-        setLegendaryChance(Math.min(getLegendaryChance() + legendaryChance, 100));
+    public static void addLegendaryChance(float legendaryChance) {
+        setLegendaryChance(Math.min(getLegendaryChance() + legendaryChance, 100F));
     }
 
-    public static void removeLegendaryChance(double legendaryChance) {
-        setLegendaryChance(Math.max(getLegendaryChance() - legendaryChance, 0));
+    public static void removeLegendaryChance(float legendaryChance) {
+        setLegendaryChance(Math.max(getLegendaryChance() - legendaryChance, 0F));
     }
 
     public static void replacePlayerIP(String playerIP) {
         LegendControl.getInstance().getServerProvider().getServerStorage().replacePlayerIP(playerIP);
     }
 
-    public static void setLegendaryChance(double legendaryChance) {
+    public static void setLegendaryChance(float legendaryChance) {
         LegendControl.getInstance().getServerProvider().getServerStorage().setLegendaryChance(legendaryChance);
     }
 

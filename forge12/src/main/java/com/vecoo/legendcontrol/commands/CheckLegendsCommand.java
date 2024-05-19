@@ -24,7 +24,7 @@ public class CheckLegendsCommand {
     @CommandProcessor
     public void onCommand(@Sender ICommandSender source, String[] args) {
         int seconds = PixelmonConfig.legendarySpawnTicks / 20;
-        int minutes = seconds / 20;
+        int minutes = seconds / 60;
         int hours = minutes / 60;
 
         if (seconds < 60) {
@@ -38,7 +38,8 @@ public class CheckLegendsCommand {
 
     private static void sendMessage(ICommandSender source, int time, String timeUnit) {
         source.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&', (LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
-                .replace("%chance%", ServerFactory.getLegendaryChance() + "%")
+                .replace("%chance%", String.format("%.4f",ServerFactory.getLegendaryChance())
+                        .replaceAll("\\.?0+$", "")+ "%")
                 .replace("%time1%", String.valueOf(time))
                 .replace("%time2%", time * 2 + timeUnit)))));
     }

@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 @Mod(
         modid = "legendcontrol",
         name = "LegendControl",
-        version = "1.3.0",
+        version = "1.3.1",
         acceptableRemoteVersions = "*"
 )
 public class LegendControl {

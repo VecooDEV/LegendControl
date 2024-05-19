@@ -15,9 +15,9 @@ public class ServerConfig extends AbstractYamlConfig {
 
     private int protectedTime = 300;
 
-    private double baseChance = 10.0;
+    private float baseChance = 10.0F;
 
-    private double stepSpawnChance = 5.0;
+    private float stepSpawnChance = 5.0F;
 
     private int maxPlayersIP = 3;
 
@@ -31,7 +31,9 @@ public class ServerConfig extends AbstractYamlConfig {
 
     private boolean repeatSpawnToPlayer = true;
 
-    private List<String> blacklistLegendary = Lists.newArrayList(
+    private boolean blacklistLegendary = false;
+
+    private List<String> blacklistLegendaryList = Lists.newArrayList(
             "regieleki", "regidrago");
 
     private transient List<PokemonSpec> blacklistLegendaryCache = null;
@@ -44,11 +46,11 @@ public class ServerConfig extends AbstractYamlConfig {
         return this.protectedTime;
     }
 
-    public double getBaseChance() {
+    public float getBaseChance() {
         return this.baseChance;
     }
 
-    public double getStepSpawnChance() {
+    public float getStepSpawnChance() {
         return this.stepSpawnChance;
     }
 
@@ -76,11 +78,15 @@ public class ServerConfig extends AbstractYamlConfig {
         return this.repeatSpawnToPlayer;
     }
 
+    public boolean isBlacklistLegendary() {
+        return this.blacklistLegendary;
+    }
+
     public List<PokemonSpec> getBlockedLegendary() {
         if (this.blacklistLegendaryCache == null) {
             List<PokemonSpec> blocked = Lists.newArrayList();
 
-            for (String blackList : this.blacklistLegendary) {
+            for (String blackList : this.blacklistLegendaryList) {
                 blocked.add(new PokemonSpec(blackList));
             }
             this.blacklistLegendaryCache = blocked;

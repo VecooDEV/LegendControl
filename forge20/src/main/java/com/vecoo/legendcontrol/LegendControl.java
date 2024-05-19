@@ -36,9 +36,9 @@ public class LegendControl {
 
         this.loadConfig();
 
+        MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new LegendControlListener());
         Pixelmon.EVENT_BUS.register(new LegendControlListener());
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public void loadConfig() {

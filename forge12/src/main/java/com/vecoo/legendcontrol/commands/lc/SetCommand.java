@@ -23,11 +23,12 @@ public class SetCommand {
     public void onCommand(@Sender ICommandSender player,
                           @Argument double chance, String[] args) {
         if (chance >= 0 && chance <= 100) {
-            ServerFactory.setLegendaryChance(chance);
+            ServerFactory.setLegendaryChance((float) chance);
 
             player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
                     LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
-                            .replace("%chance%", chance + "%"))));
+                            .replace("%chance%", String.format("%.4f",ServerFactory.getLegendaryChance())
+                                    .replaceAll("\\.?0+$", "")+ "%"))));
         } else {
             player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
                     LegendControl.getInstance().getLocale().getMessages().getErrorChance())));

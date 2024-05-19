@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerStorage {
-    private double legendaryChance;
+    private float legendaryChance;
     private String lastLegend;
     private List<String> playersIP;
 
-    public ServerStorage(double legendaryChance, String lastLegend) {
+    public ServerStorage(float legendaryChance, String lastLegend) {
         this.legendaryChance = legendaryChance;
         this.lastLegend = lastLegend;
         this.playersIP = new ArrayList<>();
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
-    public double getLegendaryChance() {
+    public float getLegendaryChance() {
         return this.legendaryChance;
     }
 
@@ -39,7 +39,7 @@ public class ServerStorage {
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
-    public void setLegendaryChance(double legendaryChance) {
+    public void setLegendaryChance(float legendaryChance) {
         this.legendaryChance = legendaryChance;
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }

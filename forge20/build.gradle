@@ -4,6 +4,7 @@ plugins {
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
 forgeVersion = "1.20.2"
 
 minecraft {
@@ -24,7 +25,7 @@ dependencies {
 shadowJar {
     configurations = [project.configurations.shadow]
     setArchiveClassifier('')
-    setArchiveBaseName("${rootProject.name}")
+    setArchiveBaseName("${rootProject.name}-forge")
 }
 
 jar.finalizedBy('shadowJar')

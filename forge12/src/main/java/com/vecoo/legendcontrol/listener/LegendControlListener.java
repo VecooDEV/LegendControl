@@ -14,7 +14,6 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.items.ItemPokeball;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.storage.player.PlayerFactory;
@@ -61,13 +60,13 @@ public class LegendControlListener {
         EntityPlayerMP player = (EntityPlayerMP) event.action.spawnLocation.cause;
         EntityPixelmon pokemon = event.action.getOrCreateEntity();
 
-        if (ThreadLocalRandom.current().nextDouble(100) > ServerFactory.getLegendaryChance() && config.isNewLegendarySpawn()) {
+        if (ThreadLocalRandom.current().nextFloat() * 100F > ServerFactory.getLegendaryChance() && config.isNewLegendarySpawn()) {
             ServerFactory.addLegendaryChance(config.getStepSpawnChance());
             event.setCanceled(true);
             return;
         }
 
-        if (isBlackListed(event.action.getOrCreateEntity().getPokemonData())) {
+        if (isBlackListed(event.action.getOrCreateEntity().getPokemonData()) && config.isBlacklistLegendary()) {
             ServerFactory.addLegendaryChance(config.getStepSpawnChance());
             event.setCanceled(true);
             return;
@@ -164,9 +163,8 @@ public class LegendControlListener {
 
             if (!hasMap(player, event.getPokemon())) {
                 event.setCanceled(true);
-                ItemPokeball pokeball = event.pokeball.getType().getItem();
                 legendMap.remove(event.getPokemon());
-                player.inventory.addItemStackToInventory(new ItemStack(pokeball, 1));
+                player.inventory.addItemStackToInventory(new ItemStack(event.pokeball.getType().getItem(), 1));
             }
         }
     }

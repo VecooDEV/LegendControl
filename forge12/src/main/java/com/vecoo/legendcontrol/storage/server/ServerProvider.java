@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 public class ServerProvider {
-    private String filePath = "/config/server/LegendControl/";
+    private String filePath = "/storage/LegendControl/server/";
     private ServerStorage serverStorage;
 
     public ServerStorage getServerStorage() {

@@ -4,7 +4,7 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="legendcontrol"
-version="1.3.0"
+version="1.3.1"
 displayName="LegendControl"
 logoFile ="logo.png"
 authors="Vecoo"
@@ -13,7 +13,7 @@ description="Sidemode for Pixelmon. Changing the spawn elements of legendary Pok
 [[dependencies.legendcontrol]]
 modId="forge"
 mandatory=true
-versionRange="[48.0,)"
+versionRange="[48.1,)"
 ordering="NONE"
 side="BOTH"
 

@@ -27,10 +27,11 @@ public class RemoveCommand {
             return;
         }
 
-        ServerFactory.removeLegendaryChance(chance);
+        ServerFactory.removeLegendaryChance((float) chance);
 
         player.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&',
                 LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
-                        .replace("%chance%", ServerFactory.getLegendaryChance() + "%"))));
+                        .replace("%chance%", String.format("%.4f",ServerFactory.getLegendaryChance())
+                                .replaceAll("\\.?0+$", "")+ "%"))));
     }
 }

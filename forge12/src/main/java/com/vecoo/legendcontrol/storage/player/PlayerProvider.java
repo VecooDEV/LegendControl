@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayerProvider {
-    private String filePath = "/config/players/LegendControl/";
+    private String filePath = "/storage/LegendControl/players/";
     private HashMap<UUID, PlayerStorage> map;
 
     public PlayerProvider() {
