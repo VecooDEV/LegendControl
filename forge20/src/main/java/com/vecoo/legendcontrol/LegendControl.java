@@ -7,7 +7,7 @@ import com.vecoo.legendcontrol.commands.LegendControlCommand;
 import com.vecoo.legendcontrol.commands.LegendaryTrustCommand;
 import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
-import com.vecoo.legendcontrol.listener.LegendControlListener;
+import com.vecoo.legendcontrol.listener.LegendaryListener;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
 import com.vecoo.legendcontrol.storage.player.PlayerProvider;
 import net.minecraft.server.MinecraftServer;
@@ -16,10 +16,13 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
     public static final String MOD_ID = "legendcontrol";
+    private static final Logger LOGGER = LogManager.getLogger("LegendControl");
 
     private static LegendControl instance;
 
@@ -37,8 +40,8 @@ public class LegendControl {
         this.loadConfig();
 
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(new LegendControlListener());
-        Pixelmon.EVENT_BUS.register(new LegendControlListener());
+        MinecraftForge.EVENT_BUS.register(new LegendaryListener());
+        Pixelmon.EVENT_BUS.register(new LegendaryListener());
     }
 
     public void loadConfig() {
@@ -50,7 +53,7 @@ public class LegendControl {
             this.serverProvider = new ServerProvider();
             this.serverProvider.init();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error load config.");
         }
     }
 
@@ -71,7 +74,7 @@ public class LegendControl {
     }
 
     public MinecraftServer getServer() {
-        return this.server;
+        return instance.server;
     }
 
     public ServerConfig getConfig() {
@@ -79,14 +82,14 @@ public class LegendControl {
     }
 
     public LocaleConfig getLocale() {
-        return this.locale;
+        return instance.locale;
     }
 
     public ServerProvider getServerProvider() {
-        return this.serverProvider;
+        return instance.serverProvider;
     }
 
     public PlayerProvider getPlayerProvider() {
-        return this.playerProvider;
+        return instance.playerProvider;
     }
 }

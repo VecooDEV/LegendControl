@@ -2,7 +2,9 @@ package com.vecoo.legendcontrol.storage.server;
 
 import com.vecoo.legendcontrol.LegendControl;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class ServerFactory {
     public static float getLegendaryChance() {
@@ -13,8 +15,16 @@ public class ServerFactory {
         return LegendControl.getInstance().getServerProvider().getServerStorage().getLastLegend();
     }
 
-    public static List<String> getPlayersIP() {
+    public static int getSecondsDoLegend() {
+        return LegendControl.getInstance().getServerProvider().getServerStorage().getSecondsDoLegend();
+    }
+
+    public static LinkedHashMap<UUID, String> getPlayersIP() {
         return LegendControl.getInstance().getServerProvider().getServerStorage().getPlayersIP();
+    }
+
+    public static List<UUID> getPlayersBlacklist() {
+        return LegendControl.getInstance().getServerProvider().getServerStorage().getPlayersBlacklist();
     }
 
     public static void addLegendaryChance(float legendaryChance) {
@@ -25,8 +35,16 @@ public class ServerFactory {
         setLegendaryChance(Math.max(getLegendaryChance() - legendaryChance, 0F));
     }
 
-    public static void replacePlayerIP(String playerIP) {
-        LegendControl.getInstance().getServerProvider().getServerStorage().replacePlayerIP(playerIP);
+    public static void addPlayerBlacklist(UUID playerUUID) {
+        LegendControl.getInstance().getServerProvider().getServerStorage().addPlayerBlacklist(playerUUID);
+    }
+
+    public static void removePlayerBlacklist(UUID playerUUID) {
+        LegendControl.getInstance().getServerProvider().getServerStorage().removePlayerBlacklist(playerUUID);
+    }
+
+    public static void replacePlayerIP(UUID playerUUID, String playerIP) {
+        LegendControl.getInstance().getServerProvider().getServerStorage().replacePlayerIP(playerUUID, playerIP);
     }
 
     public static void setLegendaryChance(float legendaryChance) {
@@ -35,5 +53,9 @@ public class ServerFactory {
 
     public static void setLastLegend(String lastLegend) {
         LegendControl.getInstance().getServerProvider().getServerStorage().setLastLegend(lastLegend);
+    }
+
+    public static void setSecondsDoLegend(int time, int secondMin, int secondsMax) {
+        LegendControl.getInstance().getServerProvider().getServerStorage().setSecondsDoLegend(time, secondMin, secondsMax);
     }
 }

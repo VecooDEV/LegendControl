@@ -25,10 +25,14 @@ public class LocaleConfig extends AbstractYamlConfig {
         private String removeTrust = "&e(!) Player %target% has been removed from your trust list.";
         private String removeAllTrust = "&e(!) All players have been removed from your trust list.";
         private String emptyTrust = "&e(!) Your trust list is empty.";
-        private String listTrustTitle = "&e&lTrust list (%amount%)";
-        private String listTrust = "&e- %player%";
+        private String listTrust = "&e&lTrust list (%amount%)";
         private String incorrectCause = "&e(!) At the moment, the legendary Pokemon is protected. Try to enter the battle after a while.";
         private String protection = "&e(!) Pokemon %pokemon%'s protection has expired.";
+
+        private String blacklist = "&e&lPlayers missing legend spawns";
+        private String addBlacklist = "&e(!) The player has been added from the legendary blacklist.";
+        private String removeBlacklist = "&e(!) The player has been removed from the legendary blacklist.";
+        private String removeAllBlacklist = "&e(!) The all players has been removed from the legendary blacklist.";
 
         private String spawnPlayerLegendary = "&e(!) A legendary Pokemon has appeared near you!";
         private String checkLegendary = "&e(!) Chance: %chance% (%time1%-%time2%)";
@@ -39,8 +43,9 @@ public class LocaleConfig extends AbstractYamlConfig {
         private String notPlayerTrust = "&c(!) This player is not yet on your trust list.";
         private String trustLimit = "&c(!) You have reached the maximum number of players on the trust list.";
         private String errorChance = "&c(!) The overall chance should not be less than 0% or greater than 100%.";
-        private String errorConfig = "&c(!) Set the chance of legendary Pokemon to 100% in Pixelmon configs or disable the modified system of appearance of legendary Pokemon in the mod.";
         private String playerNotFound = "&c(!) Player %target% not found.";
+
+        private String listPlayer = "&e- %player%";
 
         private String seconds = " seconds";
         private String minutes = " minutes";
@@ -81,16 +86,32 @@ public class LocaleConfig extends AbstractYamlConfig {
             return this.emptyTrust;
         }
 
-        public String getListTrustTitle() {
-            return this.listTrustTitle;
+        public String getListTrust() {
+            return this.listTrust;
         }
 
         public String getTrustLimit() {
             return this.trustLimit;
         }
 
-        public String getListTrust() {
-            return this.listTrust;
+        public String getListPlayer() {
+            return this.listPlayer;
+        }
+
+        public String getBlacklist() {
+            return this.blacklist;
+        }
+
+        public String getAddBlacklist() {
+            return this.addBlacklist;
+        }
+
+        public String getRemoveBlacklist() {
+            return this.removeBlacklist;
+        }
+
+        public String getRemoveAllBlacklist() {
+            return this.removeAllBlacklist;
         }
 
         public String getIncorrectCause() {
@@ -115,10 +136,6 @@ public class LocaleConfig extends AbstractYamlConfig {
 
         public String getErrorChance() {
             return this.errorChance;
-        }
-
-        public String getErrorConfig() {
-            return this.errorConfig;
         }
 
         public String getPlayerNotFound() {
