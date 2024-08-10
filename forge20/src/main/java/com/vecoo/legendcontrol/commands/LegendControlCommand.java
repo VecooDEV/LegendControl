@@ -4,18 +4,21 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.vecoo.extrasapi.chat.UtilChat;
+import com.vecoo.extrasapi.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.server.ServerFactory;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraftforge.common.UsernameCache;
 
 import java.util.List;
+import java.util.UUID;
 
 public class LegendControlCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         for (String command : List.of("legendcontrol", "lc")) {
             dispatcher.register(Commands.literal(command)
-                    .requires(p -> p.hasPermission(2))
+                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermissions().getPermissions().get("minecraft.command.legendcontrol")))
                     .then(Commands.literal("add")
                             .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
                                     .executes(e -> executeAdd(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
@@ -90,19 +93,84 @@ public class LegendControlCommand {
     }
 
     private static int executeBlacklist(CommandSourceStack source) {
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().));
+        List<UUID> playersBlacklist = ServerFactory.getPlayersBlacklist();
+
+        if (playersBlacklist.isEmpty()) {
+            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyBlacklist()));
+            return 0;
+        }
+
+        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getBlacklist()));
+
+        for (UUID uuid : playersBlacklist) {
+            String playerName = UsernameCache.getLastKnownUsername(uuid);
+            if (playerName != null) {
+                source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getListPlayer()
+                        .replace("%player%", playerName)));
+            }
+        }
+        return 1;
     }
 
     private static int executeBlacklistAdd(CommandSourceStack source, String target) {
+        if (!UtilPlayer.hasUUID(target)) {
+            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
+                    .replace("%target%", target)));
+            return 0;
+        }
 
+        UUID targetUUID = UtilPlayer.getUUID(target);
+        List<UUID> playersBlacklist = ServerFactory.getPlayersBlacklist();
+
+        if (playersBlacklist.contains(targetUUID)) {
+            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getAlreadyBlacklist()));
+            return 0;
+        }
+
+        ServerFactory.addPlayerBlacklist(targetUUID);
+
+        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getAddBlacklist()
+                .replace("%target%", target)));
+        return 1;
     }
 
     private static int executeBlacklistRemove(CommandSourceStack source, String target) {
+        if (!UtilPlayer.hasUUID(target)) {
+            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
+                    .replace("%target%", target)));
+            return 0;
+        }
 
+        UUID targetUUID = UtilPlayer.getUUID(target);
+        List<UUID> playersBlacklist = ServerFactory.getPlayersBlacklist();
+
+        if (playersBlacklist.isEmpty()) {
+            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyBlacklist()));
+            return 0;
+        }
+
+        if (!playersBlacklist.contains(targetUUID)) {
+            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getNotPlayerBlacklist()));
+            return 0;
+        }
+
+        ServerFactory.removePlayerBlacklist(targetUUID);
+
+        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveBlacklist()
+                .replace("%target%", target)));
+        return 1;
     }
 
     private static int executeBlacklistRemoveAll(CommandSourceStack source) {
+        if (ServerFactory.getPlayersBlacklist().isEmpty()) {
+            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()));
+            return 0;
+        }
 
+        ServerFactory.removePlayersBlacklist();
+
+        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveAllBlacklist()));
+        return 1;
     }
 
     private static int executeReload(CommandSourceStack source) {

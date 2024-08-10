@@ -3,7 +3,6 @@ package com.vecoo.legendcontrol.config;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.api.pokemon.PokemonSpecificationProxy;
-import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.config.api.data.ConfigPath;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.AbstractYamlConfig;
 import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
@@ -14,10 +13,10 @@ import java.util.List;
 @ConfigPath("config/LegendControl/config.yml")
 @ConfigSerializable
 public class ServerConfig extends AbstractYamlConfig {
-    @Comment("Maximum number of players in the trust list.")
+    @Comment("Maximum number of players in the trust list. Set to 0 to disable.")
     private int trustLimit = 15;
 
-    @Comment("The number of seconds before the protection of a legendary Pokemon is removed.")
+    @Comment("The number of seconds before the protection of a legendary Pokemon is removed. Set to 0 to disable")
     private int protectedTime = 300;
 
     @Comment("Base chance for legendary Pokemon.")
@@ -40,9 +39,6 @@ public class ServerConfig extends AbstractYamlConfig {
 
     @Comment("Notifying the player about the appearance of a legendary Pokemon (locally).")
     private boolean notifyLegendarySpawn = true;
-
-    @Comment("Will Legendary Pokemon's spawn protection be enabled?")
-    private boolean legendaryDefender = true;
 
     @Comment("Can the same legendary Pokemon be repeated?")
     private boolean legendaryRepeat = true;
@@ -90,10 +86,6 @@ public class ServerConfig extends AbstractYamlConfig {
 
     public boolean isNotifyLegendarySpawn() {
         return this.notifyLegendarySpawn;
-    }
-
-    public boolean isLegendaryDefender() {
-        return this.legendaryDefender;
     }
 
     public boolean isLegendaryRepeat() {

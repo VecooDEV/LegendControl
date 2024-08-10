@@ -18,7 +18,7 @@ public class LegendaryTrustCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         for (String command : List.of("legendarytrust", "ltrust")) {
             dispatcher.register(Commands.literal(command)
-                    .requires(p -> p.hasPermission(0))
+                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermissions().getPermissions().get("minecraft.command.legendarytrust")))
                     .then(Commands.literal("add")
                             .then(Commands.argument("player", StringArgumentType.string())
                                     .executes(e -> executeAdd(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))

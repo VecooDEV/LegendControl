@@ -1,6 +1,5 @@
 package com.vecoo.legendcontrol.storage.server;
 
-import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.vecoo.legendcontrol.LegendControl;
 
 import java.util.*;
@@ -8,14 +7,12 @@ import java.util.*;
 public class ServerStorage {
     private float legendaryChance;
     private String lastLegend;
-    private int secondsDoLegend;
     private List<UUID> playersBlacklist;
     private LinkedHashMap<UUID, String> playersIP;
 
-    public ServerStorage(float legendaryChance, String lastLegend, int spawnTicks) {
+    public ServerStorage(float legendaryChance, String lastLegend) {
         this.legendaryChance = legendaryChance;
         this.lastLegend = lastLegend;
-        this.secondsDoLegend = spawnTicks;
         this.playersIP = new LinkedHashMap<>();
         this.playersBlacklist = new ArrayList<>();
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
@@ -27,10 +24,6 @@ public class ServerStorage {
 
     public String getLastLegend() {
         return this.lastLegend;
-    }
-
-    public int getSecondsDoLegend() {
-        return this.secondsDoLegend;
     }
 
     public LinkedHashMap<UUID, String> getPlayersIP() {
@@ -51,17 +44,13 @@ public class ServerStorage {
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
-    public void setSecondsDoLegend(int time, int secondsMin, int secondsMax) {
-        this.secondsDoLegend = time + RandomHelper.getRandomNumberBetween(secondsMin, secondsMax);
-        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
-    }
-
     public void replacePlayerIP(UUID playerUUID, String playerIP) {
         if (this.playersIP.size() < LegendControl.getInstance().getConfig().getMaxPlayersIP()) {
             this.playersIP.put(playerUUID, playerIP);
         } else {
             Iterator<Map.Entry<UUID, String>> iterator = this.playersIP.entrySet().iterator();
             if (iterator.hasNext()) {
+                iterator.next();
                 iterator.remove();
             }
             this.playersIP.put(playerUUID, playerIP);
@@ -76,6 +65,11 @@ public class ServerStorage {
 
     public void removePlayerBlacklist(UUID playerUUID) {
         this.playersBlacklist.remove(playerUUID);
+        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+    }
+
+    public void removePlayersBlacklist() {
+        this.playersBlacklist.clear();
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 }

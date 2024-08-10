@@ -30,3 +30,10 @@ mandatory=true
 versionRange="[9.2,)"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.legendcontrol]]
+modId="extrasapi"
+mandatory=true
+versionRange="[1.0,)"
+ordering="NONE"
+side="BOTH"

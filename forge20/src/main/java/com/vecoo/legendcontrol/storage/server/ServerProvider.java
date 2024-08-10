@@ -1,19 +1,18 @@
 package com.vecoo.legendcontrol.storage.server;
 
 import com.google.gson.Gson;
-import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.vecoo.extrasapi.gson.UtilGson;
 import com.vecoo.legendcontrol.LegendControl;
 
 import java.util.concurrent.CompletableFuture;
 
 public class ServerProvider {
-    private String filePath = "/storage/LegendControl/server/";
+    private final String filePath = LegendControl.PATH + "/storage/LegendControl/server/";
     private ServerStorage serverStorage;
 
     public ServerStorage getServerStorage() {
         if (this.serverStorage == null) {
-            new ServerStorage(LegendControl.getInstance().getConfig().getBaseChance(), "-", PixelmonConfigProxy.getSpawningLegendary().getLegendarySpawnTicks());
+            new ServerStorage(LegendControl.getInstance().getConfig().getBaseChance(), "-");
         }
         return this.serverStorage;
     }

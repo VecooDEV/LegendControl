@@ -14,7 +14,6 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonPart
 import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extrasapi.chat.UtilChat;
-import com.vecoo.extrasapi.task.UtilTask;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.storage.player.PlayerFactory;
@@ -26,13 +25,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public class LegendaryListener {
     public static HashMap<PixelmonEntity, UUID> legendMap = new HashMap<>();
 
     private boolean hasMap(ServerPlayer player, PixelmonEntity pokemon) {
-        if (legendMap.containsKey(pokemon) && !player.getAbilities().instabuild) {
+        if (legendMap.containsKey(pokemon)) {
             UUID invokerUUID = legendMap.get(pokemon);
 
             if (!invokerUUID.equals(player.getUUID()) && !PlayerFactory.hasPlayerTrust(invokerUUID, player.getUUID())) {
@@ -78,28 +79,31 @@ public class LegendaryListener {
 
         ServerFactory.setLegendaryChance(config.getBaseChance());
         ServerFactory.setLastLegend(pokemon.getPokemonName());
-        ServerFactory.replacePlayerIP(player.getIpAddress());
+        ServerFactory.replacePlayerIP(player.getUUID(), player.getIpAddress());
+
+        UtilLegendarySpawn.countSpawn = 0;
 
         int num = config.getProtectedTime();
 
-        if (num > 0 && config.isLegendaryDefender()) {
-            UtilTask.builder()
-                    .execute(() -> {
-                        if (pokemon.isAlive() && legendMap.containsKey(pokemon)) {
-                            UtilChat.broadcast(LegendControl.getInstance().getLocale().getMessages().getProtection()
-                                    .replace("%pokemon%", pokemon.getSpecies().getName()));
-                        }
-                        legendMap.remove(pokemon);
-                    })
-                    .delay(20L * num)
-                    .interval(20L * num)
-                    .build();
+        if (num > 0) {
+            Timer timer = new Timer();
+
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (pokemon.isAlive() && legendMap.containsKey(pokemon)) {
+                        UtilChat.broadcast(LegendControl.getInstance().getLocale().getMessages().getProtection()
+                                .replace("%pokemon%", pokemon.getSpecies().getName()));
+                    }
+                    legendMap.remove(pokemon);
+                }
+            }, num * 1000L);
         }
     }
 
     @SubscribeEvent
     public void onBattleKey(KeyEvent event) {
-        if (event.key == EnumKeyPacketMode.ActionKeyEntity && !legendMap.isEmpty() && LegendControl.getInstance().getConfig().isLegendaryDefender()) {
+        if (event.key == EnumKeyPacketMode.ActionKeyEntity && !legendMap.isEmpty() && LegendControl.getInstance().getConfig().getProtectedTime() != 0) {
             for (Pokemon pokemon : StorageProxy.getStorageManager().getParty(event.player).join()) {
                 pokemon.ifEntityExists(entityPixelmon -> {
                     Entity target = entityPixelmon.getTarget();
@@ -115,7 +119,7 @@ public class LegendaryListener {
 
     @SubscribeEvent
     public void onStartBattle(BattleStartedEvent event) {
-        if (LegendControl.getInstance().getConfig().isLegendaryDefender()) {
+        if (LegendControl.getInstance().getConfig().getProtectedTime() > 0) {
             BattleParticipant participant1 = event.getTeamOne()[0];
             BattleParticipant participant2 = event.getTeamTwo()[0];
             if (participant1 instanceof WildPixelmonParticipant || participant2 instanceof WildPixelmonParticipant) {
@@ -142,7 +146,7 @@ public class LegendaryListener {
 
     @SubscribeEvent
     public void onCapture(CaptureEvent.StartCapture event) {
-        if (LegendControl.getInstance().getConfig().isLegendaryDefender()) {
+        if (LegendControl.getInstance().getConfig().getProtectedTime() > 0) {
             ServerPlayer player = event.getPlayer();
 
             if (!hasMap(player, event.getPokemon())) {

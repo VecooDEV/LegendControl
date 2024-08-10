@@ -6,6 +6,7 @@ import com.pixelmonmod.pixelmon.api.spawning.SpawnerCoordinator;
 import com.pixelmonmod.pixelmon.api.spawning.archetypes.spawners.TickingSpawner;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.spawning.LegendarySpawner;
+import com.vecoo.extrasapi.ExtrasAPI;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.server.ServerFactory;
 import com.vecoo.legendcontrol.util.Utils;
@@ -55,12 +56,13 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
     @Overwrite
     public void forcefullySpawn(@Nullable ServerPlayer onlyFocus) {
         ArrayList<ArrayList<ServerPlayer>> clusters = new ArrayList<>();
-        ArrayList<ServerPlayer> players = new ArrayList<>(LegendControl.getInstance().getServer().getPlayerList().getPlayers());
+        ArrayList<ServerPlayer> players = new ArrayList<>(ExtrasAPI.getInstance().getServer().getPlayerList().getPlayers());
         if (onlyFocus == null) {
             while (!players.isEmpty()) {
                 ArrayList<ServerPlayer> cluster = new ArrayList<>();
                 ServerPlayer focus = players.remove(0);
                 if (!PixelmonConfigProxy.getSpawning().isSpawningDisabledDimension(focus.level()) && !ServerFactory.getPlayersBlacklist().contains(focus.getUUID())) {
+                    Utils.updatePlayerIP(focus);
                     if (!ServerFactory.getPlayersIP().containsValue(focus.getIpAddress()) || LegendControl.getInstance().getConfig().getMaxPlayersIP() == 0) {
                         if (Utils.playerCountIP(focus) <= LegendControl.getInstance().getConfig().getLockPlayerIP() || LegendControl.getInstance().getConfig().getLockPlayerIP() == 0) {
                             cluster.add(focus);
@@ -88,19 +90,18 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
     public List<SpawnAction<? extends Entity>> getSpawns(int pass) {
         if (pass == 0) {
             this.possibleSpawns = null;
-            int numPlayers = LegendControl.getInstance().getServer().getPlayerList().getPlayerCount();
+            int numPlayers = ExtrasAPI.getInstance().getServer().getPlayerList().getPlayerCount();
             int baseSpawnTicks = this.firesChooseEvent ? PixelmonConfigProxy.getSpawningLegendary().getLegendarySpawnTicks() : PixelmonConfigProxy.getSpawningBoss().getBossSpawnTicks();
             int spawnTicks = (int) ((float) baseSpawnTicks / (1.0F + (float) (numPlayers - 1) * PixelmonConfigProxy.getSpawningLegendary().getSpawnTicksPlayerMultiplier()));
             this.spawnFrequency = 1200.0F / (RandomHelper.getRandomNumberBetween(0.6F, 1.4F) * (float) spawnTicks);
-            ServerFactory.setSecondsDoLegend(spawnTicks, );
+            Utils.timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
             if (this.firesChooseEvent && !RandomHelper.getRandomChance(LegendControl.getInstance().getServerProvider().getServerStorage().getLegendaryChance() / 100.0F) || !this.firesChooseEvent && !RandomHelper.getRandomChance(PixelmonConfigProxy.getSpawningBoss().getBossSpawnChance())) {
                 ServerFactory.addLegendaryChance(LegendControl.getInstance().getConfig().getStepSpawnChance());
                 return null;
             } else {
-                if (LegendControl.getInstance().getServer().getPlayerList().getPlayerCount() > 0) {
+                if (ExtrasAPI.getInstance().getServer().getPlayerList().getPlayerCount() > 0) {
                     this.forcefullySpawn(null);
                 }
-
                 return null;
             }
         } else {

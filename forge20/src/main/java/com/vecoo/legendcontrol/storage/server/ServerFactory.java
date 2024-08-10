@@ -15,10 +15,6 @@ public class ServerFactory {
         return LegendControl.getInstance().getServerProvider().getServerStorage().getLastLegend();
     }
 
-    public static int getSecondsDoLegend() {
-        return LegendControl.getInstance().getServerProvider().getServerStorage().getSecondsDoLegend();
-    }
-
     public static LinkedHashMap<UUID, String> getPlayersIP() {
         return LegendControl.getInstance().getServerProvider().getServerStorage().getPlayersIP();
     }
@@ -43,6 +39,10 @@ public class ServerFactory {
         LegendControl.getInstance().getServerProvider().getServerStorage().removePlayerBlacklist(playerUUID);
     }
 
+    public static void removePlayersBlacklist() {
+        LegendControl.getInstance().getServerProvider().getServerStorage().removePlayersBlacklist();
+    }
+
     public static void replacePlayerIP(UUID playerUUID, String playerIP) {
         LegendControl.getInstance().getServerProvider().getServerStorage().replacePlayerIP(playerUUID, playerIP);
     }
@@ -53,9 +53,5 @@ public class ServerFactory {
 
     public static void setLastLegend(String lastLegend) {
         LegendControl.getInstance().getServerProvider().getServerStorage().setLastLegend(lastLegend);
-    }
-
-    public static void setSecondsDoLegend(int time, int secondMin, int secondsMax) {
-        LegendControl.getInstance().getServerProvider().getServerStorage().setSecondsDoLegend(time, secondMin, secondsMax);
     }
 }

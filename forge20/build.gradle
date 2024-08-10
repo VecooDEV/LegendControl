@@ -32,7 +32,7 @@ dependencies {
 
     implementation fg.deobf('pixelmon:Pixelmon-1.20.2-9.2.8-server:9.2.8')
 
-    shadow fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 mixin {
@@ -42,8 +42,8 @@ mixin {
 
 shadowJar {
     configurations = [project.configurations.shadow]
-    setArchiveClassifier('')
     setArchiveBaseName("${rootProject.name}-forge")
+    setArchiveClassifier('')
 }
 
 jar.finalizedBy('shadowJar')
