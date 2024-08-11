@@ -7,30 +7,35 @@ import java.util.List;
 import java.util.UUID;
 
 public class PlayerStorage {
-    private UUID playerUUID;
-    private List<UUID> playersUUID;
+    private UUID uuid;
+    private List<UUID> playersTrust;
 
     public PlayerStorage(UUID playerUUID) {
-        this.playerUUID = playerUUID;
-        this.playersUUID = new ArrayList<>();
+        this.uuid = playerUUID;
+        this.playersTrust = new ArrayList<>();
         LegendControl.getInstance().getPlayerProvider().updatePlayerStorage(this);
     }
 
-    public UUID getPlayerUUID() {
-        return this.playerUUID;
+    public UUID getUuid() {
+        return this.uuid;
     }
 
-    public List<UUID> getPlayersUUID() {
-        return this.playersUUID;
+    public List<UUID> getPlayersTrust() {
+        return this.playersTrust;
     }
 
-    public void addPlayersUUID(UUID uuid) {
-        this.playersUUID.add(uuid);
+    public void addPlayerTrust(UUID playeruUID) {
+        this.playersTrust.add(playeruUID);
         LegendControl.getInstance().getPlayerProvider().updatePlayerStorage(this);
     }
 
-    public void removePlayersUUID(UUID uuid) {
-        this.playersUUID.remove(uuid);
+    public void removePlayerTrust(UUID playerUUID) {
+        this.playersTrust.remove(playerUUID);
+        LegendControl.getInstance().getPlayerProvider().updatePlayerStorage(this);
+    }
+
+    public void removePlayersTrust() {
+        this.playersTrust.clear();
         LegendControl.getInstance().getPlayerProvider().updatePlayerStorage(this);
     }
 }

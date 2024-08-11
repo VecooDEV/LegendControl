@@ -1,9 +1,11 @@
 plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(11)
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
 forgeVersion = "1.16.5"
 
 minecraft {
@@ -18,13 +20,20 @@ repositories {}
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
 
-    implementation 'pixelmon:Pixelmon-1.16.5-9.1.11-server:9.1.11'
+    implementation fg.deobf('pixelmon:Pixelmon-1.16.5-9.1.12-server:9.1.12')
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+mixin {
+    add sourceSets.main, 'legendcontrol.refmap.json'
+    config 'legendcontrol.mixins.json'
 }
 
 shadowJar {
     configurations = [project.configurations.shadow]
-    setArchiveClassifier('')
     setArchiveBaseName("${rootProject.name}-forge")
+    setArchiveClassifier('')
 }
 
 jar.finalizedBy('shadowJar')

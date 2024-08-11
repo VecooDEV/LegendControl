@@ -2,7 +2,6 @@ package com.vecoo.legendcontrol;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
-import com.vecoo.extrasapi.ExtrasAPI;
 import com.vecoo.legendcontrol.commands.CheckLegendsCommand;
 import com.vecoo.legendcontrol.commands.LegendControlCommand;
 import com.vecoo.legendcontrol.commands.LegendaryTrustCommand;
@@ -12,21 +11,16 @@ import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.listener.LegendaryListener;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
 import com.vecoo.legendcontrol.storage.player.PlayerProvider;
-import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.nio.file.Path;
-
 @Mod(LegendControl.MOD_ID)
-public class LegendControl extends ExtrasAPI {
+public class LegendControl {
     public static final String MOD_ID = "legendcontrol";
-    public static Path PATH;
     private static final Logger LOGGER = LogManager.getLogger("LegendControl");
 
     private static LegendControl instance;
@@ -41,22 +35,11 @@ public class LegendControl extends ExtrasAPI {
     public LegendControl() {
         instance = this;
 
+        this.loadConfig();
+
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new LegendaryListener());
         Pixelmon.EVENT_BUS.register(new LegendaryListener());
-    }
-
-    @SubscribeEvent
-    public void onServerStaring(ServerStartingEvent event) {
-        PATH = event.getServer().getWorldPath(LevelResource.ROOT);
-        this.loadConfig();
-    }
-
-    @SubscribeEvent
-    public void onRegisterCommands(RegisterCommandsEvent event) {
-        CheckLegendsCommand.register(event.getDispatcher());
-        LegendaryTrustCommand.register(event.getDispatcher());
-        LegendControlCommand.register(event.getDispatcher());
     }
 
     public void loadConfig() {
@@ -73,8 +56,19 @@ public class LegendControl extends ExtrasAPI {
         }
     }
 
+    @SubscribeEvent
+    public void onRegisterCommands(RegisterCommandsEvent event) {
+        CheckLegendsCommand.register(event.getDispatcher());
+        LegendaryTrustCommand.register(event.getDispatcher());
+        LegendControlCommand.register(event.getDispatcher());
+    }
+
     public static LegendControl getInstance() {
         return instance;
+    }
+
+    public static Logger getLogger() {
+        return LOGGER;
     }
 
     public ServerConfig getConfig() {

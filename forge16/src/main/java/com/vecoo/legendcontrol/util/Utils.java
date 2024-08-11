@@ -1,39 +1,31 @@
 package com.vecoo.legendcontrol.util;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.common.UsernameCache;
+import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
+import com.vecoo.extrasapi.ExtrasAPI;
+import com.vecoo.legendcontrol.LegendControl;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
-import java.util.Map;
+import java.util.HashMap;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class Utils {
-    private static Map<String, UUID> username = Utils.invertMap(UsernameCache.getMap());
+    public static int timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());;
 
-    public static <K, V> Map<V, K> invertMap(Map<K, V> map) {
-        return map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+    public static int playerCountIP(ServerPlayerEntity player) {
+        int ipCount = 0;
+
+        for (ServerPlayerEntity p : ExtrasAPI.getInstance().getServer().getPlayerList().getPlayers()) {
+            if (player.getIpAddress().equals(p.getIpAddress())) {
+                ipCount++;
+            }
+        }
+        return ipCount;
     }
 
-    public static UUID getUUID(String player) {
-        return username.get(player);
-    }
-
-    public static boolean hasUUID(String player) {
-        return username.containsKey(player);
-    }
-
-    public static String formattedString(String unformattedString) {
-        return unformattedString.replace("&", "\u00a7");
-    }
-
-    public static StringTextComponent formatMessage(String unformattedText) {
-        return new StringTextComponent(formattedString(unformattedText));
-    }
-
-    public static void broadcast(String message, MinecraftServer server) {
-        server.getPlayerList().broadcastMessage(formatMessage(message), ChatType.CHAT, Util.NIL_UUID);
+    public static void updatePlayerIP(ServerPlayerEntity player) {
+        HashMap<UUID, String> playersIP = LegendControl.getInstance().getServerProvider().getServerStorage().getPlayersIP();
+        if (playersIP.containsKey(player.getUUID())) {
+            playersIP.replace(player.getUUID(), player.getIpAddress());
+        }
     }
 }

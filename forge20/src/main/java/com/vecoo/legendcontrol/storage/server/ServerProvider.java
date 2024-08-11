@@ -7,7 +7,7 @@ import com.vecoo.legendcontrol.LegendControl;
 import java.util.concurrent.CompletableFuture;
 
 public class ServerProvider {
-    private final String filePath = LegendControl.PATH + "/storage/LegendControl/server/";
+    private String filePath = "/storage/LegendControl/server/";
     private ServerStorage serverStorage;
 
     public ServerStorage getServerStorage() {

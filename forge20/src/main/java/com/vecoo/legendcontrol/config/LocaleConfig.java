@@ -36,7 +36,7 @@ public class LocaleConfig extends AbstractYamlConfig {
         private String emptyBlacklist = "&e(!) Legendary blacklist is empty.";
 
         private String spawnPlayerLegendary = "&e(!) A legendary Pokemon has appeared near you!";
-        private String checkLegendary = "&e(!) Chance %chance%, legendary Pokemon will appear in ~%time%. ";
+        private String checkLegendary = "&e(!) Chance %chance%, legendary Pokemon will appear in ~%time%.";
         private String changeChanceLegendary = "&e(!) New chance: %chance%.";
 
         private String cantSelfTrust = "&c(!) You cannot add yourself to the trust list.";
