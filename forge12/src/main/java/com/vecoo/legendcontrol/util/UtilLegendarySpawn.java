@@ -1,13 +1,11 @@
 package com.vecoo.legendcontrol.util;
 
-import com.pixelmonmod.pixelmon.api.config.BetterSpawnerConfig;
 import com.pixelmonmod.pixelmon.api.spawning.AbstractSpawner;
 import com.pixelmonmod.pixelmon.api.spawning.SpawnerCoordinator;
+import com.pixelmonmod.pixelmon.config.BetterSpawnerConfig;
 import com.pixelmonmod.pixelmon.spawning.LegendarySpawner;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.vecoo.extralib.ExtraLib;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-
 
 import java.util.HashMap;
 
@@ -19,7 +17,7 @@ public class UtilLegendarySpawn {
             return;
         }
 
-        if (ExtraLib.getInstance().getServer().getPlayerList().getPlayerCount() == 0) {
+        if (ExtraLib.getInstance().getServer().getPlayerList().getCurrentPlayerCount() == 0) {
             return;
         }
 
@@ -41,7 +39,7 @@ public class UtilLegendarySpawn {
                 legendarySpawner.possibleSpawns.forEach((spawn) -> {
                     HashMap<String, Long> var10001 = BetterSpawnerConfig.intervalTimes;
                     spawn.spawnInfo.tags.forEach(var10001::remove);
-                    ServerLifecycleHooks.getCurrentServer().execute(() -> {
+                    ExtrasAPI.getInstance().getServer().addScheduledTask(() -> {
                         spawn.doSpawn(legendarySpawner);
                     });
                 });

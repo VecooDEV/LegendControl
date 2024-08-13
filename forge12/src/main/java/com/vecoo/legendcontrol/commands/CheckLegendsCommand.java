@@ -1,46 +1,25 @@
 package com.vecoo.legendcontrol.commands;
 
-import com.envyful.api.command.annotate.Command;
-import com.envyful.api.command.annotate.Permissible;
-import com.envyful.api.command.annotate.executor.CommandProcessor;
-import com.envyful.api.command.annotate.executor.Sender;
-import com.envyful.api.forge.chat.UtilChatColour;
-import com.pixelmonmod.pixelmon.config.PixelmonConfig;
-import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.storage.server.ServerFactory;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.server.MinecraftServer;
 
-@Command(
-        value = "checklegends",
-        description = "CheckLegends main command",
-        aliases = {
-                "checkleg"
-        }
-)
-@Permissible("legendcontrol.checkleg")
-public class CheckLegendsCommand {
+public class CheckLegendsCommand extends CommandBase {
 
-    @CommandProcessor
-    public void onCommand(@Sender ICommandSender source, String[] args) {
-        int seconds = PixelmonConfig.legendarySpawnTicks / 20;
-        int minutes = seconds / 60;
-        int hours = minutes / 60;
-
-        if (seconds < 60) {
-            sendMessage(source, seconds, LegendControl.getInstance().getLocale().getMessages().getSeconds());
-        } else if (minutes < 60) {
-            sendMessage(source, minutes, LegendControl.getInstance().getLocale().getMessages().getMinutes());
-        } else {
-            sendMessage(source, hours, LegendControl.getInstance().getLocale().getMessages().getHours());
-        }
+    @Override
+    public String getName() {
+        return "checkkleg";
     }
 
-    private static void sendMessage(ICommandSender source, int time, String timeUnit) {
-        source.sendMessage(new TextComponentString(UtilChatColour.translateColourCodes('&', (LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
-                .replace("%chance%", String.format("%.4f",ServerFactory.getLegendaryChance())
-                        .replaceAll("\\.?0+$", "")+ "%")
-                .replace("%time1%", String.valueOf(time))
-                .replace("%time2%", time * 2 + timeUnit)))));
+
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return null;
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+
     }
 }

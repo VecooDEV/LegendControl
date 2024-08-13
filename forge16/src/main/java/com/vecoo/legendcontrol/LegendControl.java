@@ -38,7 +38,6 @@ public class LegendControl {
         this.loadConfig();
 
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(new LegendaryListener());
         Pixelmon.EVENT_BUS.register(new LegendaryListener());
     }
 
@@ -65,6 +64,10 @@ public class LegendControl {
 
     public static LegendControl getInstance() {
         return instance;
+    }
+
+    public static Logger getLogger() {
+        return LOGGER;
     }
 
     public ServerConfig getConfig() {

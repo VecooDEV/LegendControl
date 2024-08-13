@@ -1,7 +1,7 @@
 package com.vecoo.legendcontrol.storage.player;
 
 import com.google.gson.Gson;
-import com.vecoo.extrasapi.gson.UtilGson;
+import com.vecoo.extralib.gson.UtilGson;
 
 import java.io.File;
 import java.util.HashMap;

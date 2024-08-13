@@ -3,8 +3,8 @@ package com.vecoo.legendcontrol.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.vecoo.extrasapi.chat.UtilChat;
-import com.vecoo.extrasapi.player.UtilPlayer;
+import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.server.ServerFactory;
 import net.minecraft.commands.CommandSourceStack;
@@ -29,7 +29,6 @@ public class LegendControlCommand {
                             .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
                                     .executes(e -> executeSet(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
                     .then(Commands.literal("blacklist")
-                            .executes(e -> executeBlacklist(e.getSource()))
                             .then(Commands.literal("add")
                                     .then(Commands.argument("player", StringArgumentType.string())
                                             .executes(e -> executeBlacklistAdd(e.getSource(), StringArgumentType.getString(e, "player")))
@@ -49,7 +48,9 @@ public class LegendControlCommand {
                                                 return builder.buildFuture();
                                             }))
                                     .then(Commands.literal("all")
-                                            .executes(e -> executeBlacklistRemoveAll(e.getSource())))))
+                                            .executes(e -> executeBlacklistRemoveAll(e.getSource()))))
+                            .then(Commands.literal("list")
+                                    .executes(e -> executeBlacklist(e.getSource()))))
                     .then(Commands.literal("reload")
                             .executes(e -> executeReload(e.getSource()))));
         }

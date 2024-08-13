@@ -1,7 +1,7 @@
 package com.vecoo.legendcontrol.storage.player;
 
 import com.google.gson.Gson;
-import com.vecoo.legendcontrol.util.UtilGson;
+import com.vecoo.extralib.gson.UtilGson;
 
 import java.io.File;
 import java.util.HashMap;
@@ -24,15 +24,15 @@ public class PlayerProvider {
     }
 
     public void updatePlayerStorage(PlayerStorage player) {
-        this.map.put(player.getPlayerUUID(), player);
+        this.map.put(player.getUuid(), player);
         if (!write(player)) {
-            getPlayerStorage(player.getPlayerUUID());
+            getPlayerStorage(player.getUuid());
         }
     }
 
     private boolean write(PlayerStorage player) {
         Gson gson = UtilGson.newGson();
-        CompletableFuture<Boolean> future = UtilGson.writeFileAsync(filePath, player.getPlayerUUID() + ".json", gson.toJson(player));
+        CompletableFuture<Boolean> future = UtilGson.writeFileAsync(filePath, player.getUuid() + ".json", gson.toJson(player));
         return future.join();
     }
 
@@ -48,7 +48,7 @@ public class PlayerProvider {
             UtilGson.readFileAsync(filePath, file, el -> {
                 Gson gson = UtilGson.newGson();
                 PlayerStorage player = gson.fromJson(el, PlayerStorage.class);
-                this.map.put(player.getPlayerUUID(), player);
+                this.map.put(player.getUuid(), player);
             });
         }
     }

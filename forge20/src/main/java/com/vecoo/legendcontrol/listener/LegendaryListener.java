@@ -4,7 +4,6 @@ import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.KeyEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleStartedEvent;
-import com.pixelmonmod.pixelmon.api.events.spawning.LegendaryCheckSpawnsEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
@@ -13,7 +12,7 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import com.vecoo.extrasapi.chat.UtilChat;
+import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.storage.player.PlayerFactory;
@@ -21,13 +20,9 @@ import com.vecoo.legendcontrol.storage.server.ServerFactory;
 import com.vecoo.legendcontrol.util.UtilLegendarySpawn;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
 
 public class LegendaryListener {
     public static HashMap<PixelmonEntity, UUID> legendMap = new HashMap<>();
@@ -150,16 +145,10 @@ public class LegendaryListener {
             ServerPlayer player = event.getPlayer();
 
             if (!hasMap(player, event.getPokemon())) {
-                ItemStack pokeball = event.getPokeBall().getBallType().getBallItem();
-                player.getInventory().add(pokeball);
+                player.getInventory().add(event.getPokeBall().getBallType().getBallItem());
                 legendMap.remove(event.getPokemon());
                 event.setCanceled(true);
             }
         }
-    }
-
-    @SubscribeEvent
-    public void onCheckSpawns(LegendaryCheckSpawnsEvent event) {
-        event.shouldShowChance = false;
     }
 }

@@ -1,7 +1,7 @@
 package com.vecoo.legendcontrol.util;
 
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
-import com.vecoo.extrasapi.ExtrasAPI;
+import com.vecoo.extralib.ExtraLib;
 import com.vecoo.legendcontrol.LegendControl;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -14,7 +14,7 @@ public class Utils {
     public static int playerCountIP(ServerPlayer player) {
         int ipCount = 0;
 
-        for (ServerPlayer p : ExtrasAPI.getInstance().getServer().getPlayerList().getPlayers()) {
+        for (ServerPlayer p : ExtraLib.getInstance().getServer().getPlayerList().getPlayers()) {
             if (player.getIpAddress().equals(p.getIpAddress())) {
                 ipCount++;
             }

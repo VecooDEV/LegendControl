@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.api.spawning.AbstractSpawner;
 import com.pixelmonmod.pixelmon.spawning.LegendarySpawner;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
-import com.vecoo.extrasapi.chat.UtilChat;
+import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.server.ServerFactory;
 import com.vecoo.legendcontrol.util.Utils;

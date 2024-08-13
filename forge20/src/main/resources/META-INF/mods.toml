@@ -32,7 +32,7 @@ ordering="NONE"
 side="BOTH"
 
 [[dependencies.legendcontrol]]
-modId="extrasapi"
+modId="extralib"
 mandatory=true
 versionRange="[1.0,)"
 ordering="NONE"

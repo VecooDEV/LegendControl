@@ -1,10 +1,9 @@
 package com.vecoo.legendcontrol.storage.server;
 
 import com.google.gson.Gson;
+import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.util.UtilGson;
 
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 public class ServerProvider {

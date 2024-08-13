@@ -1,7 +1,7 @@
 package com.vecoo.legendcontrol.storage.server;
 
 import com.google.gson.Gson;
-import com.vecoo.extrasapi.gson.UtilGson;
+import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.legendcontrol.LegendControl;
 
 import java.util.concurrent.CompletableFuture;

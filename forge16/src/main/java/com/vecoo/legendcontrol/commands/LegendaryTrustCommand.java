@@ -2,8 +2,8 @@ package com.vecoo.legendcontrol.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.vecoo.extrasapi.chat.UtilChat;
-import com.vecoo.extrasapi.player.UtilPlayer;
+import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.player.PlayerFactory;
 import net.minecraft.command.CommandSource;

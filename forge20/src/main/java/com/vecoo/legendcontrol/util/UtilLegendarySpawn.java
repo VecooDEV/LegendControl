@@ -6,7 +6,7 @@ import com.pixelmonmod.pixelmon.api.spawning.AbstractSpawner;
 import com.pixelmonmod.pixelmon.api.spawning.SpawnerCoordinator;
 import com.pixelmonmod.pixelmon.spawning.LegendarySpawner;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
-import com.vecoo.extrasapi.ExtrasAPI;
+import com.vecoo.extralib.ExtraLib;
 
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class UtilLegendarySpawn {
             return;
         }
 
-        if (ExtrasAPI.getInstance().getServer().getPlayerList().getPlayerCount() == 0) {
+        if (ExtraLib.getInstance().getServer().getPlayerList().getPlayerCount() == 0) {
             return;
         }
 
@@ -44,7 +44,7 @@ public class UtilLegendarySpawn {
                     SpawningGeneralConfig var10001 = PixelmonConfigProxy.getSpawning();
                     Objects.requireNonNull(var10001);
                     var10000.forEach(var10001::removeIntervalTime);
-                    ExtrasAPI.getInstance().getServer().execute(() -> {
+                    ExtraLib.getInstance().getServer().execute(() -> {
                         spawn.doSpawn(legendarySpawner);
                     });
                 });
