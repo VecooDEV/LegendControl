@@ -16,7 +16,7 @@ Sidemode for [Pixelmon](https://modrinth.com/mod/pixelmon). Changing the spawn e
 ## Commands & Permissions
 You can read more on the [wiki](https://github.com/VecooDEV/LegendControl/wiki/Commands-&-Permissions) page.
 
-## FAQ:
+## FAQ
 **Q: Do I need to install this on both server and client?**  
 A: Only server.
 
