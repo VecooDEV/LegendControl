@@ -15,9 +15,9 @@ import java.util.List;
 
 public class CheckLegendsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        for (String command : List.of("checklegendary", "checkleg")) {
+        for (String command : List.of("checklegends", "checkleg")) {
             dispatcher.register(Commands.literal(command)
-                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermissions().getPermissions().get("minecraft.command.checklegendary")))
+                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermissions().getPermissions().get("minecraft.command.checklegends")))
                     .executes(e -> execute(e.getSource())));
         }
     }

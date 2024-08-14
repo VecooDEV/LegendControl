@@ -2,7 +2,6 @@ package com.vecoo.legendcontrol.config;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.legendcontrol.LegendControl;
 
@@ -10,41 +9,21 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ServerConfig {
-    private int trustLimit;
-    private int protectedTime;
-    private float baseChance;
-    private float stepSpawnChance;
-    private int maxPlayersIP;
-    private int lockPlayerIP;
-    private int randomTimeSpawnMin;
-    private int randomTimeSpawnMax;
-    private boolean notifyLegendarySpawn;
-    private boolean legendaryRepeat;
-    private boolean blacklistLegendary;
-    private boolean blacklistWorld;
-    private List<String> blacklistWorldList;
-    private transient List<String> blacklistWorldCache;
-    private List<String> blacklistLegendaryList;
-    private transient List<PokemonSpec> blacklistLegendaryCache;
-
-    public ServerConfig() {
-        this.trustLimit = 15;
-        this.protectedTime = 300;
-        this.baseChance = 10.0F;
-        this.stepSpawnChance = 5.0F;
-        this.maxPlayersIP = 3;
-        this.lockPlayerIP = 5;
-        this.randomTimeSpawnMin = 300;
-        this.randomTimeSpawnMax = 600;
-        this.notifyLegendarySpawn = true;
-        this.legendaryRepeat = true;
-        this.blacklistLegendary = false;
-        this.blacklistWorld = false;
-        this.blacklistWorldList = Lists.newArrayList("nether", "end");
-        this.blacklistWorldCache = null;
-        this.blacklistLegendaryList = Lists.newArrayList("regieleki", "regidrago");
-        this.blacklistLegendaryCache = null;
-    }
+    private int trustLimit = 15;
+    private int protectedTime = 300;
+    private float baseChance = 10.0F;
+    private float stepSpawnChance = 5.0F;
+    private int maxPlayersIP = 0;
+    private int lockPlayerIP = 0;
+    private int randomTimeSpawnMin = 300;
+    private int randomTimeSpawnMax = 600;
+    private boolean notifyLegendarySpawn = true;
+    private boolean legendaryRepeat = true;
+    private boolean legendaryParticle = true;
+    private boolean blacklistLegendary = false;
+    private boolean blacklistWorld = false;
+    private List<String> blacklistLegendaryList = Lists.newArrayList("Regieleki", "Regidrago");
+    private List<Integer> blacklistWorldList = Lists.newArrayList(-1, 1);
 
     public int getTrustLimit() {
         return this.trustLimit;
@@ -86,6 +65,10 @@ public class ServerConfig {
         return this.legendaryRepeat;
     }
 
+    public boolean isLegendaryParticle() {
+        return this.legendaryParticle;
+    }
+
     public boolean isBlacklistLegendary() {
         return this.blacklistLegendary;
     }
@@ -94,19 +77,11 @@ public class ServerConfig {
         return this.blacklistWorld;
     }
 
-    public List<PokemonSpec> getBlockedLegendary() {
-        if (this.blacklistLegendaryCache == null) {
-            List<PokemonSpec> blocked = Lists.newArrayList();
-
-            for (String blackList : this.blacklistLegendaryList) {
-                blocked.add(new PokemonSpec(blackList));
-            }
-            this.blacklistLegendaryCache = blocked;
-        }
-        return this.blacklistLegendaryCache;
+    public List<String> getBlockedLegendary() {
+       return this.blacklistLegendaryList;
     }
 
-    public List<String> getBlockedWorld() {
+    public List<Integer> getBlockedWorld() {
         return this.blacklistWorldList;
     }
 
@@ -132,10 +107,11 @@ public class ServerConfig {
                 this.randomTimeSpawnMax = config.getRandomTimeSpawnMax();
                 this.notifyLegendarySpawn = config.isNotifyLegendarySpawn();
                 this.legendaryRepeat = config.isLegendaryRepeat();
+                this.legendaryParticle = config.isLegendaryParticle();
                 this.blacklistLegendary = config.isBlacklistLegendary();
                 this.blacklistWorld = config.isBlacklistWorld();
                 this.blacklistWorldList = config.getBlockedWorld();
-                this.blacklistLegendaryCache = config.getBlockedLegendary();
+                this.blacklistLegendaryList = config.getBlockedLegendary();
             });
             if (!future.join()) {
                 write();

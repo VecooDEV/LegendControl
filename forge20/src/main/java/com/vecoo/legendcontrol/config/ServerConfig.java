@@ -26,10 +26,10 @@ public class ServerConfig extends AbstractYamlConfig {
     private float stepSpawnChance = 5.0F;
 
     @Comment("The number of player IPs stored for the non-re-appearance of the legendary Pokemon. Set to 0 to remove the limitation.")
-    private int maxPlayersIP = 3;
+    private int maxPlayersIP = 0;
 
     @Comment("Maximum number of one IP player on the server. Set to 0 to disable.")
-    private int lockPlayerIP = 5;
+    private int lockPlayerIP = 0;
 
     @Comment("The minimum number of seconds added to display the team time, it only changes the time visually.")
     private int randomTimeSpawnMin = 300;
@@ -43,14 +43,15 @@ public class ServerConfig extends AbstractYamlConfig {
     @Comment("Can the same legendary Pokemon be repeated?")
     private boolean legendaryRepeat = true;
 
+    @Comment("Will legendary Pokemon have particles?")
+    private boolean legendaryParticle = true;
+
     @Comment("Will the blacklist of legendary Pokemon work?")
     private boolean blacklistLegendary = false;
 
     @Comment("List of Legendary Pokemon that cannot appear.")
     private List<String> blacklistLegendaryList = Lists.newArrayList(
-            "regieleki", "regidrago");
-
-    private transient List<PokemonSpecification> blacklistLegendaryCache = null;
+            "Regieleki", "Regidrago");
 
     public int getTrustLimit() {
         return this.trustLimit;
@@ -92,19 +93,15 @@ public class ServerConfig extends AbstractYamlConfig {
         return this.legendaryRepeat;
     }
 
+    public boolean isLegendaryParticle() {
+        return this.legendaryParticle;
+    }
+
     public boolean isBlacklistLegendary() {
         return this.blacklistLegendary;
     }
 
-    public List<PokemonSpecification> getBlockedLegendary() {
-        if (this.blacklistLegendaryCache == null) {
-            List<PokemonSpecification> blocked = Lists.newArrayList();
-
-            for (String blackList : this.blacklistLegendaryList) {
-                blocked.add(PokemonSpecificationProxy.create(blackList).get());
-            }
-            this.blacklistLegendaryCache = blocked;
-        }
-        return this.blacklistLegendaryCache;
+    public List<String> getBlockedLegendary() {
+        return this.blacklistLegendaryList;
     }
 }

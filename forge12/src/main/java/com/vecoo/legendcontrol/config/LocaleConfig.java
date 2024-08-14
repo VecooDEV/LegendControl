@@ -7,71 +7,44 @@ import com.vecoo.legendcontrol.LegendControl;
 import java.util.concurrent.CompletableFuture;
 
 public class LocaleConfig {
-    private String reload;
-    private String addTrust;
-    private String removeTrust;
-    private String removeAllTrust;
-    private String emptyTrust;
-    private String listTrust;
-    private String incorrectCause;
-    private String protection;
-    private String blacklist;
-    private String addBlacklist;
-    private String removeBlacklist;
-    private String removeAllBlacklist;
-    private String emptyBlacklist;
-    private String spawnPlayerLegendary;
-    private String checkLegendary;
-    private String changeChanceLegendary;
-    private String cantSelfTrust;
-    private String alreadyTrusted;
-    private String notPlayerTrust;
-    private String notPlayerBlacklist;
-    private String alreadyBlacklist;
-    private String trustLimit;
-    private String errorChance;
-    private String playerNotFound;
-    private String listPlayer;
-    private String seconds;
-    private String minutes;
-    private String hours;
+    private String reload = "\u00A7e(!) Configs have been reloaded.";
 
-    public LocaleConfig() {
-        this.reload = "\u00A7e(!) Configs have been reloaded.";
+    private String addTrust = "\u00A7e(!) Player %target% has been successfully added to your trust list.";
+    private String removeTrust = "\u00A7e(!) Player %target% has been removed from your trust list.";
+    private String removeAllTrust = "\u00A7e(!) All players have been removed from your trust list.";
+    private String emptyTrust = "\u00A7e(!) Your trust list is empty.";
+    private String listTrust = "&\u00A7e&lTrust list (%amount%)";
+    private String incorrectCause = "\u00A7e(!) At the moment, the legendary Pokemon is protected. Try to enter the battle after a while.";
+    private String protection = "\u00A7e(!) Pokemon %pokemon%'s protection has expired.";
 
-        this.addTrust = "\u00A7e(!) Player %target% has been successfully added to your trust list.";
-        this.removeTrust = "\u00A7e(!) Player %target% has been removed from your trust list.";
-        this.removeAllTrust = "\u00A7e(!) All players have been removed from your trust list.";
-        this.emptyTrust = "\u00A7e(!) Your trust list is empty.";
-        this.listTrust = "&\u00A7e&lTrust list (%amount%)";
-        this.incorrectCause = "\u00A7e(!) At the moment, the legendary Pokemon is protected. Try to enter the battle after a while.";
-        this.protection = "\u00A7e(!) Pokemon %pokemon%'s protection has expired.";
+    private String blacklist = "\u00A7e\u00A7lPlayers missing legend spawns";
+    private String addBlacklist = "\u00A7e(!) Player %target% has been added to the legendary blacklist.";
+    private String removeBlacklist = "\u00A7e(!) Player %target% has been removed from the legendary blacklist.";
+    private String removeAllBlacklist = "\u00A7e(!) All players have been removed from the legendary blacklist.";
+    private String emptyBlacklist = "\u00A7e(!) Legendary blacklist is empty.";
 
-        this.blacklist = "\u00A7e\u00A7lPlayers missing legend spawns";
-        this.addBlacklist = "\u00A7e(!) Player %target% has been added from the legendary blacklist.";
-        this.removeBlacklist = "\u00A7e(!) Player %target% has been removed from the legendary blacklist.";
-        this.removeAllBlacklist = "\u00A7e(!) The all players has been removed from the legendary blacklist.";
-        this.emptyBlacklist = "\u00A7e(!) Legendary blacklist is empty.";
+    private String spawnPlayerLegendary = "\u00A7e(!) A legendary Pokemon has appeared near you!";
+    private String checkLegendary = "\u00A7e(!) Chance %chance%, legendary Pokemon will appear in ~%time%.";
+    private String changeChanceLegendary = "\u00A7e(!) New chance: %chance%.";
 
-        this.spawnPlayerLegendary = "\u00A7e(!) A legendary Pokemon has appeared near you!";
-        this.checkLegendary = "\u00A7e(!) Chance %chance%, legendary Pokemon will appear in ~%time%.";
-        this.changeChanceLegendary = "\u00A7e(!) New chance: %chance%.";
+    private String legendaryTrustCommand = "\u00A7e/legendarytrust add/remove <player> | list";
+    private String legendControlCommand = "\u00A7e/legendcontrol add/remove/set <chance> | blacklist add/remove <player> | list | reload";
 
-        this.cantSelfTrust = "\u00A7c(!) You cannot add yourself to the trust list.";
-        this.alreadyTrusted = "\u00A7c(!) This player is already on your trust list.";
-        this.notPlayerTrust = "\u00A7c(!) This player is not yet on your trust list.";
-        this.notPlayerBlacklist = "\u00A7c(!) This player is not yet on legendary blacklist.";
-        this.alreadyBlacklist = "\u00A7c(!) This player is already on legendary blacklist.";
-        this.trustLimit = "\u00A7c(!) You have reached the maximum number of players on the trust list.";
-        this.errorChance = "\u00A7c(!) The overall chance should not be less than 0% or greater than 100%.";
-        this.playerNotFound = "\u00A7c(!) Player %target% not found.";
+    private String cantSelfTrust = "\u00A7c(!) You cannot add yourself to the trust list.";
+    private String alreadyTrusted = "\u00A7c(!) This player is already on your trust list.";
+    private String notPlayerTrust = "\u00A7c(!) This player is not yet on your trust list.";
+    private String notPlayerBlacklist = "\u00A7c(!) This player is not yet on legendary blacklist.";
+    private String alreadyBlacklist = "\u00A7c(!) This player is already on legendary blacklist.";
+    private String trustLimit = "\u00A7c(!) You have reached the maximum number of players on the trust list.";
+    private String errorChance = "\u00A7c(!) The overall chance should not be less than 0% or greater than 100%.";
+    private String playerNotFound = "\u00A7c(!) Player %target% not found.";
+    private String onlyPlayer = "\u00A7c(!) This command can only be executed by a player.";
 
-        this.listPlayer = "\u00A7e- %player%";
+    private String listPlayer = "\u00A7e- %player%";
 
-        this.seconds = " seconds";
-        this.minutes = " minutes";
-        this.hours = " hours";
-    }
+    private String seconds = " seconds";
+    private String minutes = " minutes";
+    private String hours = " hours";
 
     public String getReload() {
         return this.reload;
@@ -137,6 +110,14 @@ public class LocaleConfig {
         return this.emptyBlacklist;
     }
 
+    public String getLegendaryTrustCommand() {
+        return this.legendaryTrustCommand;
+    }
+
+    public String getLegendControlCommand() {
+        return this.legendControlCommand;
+    }
+
     public String getNotPlayerBlacklist() {
         return this.notPlayerBlacklist;
     }
@@ -171,6 +152,10 @@ public class LocaleConfig {
 
     public String getPlayerNotFound() {
         return this.playerNotFound;
+    }
+
+    public String getOnlyPlayer() {
+        return this.onlyPlayer;
     }
 
     public String getSeconds() {
@@ -212,6 +197,8 @@ public class LocaleConfig {
                 this.emptyBlacklist = config.getEmptyBlacklist();
                 this.spawnPlayerLegendary = config.getSpawnPlayerLegendary();
                 this.checkLegendary = config.getCheckLegendary();
+                this.legendaryTrustCommand = config.getLegendaryTrustCommand();
+                this.legendControlCommand = config.getLegendControlCommand();
                 this.changeChanceLegendary = config.getChangeChanceLegendary();
                 this.cantSelfTrust = config.getCantSelfTrust();
                 this.alreadyTrusted = config.getAlreadyTrusted();
@@ -221,6 +208,7 @@ public class LocaleConfig {
                 this.trustLimit = config.getTrustLimit();
                 this.errorChance = config.getErrorChance();
                 this.playerNotFound = config.getPlayerNotFound();
+                this.onlyPlayer = config.getOnlyPlayer();
                 this.listPlayer = config.getListPlayer();
                 this.seconds = config.getSeconds();
                 this.minutes = config.getMinutes();

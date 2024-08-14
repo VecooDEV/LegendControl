@@ -6,7 +6,6 @@ import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.KeyEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
@@ -17,6 +16,7 @@ import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.storage.player.PlayerFactory;
 import com.vecoo.legendcontrol.storage.server.ServerFactory;
+import com.vecoo.legendcontrol.task.ParticleTask;
 import com.vecoo.legendcontrol.util.UtilLegendarySpawn;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -43,22 +43,13 @@ public class LegendaryListener {
         return true;
     }
 
-    private static boolean isBlackListed(Pokemon pokemon) {
-        for (PokemonSpec blocked : LegendControl.getInstance().getConfig().getBlockedLegendary()) {
-            if (blocked != null && blocked.matches(pokemon)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @SubscribeEvent
     public void onLegendarySpawnControl(LegendarySpawnEvent.DoSpawn event) {
         ServerConfig config = LegendControl.getInstance().getConfig();
         EntityPlayerMP player = (EntityPlayerMP) event.action.spawnLocation.cause;
         EntityPixelmon pokemon = event.action.getOrCreateEntity();
 
-        if (isBlackListed(event.action.getOrCreateEntity().getPokemonData()) && config.isBlacklistLegendary()) {
+        if (LegendControl.getInstance().getConfig().getBlockedLegendary().contains(pokemon.getPokemonName()) && config.isBlacklistLegendary()) {
             UtilLegendarySpawn.spawn();
             event.setCanceled(true);
             return;
@@ -75,6 +66,8 @@ public class LegendaryListener {
         }
 
         legendMap.put(pokemon, player.getUniqueID());
+
+        ParticleTask.addPokemon(pokemon);
 
         ServerFactory.setLegendaryChance(config.getBaseChance());
         ServerFactory.setLastLegend(pokemon.getPokemonName());

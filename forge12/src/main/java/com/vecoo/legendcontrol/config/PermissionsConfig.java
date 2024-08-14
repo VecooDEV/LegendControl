@@ -14,7 +14,7 @@ public class PermissionsConfig {
         this.permissionCommands = new HashMap<>();
         this.permissionCommands.put("minecraft.command.legendcontrol", 2);
         this.permissionCommands.put("minecraft.command.legendarytrust", 0);
-        this.permissionCommands.put("minecraft.command.checklegendary", 0);
+        this.permissionCommands.put("minecraft.command.checklegends", 0);
     }
 
     public HashMap<String, Integer> getPermissionCommand() {

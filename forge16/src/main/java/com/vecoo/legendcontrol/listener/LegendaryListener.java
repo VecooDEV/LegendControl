@@ -1,6 +1,5 @@
 package com.vecoo.legendcontrol.listener;
 
-import com.pixelmonmod.api.pokemon.PokemonSpecification;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.KeyEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleStartedEvent;
@@ -17,6 +16,7 @@ import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.storage.player.PlayerFactory;
 import com.vecoo.legendcontrol.storage.server.ServerFactory;
+import com.vecoo.legendcontrol.task.ParticleTask;
 import com.vecoo.legendcontrol.util.UtilLegendarySpawn;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -43,22 +43,13 @@ public class LegendaryListener {
         return true;
     }
 
-    private static boolean isBlackListed(Pokemon pokemon) {
-        for (PokemonSpecification blocked : LegendControl.getInstance().getConfig().getBlockedLegendary()) {
-            if (blocked != null && blocked.matches(pokemon)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @SubscribeEvent
     public void onLegendarySpawnControl(LegendarySpawnEvent.DoSpawn event) {
         ServerConfig config = LegendControl.getInstance().getConfig();
         ServerPlayerEntity player = (ServerPlayerEntity) event.action.spawnLocation.cause;
         PixelmonEntity pokemon = event.action.getOrCreateEntity();
 
-        if (isBlackListed(event.action.getOrCreateEntity().getPokemon()) && config.isBlacklistLegendary()) {
+        if (LegendControl.getInstance().getConfig().getBlockedLegendary().contains(pokemon.getPokemonName()) && config.isBlacklistLegendary()) {
             UtilLegendarySpawn.spawn();
             event.setCanceled(true);
             return;
@@ -75,6 +66,8 @@ public class LegendaryListener {
         }
 
         legendMap.put(pokemon, player.getUUID());
+
+        ParticleTask.addPokemon(pokemon);
 
         ServerFactory.setLegendaryChance(config.getBaseChance());
         ServerFactory.setLastLegend(pokemon.getPokemonName());

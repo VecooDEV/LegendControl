@@ -13,7 +13,7 @@ public class PermissionsConfig extends AbstractYamlConfig {
         {
             this.put("minecraft.command.legendcontrol", 2);
             this.put("minecraft.command.legendarytrust", 0);
-            this.put("minecraft.command.checklegendary", 0);
+            this.put("minecraft.command.checklegends", 0);
         }
     };
 

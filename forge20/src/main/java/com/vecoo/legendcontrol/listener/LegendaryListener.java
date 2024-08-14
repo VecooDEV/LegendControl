@@ -17,6 +17,7 @@ import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.storage.player.PlayerFactory;
 import com.vecoo.legendcontrol.storage.server.ServerFactory;
+import com.vecoo.legendcontrol.task.ParticleTask;
 import com.vecoo.legendcontrol.util.UtilLegendarySpawn;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -39,22 +40,13 @@ public class LegendaryListener {
         return true;
     }
 
-    private static boolean isBlackListed(Pokemon pokemon) {
-        for (PokemonSpecification blocked : LegendControl.getInstance().getConfig().getBlockedLegendary()) {
-            if (blocked != null && blocked.matches(pokemon)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @SubscribeEvent
     public void onLegendarySpawnControl(LegendarySpawnEvent.DoSpawn event) {
         ServerConfig config = LegendControl.getInstance().getConfig();
         ServerPlayer player = (ServerPlayer) event.action.spawnLocation.cause;
         PixelmonEntity pokemon = event.action.getOrCreateEntity();
 
-        if (isBlackListed(event.action.getOrCreateEntity().getPokemon()) && config.isBlacklistLegendary()) {
+        if (LegendControl.getInstance().getConfig().getBlockedLegendary().contains(pokemon.getPokemonName()) && config.isBlacklistLegendary()) {
             UtilLegendarySpawn.spawn();
             event.setCanceled(true);
             return;
@@ -71,6 +63,8 @@ public class LegendaryListener {
         }
 
         legendMap.put(pokemon, player.getUUID());
+
+        ParticleTask.addPokemon(pokemon);
 
         ServerFactory.setLegendaryChance(config.getBaseChance());
         ServerFactory.setLastLegend(pokemon.getPokemonName());

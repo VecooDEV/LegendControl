@@ -59,7 +59,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
                 ArrayList<EntityPlayerMP> cluster = new ArrayList<>();
                 EntityPlayerMP focus = players.remove(0);
                 if (this.firesChooseEvent) {
-                    if (!ServerFactory.getPlayersBlacklist().contains(focus.getUniqueID())) {
+                    if (!ServerFactory.getPlayersBlacklist().contains(focus.getUniqueID()) && !LegendControl.getInstance().getConfig().getBlockedWorld().contains(focus.getEntityWorld().provider.getDimension())) {
                         Utils.updatePlayerIP(focus);
                         if (!ServerFactory.getPlayersIP().containsValue(focus.getPlayerIP()) || LegendControl.getInstance().getConfig().getMaxPlayersIP() == 0) {
                             if (Utils.playerCountIP(focus) <= LegendControl.getInstance().getConfig().getLockPlayerIP() || LegendControl.getInstance().getConfig().getLockPlayerIP() == 0) {

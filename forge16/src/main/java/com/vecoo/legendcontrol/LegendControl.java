@@ -11,6 +11,7 @@ import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.listener.LegendaryListener;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
 import com.vecoo.legendcontrol.storage.player.PlayerProvider;
+import com.vecoo.legendcontrol.task.ParticleTask;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,6 +39,7 @@ public class LegendControl {
         this.loadConfig();
 
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(new ParticleTask());
         Pixelmon.EVENT_BUS.register(new LegendaryListener());
     }
 

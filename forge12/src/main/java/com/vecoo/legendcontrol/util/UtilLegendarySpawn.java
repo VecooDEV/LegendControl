@@ -39,7 +39,7 @@ public class UtilLegendarySpawn {
                 legendarySpawner.possibleSpawns.forEach((spawn) -> {
                     HashMap<String, Long> var10001 = BetterSpawnerConfig.intervalTimes;
                     spawn.spawnInfo.tags.forEach(var10001::remove);
-                    ExtrasAPI.getInstance().getServer().addScheduledTask(() -> {
+                    ExtraLib.getInstance().getServer().addScheduledTask(() -> {
                         spawn.doSpawn(legendarySpawner);
                     });
                 });

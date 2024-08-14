@@ -15,9 +15,9 @@ import java.util.Arrays;
 
 public class CheckLegendsCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        for (String command : Arrays.asList("checklegendary", "checkleg")) {
+        for (String command : Arrays.asList("checklegends", "checkleg")) {
             dispatcher.register(Commands.literal(command)
-                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermissions().getPermissions().get("minecraft.command.checklegendary")))
+                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermissions().getPermissions().get("minecraft.command.checklegends")))
                     .executes(e -> execute(e.getSource())));
         }
     }
