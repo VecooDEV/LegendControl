@@ -27,7 +27,7 @@ A: Should work.
 A: In my [discord server](https://discord.gg/VSGEVagRPq)
 
 ## Support Me
-A lot of effort goes into creating and updating mods. If you want to support me, you can do so on [Patreon](patreon.com/Vecoo) or [Boosty](https://boosty.to/vecoo).
+A lot of effort goes into creating and updating mods. If you want to support me, you can do so on [Patreon](https://www.patreon.com/Vecoo) or [Boosty](https://boosty.to/vecoo).
 
 ## Download
 * [Modrinth](https://modrinth.com/mod/legendcontrol)
