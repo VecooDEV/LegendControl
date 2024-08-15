@@ -1,5 +1,6 @@
 package com.vecoo.legendcontrol.util;
 
+import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.vecoo.extralib.ExtraLib;
 import com.vecoo.legendcontrol.LegendControl;
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class Utils {
-    public static int timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());;
+    public static int timeDoLegend = PixelmonConfigProxy.getSpawningLegendary().getLegendarySpawnTicks() / 20 + RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());;
 
     public static int playerCountIP(ServerPlayer player) {
         int ipCount = 0;

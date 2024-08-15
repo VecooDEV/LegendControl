@@ -16,6 +16,10 @@ Sidemode for [Pixelmon](https://modrinth.com/mod/pixelmon). Changing the spawn e
 ## Commands & Permissions
 You can read more on the [wiki](https://github.com/VecooDEV/LegendControl/wiki/Commands-&-Permissions) page.
 
+## Dependencies
+* [MixinBooter](https://modrinth.com/mod/mixinbooter) (1.12.2)
+* [ExtraLib](https://modrinth.com/mod/extralib)
+
 ## FAQ
 **Q: Do I need to install this on both server and client?**  
 A: Only server.
