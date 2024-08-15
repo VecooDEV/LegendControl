@@ -1,8 +1,6 @@
 package com.vecoo.legendcontrol.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.pixelmonmod.pixelmon.api.spawning.AbstractSpawner;
-import com.pixelmonmod.pixelmon.spawning.LegendarySpawner;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
@@ -23,14 +21,7 @@ public class CheckLegendsCommand {
     }
 
     private static int execute(CommandSourceStack source) {
-        AbstractSpawner abstrSpawner = PixelmonSpawning.coordinator.getSpawner("legendary");
-
-        if (abstrSpawner == null) {
-            abstrSpawner = PixelmonSpawning.legendarySpawner;
-        }
-
-        long timeToGo = ((LegendarySpawner) abstrSpawner).nextSpawnTime - System.currentTimeMillis();
-        int seconds = (int)Math.ceil(((float)timeToGo / 1000.0F)) + Utils.timeDoLegend;
+        int seconds = (int) ((PixelmonSpawning.legendarySpawner.nextSpawnTime - System.currentTimeMillis()) / 1000 + Utils.timeDoLegend);
         int minutes = seconds / 60;
         int hours = minutes / 60;
 
