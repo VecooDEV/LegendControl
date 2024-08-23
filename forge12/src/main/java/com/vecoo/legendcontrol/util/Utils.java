@@ -4,6 +4,7 @@ import com.pixelmonmod.pixelmon.RandomHelper;
 import com.vecoo.extralib.ExtraLib;
 import com.vecoo.legendcontrol.LegendControl;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -26,6 +27,15 @@ public class Utils {
         HashMap<UUID, String> playersIP = LegendControl.getInstance().getServerProvider().getServerStorage().getPlayersIP();
         if (playersIP.containsKey(player.getUniqueID())) {
             playersIP.replace(player.getUniqueID(), player.getPlayerIP());
+        }
+    }
+
+    public static String worldDirectory(String file) {
+        MinecraftServer server = ExtraLib.getInstance().getServer();
+        if (server.isDedicatedServer()) {
+            return file.replace("%directory%", "world");
+        } else {
+            return file.replace("%directory%", "saves/" + server.getFolderName());
         }
     }
 }

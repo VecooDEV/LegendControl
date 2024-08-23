@@ -9,21 +9,31 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ServerConfig {
+    private String playerStorage = "/%directory%/storage/LegendControl/players/";
+    private String serverStorage = "/%directory%/storage/LegendControl/server/";
     private int trustLimit = 15;
     private int protectedTime = 300;
     private float baseChance = 10.0F;
     private float stepSpawnChance = 5.0F;
     private int maxPlayersIP = 0;
     private int lockPlayerIP = 0;
-    private int randomTimeSpawnMin = 300;
-    private int randomTimeSpawnMax = 600;
+    private int randomTimeSpawnMin = 0;
+    private int randomTimeSpawnMax = 300;
     private boolean notifyLegendarySpawn = true;
     private boolean legendaryRepeat = true;
     private boolean legendaryParticle = true;
     private boolean blacklistLegendary = false;
-    private boolean blacklistWorld = false;
     private List<String> blacklistLegendaryList = Lists.newArrayList("Regieleki", "Regidrago");
+    private boolean blacklistWorld = false;
     private List<Integer> blacklistWorldList = Lists.newArrayList(-1, 1);
+
+    public String getPlayerStorage() {
+        return this.playerStorage;
+    }
+
+    public String getServerStorage() {
+        return this.serverStorage;
+    }
 
     public int getTrustLimit() {
         return this.trustLimit;
@@ -97,6 +107,8 @@ public class ServerConfig {
                 Gson gson = UtilGson.newGson();
                 ServerConfig config = gson.fromJson(el, ServerConfig.class);
 
+                this.playerStorage = config.getPlayerStorage();
+                this.serverStorage = config.getServerStorage();
                 this.trustLimit = config.getTrustLimit();
                 this.protectedTime = config.getProtectedTime();
                 this.baseChance = config.getBaseChance();

@@ -2,9 +2,8 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
 
-
     group = 'com.vecoo.legendcontrol'
-    version = '2.0.1'
+    version = '2.1.0'
 
     ext {
         forgeVersion = "none"
@@ -26,6 +25,10 @@ subprojects {
                 artifact('[revision]/[artifact].[ext]')
             }
         }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
     }
 
     task versionedRelease(type: Copy) {

@@ -7,40 +7,40 @@ import com.vecoo.legendcontrol.LegendControl;
 import java.util.concurrent.CompletableFuture;
 
 public class LocaleConfig {
-    private String reload = "\u00A7e(!) Configs have been reloaded.";
+    private String reload = "&e(!) Configs have been reloaded.";
 
-    private String addTrust = "\u00A7e(!) Player %target% has been successfully added to your trust list.";
-    private String removeTrust = "\u00A7e(!) Player %target% has been removed from your trust list.";
-    private String removeAllTrust = "\u00A7e(!) All players have been removed from your trust list.";
-    private String emptyTrust = "\u00A7e(!) Your trust list is empty.";
-    private String listTrust = "&\u00A7e&lTrust list (%amount%)";
-    private String incorrectCause = "\u00A7e(!) At the moment, the legendary Pokemon is protected. Try to enter the battle after a while.";
-    private String protection = "\u00A7e(!) Pokemon %pokemon%'s protection has expired.";
+    private String addTrust = "&e(!) Player %player% has been successfully added to your trust list.";
+    private String removeTrust = "&e(!) Player %player% has been removed from your trust list.";
+    private String removeAllTrust = "&e(!) All players have been removed from your trust list.";
+    private String emptyTrust = "&e(!) Your trust list is empty.";
+    private String listTrust = "&e&lTrust list:";
+    private String incorrectCause = "&e(!) At the moment, the legendary Pokemon is protected. Try to enter the battle after a while.";
+    private String protection = "&e(!) Pokemon %pokemon%'s protection has expired.";
 
-    private String blacklist = "\u00A7e\u00A7lPlayers missing legend spawns";
-    private String addBlacklist = "\u00A7e(!) Player %target% has been added to the legendary blacklist.";
-    private String removeBlacklist = "\u00A7e(!) Player %target% has been removed from the legendary blacklist.";
-    private String removeAllBlacklist = "\u00A7e(!) All players have been removed from the legendary blacklist.";
-    private String emptyBlacklist = "\u00A7e(!) Legendary blacklist is empty.";
+    private String blacklist = "&e&lPlayers missing legend spawns:";
+    private String addBlacklist = "&e(!) Player %player% has been added to the legendary blacklist.";
+    private String removeBlacklist = "&e(!) Player %player% has been removed from the legendary blacklist.";
+    private String removeAllBlacklist = "&e(!) All players have been removed from the legendary blacklist.";
+    private String emptyBlacklist = "&e(!) Legendary blacklist is empty.";
 
-    private String spawnPlayerLegendary = "\u00A7e(!) A legendary Pokemon has appeared near you!";
-    private String checkLegendary = "\u00A7e(!) Chance %chance%, legendary Pokemon will appear in ~%time%.";
-    private String changeChanceLegendary = "\u00A7e(!) New chance: %chance%.";
+    private String spawnPlayerLegendary = "&e(!) A legendary Pokemon has appeared near you!";
+    private String checkLegendary = "&e(!) Chance %chance%, legendary Pokemon will appear in ~%time%.";
+    private String changeChanceLegendary = "&e(!) New chance: %chance%.";
 
-    private String legendaryTrustCommand = "\u00A7e/legendarytrust add/remove <player> | list";
-    private String legendControlCommand = "\u00A7e/legendcontrol add/remove/set <chance> | blacklist add/remove <player> | list | reload";
+    private String legendaryTrustCommand = "&e/legendarytrust add/remove <player> | list";
+    private String legendControlCommand = "&e/legendcontrol add/remove/set <chance> | blacklist add/remove <player> | list | reload";
 
-    private String cantSelfTrust = "\u00A7c(!) You cannot add yourself to the trust list.";
-    private String alreadyTrusted = "\u00A7c(!) This player is already on your trust list.";
-    private String notPlayerTrust = "\u00A7c(!) This player is not yet on your trust list.";
-    private String notPlayerBlacklist = "\u00A7c(!) This player is not yet on legendary blacklist.";
-    private String alreadyBlacklist = "\u00A7c(!) This player is already on legendary blacklist.";
-    private String trustLimit = "\u00A7c(!) You have reached the maximum number of players on the trust list.";
-    private String errorChance = "\u00A7c(!) The overall chance should not be less than 0% or greater than 100%.";
-    private String playerNotFound = "\u00A7c(!) Player %target% not found.";
-    private String onlyPlayer = "\u00A7c(!) This command can only be executed by a player.";
+    private String cantSelfTrust = "&c(!) You cannot add yourself to the trust list.";
+    private String alreadyTrusted = "&c(!) This player is already on your trust list.";
+    private String notPlayerTrust = "&c(!) This player is not yet on your trust list.";
+    private String notPlayerBlacklist = "&c(!) This player is not yet on legendary blacklist.";
+    private String alreadyBlacklist = "&c(!) This player is already on legendary blacklist.";
+    private String trustLimit = "&c(!) You have reached the maximum number of players on the trust list.";
+    private String errorChance = "&c(!) The overall chance should not be less than 0% or greater than 100%.";
+    private String playerNotFound = "&c(!) Player %player% not found.";
+    private String onlyPlayer = "&c(!) This command can only be executed by a player.";
 
-    private String listPlayer = "\u00A7e- %player%";
+    private String listPlayer = "&e- %player%";
 
     private String seconds = " seconds";
     private String minutes = " minutes";

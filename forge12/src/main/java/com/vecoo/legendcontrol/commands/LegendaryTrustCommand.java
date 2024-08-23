@@ -7,7 +7,6 @@ import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.player.PlayerFactory;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -39,7 +38,7 @@ public class LegendaryTrustCommand extends CommandBase {
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return LegendControl.getInstance().getPermissions().getPermissionCommand().get("minecraft.command.legendarytrust") == 0;
+        return LegendControl.getInstance().getPermissions().getPermissionCommand().get("minecraft.command.legendarytrust") == 0 || sender.canUseCommand(2, "gamemode");
     }
 
     @Override
@@ -96,7 +95,7 @@ public class LegendaryTrustCommand extends CommandBase {
     private void executeAdd(EntityPlayerMP player, String target) {
         if (!UtilPlayer.hasUUID(target)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotFound()
-                    .replace("%target%", target)));
+                    .replace("%player%", target)));
             return;
         }
 
@@ -121,13 +120,13 @@ public class LegendaryTrustCommand extends CommandBase {
         PlayerFactory.addPlayerTrust(player.getUniqueID(), targetUUID);
 
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getAddTrust()
-                .replace("%target%", target)));
+                .replace("%player%", target)));
     }
 
     private void executeRemove(EntityPlayerMP player, String target) {
         if (!UtilPlayer.hasUUID(target)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotFound()
-                    .replace("%target%", target)));
+                    .replace("%player%", target)));
             return;
         }
 
@@ -147,7 +146,7 @@ public class LegendaryTrustCommand extends CommandBase {
         PlayerFactory.removePlayerTrust(player.getUniqueID(), targetUUID);
 
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getRemoveTrust()
-                .replace("%target%", target)));
+                .replace("%player%", target)));
     }
 
     private void executeRemoveAll(EntityPlayerMP player) {
@@ -169,8 +168,7 @@ public class LegendaryTrustCommand extends CommandBase {
             return;
         }
 
-        player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getListTrust()
-                .replace("%amount%", players.size() + "")));
+        player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getListTrust()));
 
         for (UUID uuid : players) {
             String playerName = UsernameCache.getLastKnownUsername(uuid);

@@ -31,7 +31,7 @@ public class CheckLegendsCommand extends CommandBase {
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return LegendControl.getInstance().getPermissions().getPermissionCommand().get("minecraft.command.checklegends") == 0;
+        return LegendControl.getInstance().getPermissions().getPermissionCommand().get("minecraft.command.checklegends") == 0 || sender.canUseCommand(2, "gamemode");
     }
 
     @Override

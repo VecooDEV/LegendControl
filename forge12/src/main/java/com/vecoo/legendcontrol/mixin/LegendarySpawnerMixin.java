@@ -131,7 +131,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
                 Utils.timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
             }
             if (this.firesChooseEvent && !RandomHelper.getRandomChance(LegendControl.getInstance().getServerProvider().getServerStorage().getLegendaryChance() / 100.0F) || !this.firesChooseEvent && !RandomHelper.getRandomChance(PixelmonConfig.bossSpawnChance)) {
-                if (this.firesChooseEvent) {
+                if (this.firesChooseEvent && ExtraLib.getInstance().getServer().getPlayerList().getCurrentPlayerCount() > 0) {
                     ServerFactory.addLegendaryChance(LegendControl.getInstance().getConfig().getStepSpawnChance());
                 }
                 return null;

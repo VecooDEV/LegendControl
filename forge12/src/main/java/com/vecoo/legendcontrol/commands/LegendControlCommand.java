@@ -7,7 +7,6 @@ import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.server.ServerFactory;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -39,7 +38,7 @@ public class LegendControlCommand extends CommandBase {
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return LegendControl.getInstance().getPermissions().getPermissionCommand().get("minecraft.command.legendcontrol") == 0;
+        return LegendControl.getInstance().getPermissions().getPermissionCommand().get("minecraft.command.legendcontrol") == 0 || sender.canUseCommand(2, "gamemode");
     }
 
     @Override
@@ -49,10 +48,12 @@ public class LegendControlCommand extends CommandBase {
         }
 
         if (args.length == 2) {
-            if (!args[0].equals("blacklist")) {
-                return Lists.newArrayList("10", "20", "30", "40", "50", "60", "70", "80", "90", "100");
-            } else {
-                return Lists.newArrayList("add", "remove", "list");
+            if (!args[0].equals("reload")) {
+                if (!args[0].equals("blacklist")) {
+                    return Lists.newArrayList("10", "20", "30", "40", "50", "60", "70", "80", "90", "100");
+                } else {
+                    return Lists.newArrayList("add", "remove", "list");
+                }
             }
         }
 
@@ -71,22 +72,20 @@ public class LegendControlCommand extends CommandBase {
         try {
             switch (args[0]) {
                 case "add": {
-                    if (args[1].matches("\\d+")) {
-                        executeAdd(sender, Integer.parseInt(args[1]));
+                        executeAdd(sender, Float.parseFloat(args[1]));
                         break;
-                    }
                 }
 
                 case "remove": {
                     if (args[1].matches("\\d+")) {
-                        executeRemove(sender, Integer.parseInt(args[1]));
+                        executeRemove(sender, Float.parseFloat(args[1]));
                         break;
                     }
                 }
 
                 case "set": {
                     if (args[1].matches("\\d+")) {
-                        executeSet(sender, Integer.parseInt(args[1]));
+                        executeSet(sender, Float.parseFloat(args[1]));
                         break;
                     }
                 }
@@ -181,7 +180,7 @@ public class LegendControlCommand extends CommandBase {
     private void executeBlacklistAdd(ICommandSender source, String target) {
         if (!UtilPlayer.hasUUID(target)) {
             source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotFound()
-                    .replace("%target%", target)));
+                    .replace("%player%", target)));
             return;
         }
 
@@ -196,13 +195,13 @@ public class LegendControlCommand extends CommandBase {
         ServerFactory.addPlayerBlacklist(targetUUID);
 
         source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getAddBlacklist()
-                .replace("%target%", target)));
+                .replace("%player%", target)));
     }
 
     private void executeBlacklistRemove(ICommandSender source, String target) {
         if (!UtilPlayer.hasUUID(target)) {
             source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotFound()
-                    .replace("%target%", target)));
+                    .replace("%player%", target)));
             return;
         }
 
@@ -222,7 +221,7 @@ public class LegendControlCommand extends CommandBase {
         ServerFactory.removePlayerBlacklist(targetUUID);
 
         source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getRemoveBlacklist()
-                .replace("%target%", target)));
+                .replace("%player%", target)));
     }
 
     private void executeBlacklistRemoveAll(ICommandSender source) {
@@ -238,6 +237,7 @@ public class LegendControlCommand extends CommandBase {
 
     private void executeReload(ICommandSender source) {
         LegendControl.getInstance().loadConfig();
+        LegendControl.getInstance().loadStorage();
         source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getReload()));
     }
 }

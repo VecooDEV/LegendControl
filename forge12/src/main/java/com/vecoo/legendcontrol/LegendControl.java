@@ -13,19 +13,16 @@ import com.vecoo.legendcontrol.storage.player.PlayerProvider;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(
-        modid = "legendcontrol",
-        name = "LegendControl",
-        version = "2.0.1",
-        acceptableRemoteVersions = "*"
-)
+@Mod(modid = LegendControl.MOD_ID, acceptableRemoteVersions = "*", useMetadata = true)
 public class LegendControl {
-    private static final Logger LOGGER = LogManager.getLogger("LegendControl");
+    public static final String MOD_ID = "legendcontrol";
+    private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
     private static LegendControl instance;
 
@@ -41,7 +38,10 @@ public class LegendControl {
         instance = this;
 
         this.loadConfig();
+    }
 
+    @Mod.EventHandler
+    public void onInitialization(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new ParticleTask());
         Pixelmon.EVENT_BUS.register(new LegendaryListener());
     }
@@ -51,6 +51,8 @@ public class LegendControl {
         event.registerServerCommand(new CheckLegendsCommand());
         event.registerServerCommand(new LegendaryTrustCommand());
         event.registerServerCommand(new LegendControlCommand());
+
+        this.loadStorage();
     }
 
     public void loadConfig() {
@@ -61,12 +63,19 @@ public class LegendControl {
             this.locale.init();
             this.permissions = new PermissionsConfig();
             this.permissions.init();
+        } catch (Exception e) {
+            LOGGER.error("Error load config.");
+        }
+    }
+
+    public void loadStorage() {
+        try {
             this.playerProvider = new PlayerProvider();
             this.playerProvider.init();
             this.serverProvider = new ServerProvider();
             this.serverProvider.init();
         } catch (Exception e) {
-            LOGGER.error("Error load config.");
+            LOGGER.error("Error load storage.");
         }
     }
 

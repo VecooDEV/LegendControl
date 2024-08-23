@@ -23,7 +23,6 @@ dependencies {
     implementation fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.12.2-8.4.3-server:8.4.3')
 
     implementation 'org.spongepowered:mixin:0.8.5-SNAPSHOT'
-    implementation 'org.spongepowered:mixin:0.8.5-SNAPSHOT:processor'
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5-SNAPSHOT:processor'
 
@@ -32,15 +31,6 @@ dependencies {
 
 mixin {
     defaultObfuscationEnv "notch"
-}
-
-sourceSets {
-    main {
-        ext.refMap = "legendcontrol.mixins.refmap.json"
-    }
-}
-
-mixin {
     add sourceSets.main, "legendcontrol.mixins.refmap.json"
 }
 
