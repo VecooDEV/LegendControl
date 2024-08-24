@@ -7,15 +7,16 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class Utils {
     public static int timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
 
-    public static int playerCountIP(EntityPlayerMP player) {
+    public static int playerCountIP(EntityPlayerMP player, List<EntityPlayerMP> players) {
         int ipCount = 0;
 
-        for (EntityPlayerMP p : ExtraLib.getInstance().getServer().getPlayerList().getPlayers()) {
+        for (EntityPlayerMP p : players) {
             if (player.getPlayerIP().equals(p.getPlayerIP())) {
                 ipCount++;
             }

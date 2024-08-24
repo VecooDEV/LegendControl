@@ -11,22 +11,22 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.util.helpers.CollectionHelper;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
-import com.vecoo.legendcontrol.storage.player.PlayerFactory;
-import com.vecoo.legendcontrol.storage.server.ServerFactory;
+import com.vecoo.legendcontrol.storage.player.LegendPlayerFactory;
+import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
 import com.vecoo.legendcontrol.task.ParticleTask;
 import com.vecoo.legendcontrol.util.UtilLegendarySpawn;
+import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class LegendaryListener {
     public static HashMap<EntityPixelmon, UUID> legendMap = new HashMap<>();
@@ -35,7 +35,7 @@ public class LegendaryListener {
         if (legendMap.containsKey(pokemon)) {
             UUID invokerUUID = legendMap.get(pokemon);
 
-            if (!invokerUUID.equals(player.getUniqueID()) && !PlayerFactory.hasPlayerTrust(invokerUUID, player.getUniqueID())) {
+            if (!invokerUUID.equals(player.getUniqueID()) && !LegendPlayerFactory.hasPlayerTrust(invokerUUID, player.getUniqueID())) {
                 player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getIncorrectCause()));
                 return false;
             }
@@ -44,7 +44,24 @@ public class LegendaryListener {
     }
 
     @SubscribeEvent
-    public void onLegendarySpawnControl(LegendarySpawnEvent.DoSpawn event) {
+    public void onChoosePlayer(LegendarySpawnEvent.ChoosePlayer event) {
+        List<EntityPlayerMP> newCluster = new ArrayList<>();
+        event.clusters.forEach(newCluster::addAll);
+        newCluster.add(event.player);
+
+        newCluster.forEach(Utils::updatePlayerIP);
+
+        List<EntityPlayerMP> filteredClusters = newCluster.stream()
+                .filter(player -> !LegendServerFactory.getPlayersBlacklist().contains(player.getUniqueID()) && !LegendControl.getInstance().getConfig().getBlockedWorld().contains(player.getEntityWorld().provider.getDimension()))
+                .filter(player -> LegendControl.getInstance().getConfig().getMaxPlayersIP() == 0 || !LegendServerFactory.getPlayersIP().containsValue(player.getPlayerIP()))
+                .filter(player -> LegendControl.getInstance().getConfig().getLockPlayerIP() == 0 || Utils.playerCountIP(player, newCluster) <= LegendControl.getInstance().getConfig().getLockPlayerIP())
+                .collect(Collectors.toList());
+        UtilChat.broadcast(filteredClusters.toString());
+        event.player = CollectionHelper.getRandomElement(filteredClusters);
+    }
+
+    @SubscribeEvent
+    public void onDoSpawn(LegendarySpawnEvent.DoSpawn event) {
         ServerConfig config = LegendControl.getInstance().getConfig();
         EntityPlayerMP player = (EntityPlayerMP) event.action.spawnLocation.cause;
         EntityPixelmon pokemon = event.action.getOrCreateEntity();
@@ -55,7 +72,7 @@ public class LegendaryListener {
             return;
         }
 
-        if (!config.isLegendaryRepeat() && ServerFactory.getLastLegend().equals(pokemon.getPokemonName())) {
+        if (!config.isLegendaryRepeat() && LegendServerFactory.getLastLegend().equals(pokemon.getPokemonName())) {
             UtilLegendarySpawn.spawn();
             event.setCanceled(true);
             return;
@@ -69,9 +86,9 @@ public class LegendaryListener {
 
         ParticleTask.addPokemon(pokemon);
 
-        ServerFactory.setLegendaryChance(config.getBaseChance());
-        ServerFactory.setLastLegend(pokemon.getPokemonName());
-        ServerFactory.replacePlayerIP(player.getUniqueID(), player.getPlayerIP());
+        LegendServerFactory.setLegendaryChance(config.getBaseChance());
+        LegendServerFactory.setLastLegend(pokemon.getPokemonName());
+        LegendServerFactory.replacePlayerIP(player.getUniqueID(), player.getPlayerIP());
 
         UtilLegendarySpawn.countSpawn = 0;
 
@@ -94,7 +111,7 @@ public class LegendaryListener {
     }
 
     @SubscribeEvent
-    public void onBattleKey(KeyEvent event) {
+    public void onKey(KeyEvent event) {
         if (event.key == EnumKeyPacketMode.ActionKeyEntity && !legendMap.isEmpty() && LegendControl.getInstance().getConfig().getProtectedTime() != 0) {
             for (Pokemon pokemon : Pixelmon.storageManager.getParty(event.player).getTeam()) {
                 pokemon.ifEntityExists(entityPixelmon -> {
@@ -110,7 +127,7 @@ public class LegendaryListener {
     }
 
     @SubscribeEvent
-    public void onStartBattle(BattleStartedEvent event) {
+    public void onBattleStarted(BattleStartedEvent event) {
         if (LegendControl.getInstance().getConfig().getProtectedTime() > 0) {
             BattleParticipant participant1 = event.participant1[0];
             BattleParticipant participant2 = event.participant2[0];

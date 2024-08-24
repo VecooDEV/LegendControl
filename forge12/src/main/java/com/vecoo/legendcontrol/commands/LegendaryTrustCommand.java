@@ -1,11 +1,10 @@
 package com.vecoo.legendcontrol.commands;
 
-import com.google.common.collect.Lists;
 import com.vecoo.extralib.ExtraLib;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.storage.player.PlayerFactory;
+import com.vecoo.legendcontrol.storage.player.LegendPlayerFactory;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,7 +13,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.UsernameCache;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -44,17 +42,13 @@ public class LegendaryTrustCommand extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         if (args.length == 1) {
-            return Lists.newArrayList("add", "remove", "list");
+            return getListOfStringsMatchingLastWord(args, "add", "remove", "list");
         }
 
         if (args.length == 2) {
-            List<String> players = new ArrayList<>();
-            for (EntityPlayerMP player : ExtraLib.getInstance().getServer().getPlayerList().getPlayers()) {
-                players.add(player.getName());
-            }
-            return players;
+            return getListOfStringsMatchingLastWord(args, ExtraLib.getInstance().getServer().getPlayerList().getOnlinePlayerNames());
         }
-        return null;
+        return Collections.singletonList("");
     }
 
     @Override
@@ -100,7 +94,7 @@ public class LegendaryTrustCommand extends CommandBase {
         }
 
         UUID targetUUID = UtilPlayer.getUUID(target);
-        List<UUID> trustedPlayers = PlayerFactory.getPlayersTrust(player.getUniqueID());
+        List<UUID> trustedPlayers = LegendPlayerFactory.getPlayersTrust(player.getUniqueID());
 
         if (player.getUniqueID().equals(targetUUID)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getCantSelfTrust()));
@@ -117,7 +111,7 @@ public class LegendaryTrustCommand extends CommandBase {
             return;
         }
 
-        PlayerFactory.addPlayerTrust(player.getUniqueID(), targetUUID);
+        LegendPlayerFactory.addPlayerTrust(player.getUniqueID(), targetUUID);
 
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getAddTrust()
                 .replace("%player%", target)));
@@ -131,7 +125,7 @@ public class LegendaryTrustCommand extends CommandBase {
         }
 
         UUID targetUUID = UtilPlayer.getUUID(target);
-        List<UUID> trustedPlayers = PlayerFactory.getPlayersTrust(player.getUniqueID());
+        List<UUID> trustedPlayers = LegendPlayerFactory.getPlayersTrust(player.getUniqueID());
 
         if (trustedPlayers.isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getEmptyTrust()));
@@ -143,25 +137,25 @@ public class LegendaryTrustCommand extends CommandBase {
             return;
         }
 
-        PlayerFactory.removePlayerTrust(player.getUniqueID(), targetUUID);
+        LegendPlayerFactory.removePlayerTrust(player.getUniqueID(), targetUUID);
 
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getRemoveTrust()
                 .replace("%player%", target)));
     }
 
     private void executeRemoveAll(EntityPlayerMP player) {
-        if (PlayerFactory.getPlayersTrust(player.getUniqueID()).isEmpty()) {
+        if (LegendPlayerFactory.getPlayersTrust(player.getUniqueID()).isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getEmptyTrust()));
             return;
         }
 
-        PlayerFactory.removePlayersTrust(player.getUniqueID());
+        LegendPlayerFactory.removePlayersTrust(player.getUniqueID());
 
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getRemoveAllTrust()));
     }
 
     private void executeList(EntityPlayerMP player) {
-        List<UUID> players = PlayerFactory.getPlayersTrust(player.getUniqueID());
+        List<UUID> players = LegendPlayerFactory.getPlayersTrust(player.getUniqueID());
 
         if (players.isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getEmptyTrust()));

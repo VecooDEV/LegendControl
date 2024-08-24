@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class ServerFactory {
+public class LegendServerFactory {
     public static float getLegendaryChance() {
         return LegendControl.getInstance().getServerProvider().getServerStorage().getLegendaryChance();
     }

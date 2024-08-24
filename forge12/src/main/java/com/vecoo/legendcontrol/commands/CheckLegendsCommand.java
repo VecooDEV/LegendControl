@@ -3,7 +3,7 @@ package com.vecoo.legendcontrol.commands;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.storage.server.ServerFactory;
+import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
 import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -51,7 +51,7 @@ public class CheckLegendsCommand extends CommandBase {
 
     private static void sendMessage(ICommandSender source, int time, String timeUnit) {
         source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getCheckLegendary()
-                .replace("%chance%", String.format("%.4f", ServerFactory.getLegendaryChance())
+                .replace("%chance%", String.format("%.4f", LegendServerFactory.getLegendaryChance())
                         .replaceAll("\\.?0+$", "") + "%")
                 .replace("%time%", time + timeUnit)));
     }
