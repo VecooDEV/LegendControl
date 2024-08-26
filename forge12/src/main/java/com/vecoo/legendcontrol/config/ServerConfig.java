@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ServerConfig {
     private String playerStorage = "/%directory%/storage/LegendControl/players/";
-    private String serverStorage = "/%directory%/storage/LegendControl/server/";
+    private String serverStorage = "/%directory%/storage/LegendControl/";
     private int trustLimit = 15;
     private int protectedTime = 300;
     private float baseChance = 10.0F;
