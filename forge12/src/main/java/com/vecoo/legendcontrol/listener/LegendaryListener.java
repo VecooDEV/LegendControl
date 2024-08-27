@@ -58,19 +58,11 @@ public class LegendaryListener {
             return;
         }
 
-        Utils.updatePlayerIP(player);
+        LegendServerFactory.updatePlayerIP(player);
 
-        if (LegendServerFactory.getPlayersIP().containsValue(player.getPlayerIP()) && config.getMaxPlayersIP() != 0) {
+        if (LegendServerFactory.getPlayersIP().containsValue(player.getPlayerIP()) && config.getMaxPlayersIP() > 0) {
             event.setCanceled(true);
-            return;
         }
-
-        if (Utils.playerCountIP(player, event.clusters) > config.getLockPlayerIP() && config.getLockPlayerIP() != 0) {
-            event.setCanceled(true);
-            return;
-        }
-
-        System.out.println(player.getName());
     }
 
     @SubscribeEvent

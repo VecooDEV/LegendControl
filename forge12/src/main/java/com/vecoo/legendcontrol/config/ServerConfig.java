@@ -16,7 +16,6 @@ public class ServerConfig {
     private float baseChance = 10.0F;
     private float stepSpawnChance = 5.0F;
     private int maxPlayersIP = 0;
-    private int lockPlayerIP = 0;
     private int randomTimeSpawnMin = 0;
     private int randomTimeSpawnMax = 300;
     private boolean notifyLegendarySpawn = true;
@@ -53,10 +52,6 @@ public class ServerConfig {
 
     public int getMaxPlayersIP() {
         return this.maxPlayersIP;
-    }
-
-    public int getLockPlayerIP() {
-        return this.lockPlayerIP;
     }
 
     public int getRandomTimeSpawnMin() {
@@ -114,7 +109,6 @@ public class ServerConfig {
                 this.baseChance = config.getBaseChance();
                 this.stepSpawnChance = config.getStepSpawnChance();
                 this.maxPlayersIP = config.getMaxPlayersIP();
-                this.lockPlayerIP = config.getLockPlayerIP();
                 this.randomTimeSpawnMin = config.getRandomTimeSpawnMin();
                 this.randomTimeSpawnMax = config.getRandomTimeSpawnMax();
                 this.notifyLegendarySpawn = config.isNotifyLegendarySpawn();

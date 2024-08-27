@@ -1,6 +1,7 @@
 package com.vecoo.legendcontrol.storage.server;
 
 import com.vecoo.legendcontrol.LegendControl;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.*;
 
@@ -58,6 +59,13 @@ public class ServerStorage {
                 iterator.remove();
             }
             this.playersIP.put(playerUUID, playerIP);
+        }
+        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+    }
+
+    public void updatePlayerIP(EntityPlayerMP player) {
+        if (this.playersIP.containsKey(player.getUniqueID())) {
+            this.playersIP.replace(player.getUniqueID(), player.getPlayerIP());
         }
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
