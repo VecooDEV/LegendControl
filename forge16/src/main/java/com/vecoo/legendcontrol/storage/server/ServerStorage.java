@@ -1,6 +1,7 @@
 package com.vecoo.legendcontrol.storage.server;
 
 import com.vecoo.legendcontrol.LegendControl;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 import java.util.*;
 
@@ -45,6 +46,10 @@ public class ServerStorage {
     }
 
     public void replacePlayerIP(UUID playerUUID, String playerIP) {
+        if (this.playersIP.containsKey(playerUUID) || this.playersIP.containsValue(playerIP)) {
+            return;
+        }
+
         if (this.playersIP.size() < LegendControl.getInstance().getConfig().getMaxPlayersIP()) {
             this.playersIP.put(playerUUID, playerIP);
         } else {
@@ -54,6 +59,13 @@ public class ServerStorage {
                 iterator.remove();
             }
             this.playersIP.put(playerUUID, playerIP);
+        }
+        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+    }
+
+    public void updatePlayerIP(ServerPlayerEntity player) {
+        if (this.playersIP.containsKey(player.getUUID())) {
+            this.playersIP.replace(player.getUUID(), player.getIpAddress());
         }
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }

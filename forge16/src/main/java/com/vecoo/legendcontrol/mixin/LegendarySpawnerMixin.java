@@ -2,13 +2,12 @@ package com.vecoo.legendcontrol.mixin;
 
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.spawning.SpawnAction;
-import com.pixelmonmod.pixelmon.api.spawning.SpawnerCoordinator;
 import com.pixelmonmod.pixelmon.api.spawning.archetypes.spawners.TickingSpawner;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.spawning.LegendarySpawner;
 import com.vecoo.extralib.ExtraLib;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.storage.server.ServerFactory;
+import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
 import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -17,9 +16,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Mixin(value = LegendarySpawner.class, remap = false)
 public abstract class LegendarySpawnerMixin extends TickingSpawner {
@@ -29,17 +26,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
     }
 
     @Shadow
-    public static void fillNearby(ArrayList<ServerPlayerEntity> allPlayers, ArrayList<ServerPlayerEntity> cluster, ServerPlayerEntity focus) {
-        throw new AssertionError();
-    }
-
-    @Shadow
-    public CompletableFuture<List<SpawnAction<?>>> doLegendarySpawn(ServerPlayerEntity target) {
-        throw new AssertionError();
-    }
-
-    @Shadow
-    private ServerPlayerEntity getPlayer(ServerPlayerEntity onlyFocus, ArrayList<ArrayList<ServerPlayerEntity>> clusters) {
+    public void forcefullySpawn(@Nullable ServerPlayerEntity onlyFocus) {
         throw new AssertionError();
     }
 
@@ -48,47 +35,6 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
 
     @Shadow
     public boolean firesChooseEvent;
-
-    /**
-     * @author Vecoo
-     * @reason Change logic choose player.
-     */
-    @Overwrite
-    public void forcefullySpawn(@Nullable ServerPlayerEntity onlyFocus) {
-        ArrayList<ArrayList<ServerPlayerEntity>> clusters = new ArrayList<>();
-        ArrayList<ServerPlayerEntity> players = new ArrayList<>(ExtraLib.getInstance().getServer().getPlayerList().getPlayers());
-        if (onlyFocus == null) {
-            while (!players.isEmpty()) {
-                ArrayList<ServerPlayerEntity> cluster = new ArrayList<>();
-                ServerPlayerEntity focus = players.remove(0);
-                if (!PixelmonConfigProxy.getSpawning().isSpawningDisabledDimension(focus.getLevel())) {
-                    if (this.firesChooseEvent) {
-                        if (!ServerFactory.getPlayersBlacklist().contains(focus.getUUID())) {
-                            Utils.updatePlayerIP(focus);
-                            if (!ServerFactory.getPlayersIP().containsValue(focus.getIpAddress()) || LegendControl.getInstance().getConfig().getMaxPlayersIP() == 0) {
-                                if (Utils.playerCountIP(focus) <= LegendControl.getInstance().getConfig().getLockPlayerIP() || LegendControl.getInstance().getConfig().getLockPlayerIP() == 0) {
-                                    cluster.add(focus);
-                                    fillNearby(players, cluster, focus);
-                                    clusters.add(cluster);
-                                }
-                            }
-                        }
-                    } else {
-                        cluster.add(focus);
-                        fillNearby(players, cluster, focus);
-                        clusters.add(cluster);
-                    }
-                }
-            }
-        }
-
-        this.isBusy = true;
-        ServerPlayerEntity spawnedOnPlayer = this.getPlayer(onlyFocus, clusters);
-        this.doLegendarySpawn(spawnedOnPlayer).whenCompleteAsync((spawnActions, throwable) -> {
-            this.possibleSpawns = spawnActions;
-            this.isBusy = false;
-        }, SpawnerCoordinator.PROCESSOR);
-    }
 
     /**
      * @author Vecoo
@@ -106,8 +52,8 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
                 Utils.timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
             }
             if (this.firesChooseEvent && !RandomHelper.getRandomChance(LegendControl.getInstance().getServerProvider().getServerStorage().getLegendaryChance() / 100.0F) || !this.firesChooseEvent && !RandomHelper.getRandomChance(PixelmonConfigProxy.getSpawning().getBossSpawning().getBossSpawnChance())) {
-                if (this.firesChooseEvent) {
-                    ServerFactory.addLegendaryChance(LegendControl.getInstance().getConfig().getStepSpawnChance());
+                if (this.firesChooseEvent && ExtraLib.getInstance().getServer().getPlayerList().getPlayerCount() > 0) {
+                    LegendServerFactory.addLegendaryChance(LegendControl.getInstance().getConfig().getStepSpawnChance());
                 }
                 return null;
             } else {

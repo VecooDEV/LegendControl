@@ -1,12 +1,13 @@
 package com.vecoo.legendcontrol.storage.server;
 
 import com.vecoo.legendcontrol.LegendControl;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class ServerFactory {
+public class LegendServerFactory {
     public static float getLegendaryChance() {
         return LegendControl.getInstance().getServerProvider().getServerStorage().getLegendaryChance();
     }
@@ -45,6 +46,10 @@ public class ServerFactory {
 
     public static void replacePlayerIP(UUID playerUUID, String playerIP) {
         LegendControl.getInstance().getServerProvider().getServerStorage().replacePlayerIP(playerUUID, playerIP);
+    }
+
+    public static void updatePlayerIP(ServerPlayerEntity player) {
+        LegendControl.getInstance().getServerProvider().getServerStorage().updatePlayerIP(player);
     }
 
     public static void setLegendaryChance(float legendaryChance) {

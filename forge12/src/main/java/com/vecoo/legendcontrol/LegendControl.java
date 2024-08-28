@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(modid = LegendControl.MOD_ID, acceptableRemoteVersions = "*", useMetadata = true)
 public class LegendControl {
     public static final String MOD_ID = "legendcontrol";
-    private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+    private static final Logger LOGGER = LogManager.getLogger("LegendControl");
 
     private static LegendControl instance;
 

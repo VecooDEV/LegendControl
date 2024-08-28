@@ -14,10 +14,10 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
-import com.vecoo.legendcontrol.storage.player.PlayerFactory;
-import com.vecoo.legendcontrol.storage.server.ServerFactory;
+import com.vecoo.legendcontrol.storage.player.LegendPlayerFactory;
+import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
 import com.vecoo.legendcontrol.task.ParticleTask;
-import com.vecoo.legendcontrol.util.UtilLegendarySpawn;
+import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
@@ -35,7 +35,7 @@ public class LegendaryListener {
         if (legendMap.containsKey(pokemon)) {
             UUID invokerUUID = legendMap.get(pokemon);
 
-            if (!invokerUUID.equals(player.getUUID()) && !PlayerFactory.hasPlayerTrust(invokerUUID, player.getUUID())) {
+            if (!invokerUUID.equals(player.getUUID()) && !LegendPlayerFactory.hasPlayerTrust(invokerUUID, player.getUUID())) {
                 player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getIncorrectCause()), Util.NIL_UUID);
                 return false;
             }
@@ -44,19 +44,36 @@ public class LegendaryListener {
     }
 
     @SubscribeEvent
-    public void onLegendarySpawnControl(LegendarySpawnEvent.DoSpawn event) {
+    public void onChoosePlayer(LegendarySpawnEvent.ChoosePlayer event) {
+        ServerConfig config = LegendControl.getInstance().getConfig();
+        ServerPlayerEntity player = event.player;
+
+        if (LegendServerFactory.getPlayersBlacklist().contains(player.getUUID())) {
+            event.setCanceled(true);
+            return;
+        }
+
+        LegendServerFactory.updatePlayerIP(player);
+
+        if (LegendServerFactory.getPlayersIP().containsValue(player.getIpAddress()) && config.getMaxPlayersIP() > 0) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onDoSpawn(LegendarySpawnEvent.DoSpawn event) {
         ServerConfig config = LegendControl.getInstance().getConfig();
         ServerPlayerEntity player = (ServerPlayerEntity) event.action.spawnLocation.cause;
         PixelmonEntity pokemon = event.action.getOrCreateEntity();
 
         if (LegendControl.getInstance().getConfig().getBlockedLegendary().contains(pokemon.getPokemonName()) && config.isBlacklistLegendary()) {
-            UtilLegendarySpawn.spawn();
+            Utils.doSpawn();
             event.setCanceled(true);
             return;
         }
 
-        if (!config.isLegendaryRepeat() && ServerFactory.getLastLegend().equals(pokemon.getPokemonName())) {
-            UtilLegendarySpawn.spawn();
+        if (!config.isLegendaryRepeat() && LegendServerFactory.getLastLegend().equals(pokemon.getPokemonName())) {
+            Utils.doSpawn();
             event.setCanceled(true);
             return;
         }
@@ -69,11 +86,11 @@ public class LegendaryListener {
 
         ParticleTask.addPokemon(pokemon);
 
-        ServerFactory.setLegendaryChance(config.getBaseChance());
-        ServerFactory.setLastLegend(pokemon.getPokemonName());
-        ServerFactory.replacePlayerIP(player.getUUID(), player.getIpAddress());
+        LegendServerFactory.setLegendaryChance(config.getBaseChance());
+        LegendServerFactory.setLastLegend(pokemon.getPokemonName());
+        LegendServerFactory.replacePlayerIP(player.getUUID(), player.getIpAddress());
 
-        UtilLegendarySpawn.countSpawn = 0;
+        Utils.countSpawn = 0;
 
         int num = config.getProtectedTime();
 
@@ -94,7 +111,7 @@ public class LegendaryListener {
     }
 
     @SubscribeEvent
-    public void onBattleKey(KeyEvent event) {
+    public void onKey(KeyEvent event) {
         if (event.key == EnumKeyPacketMode.ActionKeyEntity && !legendMap.isEmpty() && LegendControl.getInstance().getConfig().getProtectedTime() != 0) {
             for (Pokemon pokemon : StorageProxy.getStorageManager().getParty(event.player).getTeam()) {
                 pokemon.ifEntityExists(entityPixelmon -> {
@@ -110,7 +127,7 @@ public class LegendaryListener {
     }
 
     @SubscribeEvent
-    public void onStartBattle(BattleStartedEvent event) {
+    public void onBattleStarted(BattleStartedEvent event) {
         if (LegendControl.getInstance().getConfig().getProtectedTime() > 0) {
             BattleParticipant participant1 = event.getTeamOne()[0];
             BattleParticipant participant2 = event.getTeamTwo()[0];

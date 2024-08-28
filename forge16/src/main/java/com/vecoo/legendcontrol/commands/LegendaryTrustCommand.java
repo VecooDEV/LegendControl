@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.storage.player.PlayerFactory;
+import com.vecoo.legendcontrol.storage.player.LegendPlayerFactory;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -49,12 +49,12 @@ public class LegendaryTrustCommand {
     private static int executeAdd(ServerPlayerEntity player, String target) {
         if (!UtilPlayer.hasUUID(target)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
-                    .replace("%target%", target)), Util.NIL_UUID);
+                    .replace("%player%", target)), Util.NIL_UUID);
             return 0;
         }
 
         UUID targetUUID = UtilPlayer.getUUID(target);
-        List<UUID> trustedPlayers = PlayerFactory.getPlayersTrust(player.getUUID());
+        List<UUID> trustedPlayers = LegendPlayerFactory.getPlayersTrust(player.getUUID());
 
         if (player.getUUID().equals(targetUUID)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getCantSelfTrust()), Util.NIL_UUID);
@@ -71,22 +71,22 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        PlayerFactory.addPlayerTrust(player.getUUID(), targetUUID);
+        LegendPlayerFactory.addPlayerTrust(player.getUUID(), targetUUID);
 
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getAddTrust()
-                .replace("%target%", target)), Util.NIL_UUID);
+                .replace("%player%", target)), Util.NIL_UUID);
         return 1;
     }
 
     private static int executeRemove(ServerPlayerEntity player, String target) {
         if (!UtilPlayer.hasUUID(target)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
-                    .replace("%target%", target)), Util.NIL_UUID);
+                    .replace("%player%", target)), Util.NIL_UUID);
             return 0;
         }
 
         UUID targetUUID = UtilPlayer.getUUID(target);
-        List<UUID> trustedPlayers = PlayerFactory.getPlayersTrust(player.getUUID());
+        List<UUID> trustedPlayers = LegendPlayerFactory.getPlayersTrust(player.getUUID());
 
         if (trustedPlayers.isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
@@ -98,35 +98,34 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        PlayerFactory.removePlayerTrust(player.getUUID(), targetUUID);
+        LegendPlayerFactory.removePlayerTrust(player.getUUID(), targetUUID);
 
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveTrust()
-                .replace("%target%", target)), Util.NIL_UUID);
+                .replace("%player%", target)), Util.NIL_UUID);
         return 1;
     }
 
     private static int executeRemoveAll(ServerPlayerEntity player) {
-        if (PlayerFactory.getPlayersTrust(player.getUUID()).isEmpty()) {
+        if (LegendPlayerFactory.getPlayersTrust(player.getUUID()).isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
             return 0;
         }
 
-        PlayerFactory.removePlayersTrust(player.getUUID());
+        LegendPlayerFactory.removePlayersTrust(player.getUUID());
 
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveAllTrust()), Util.NIL_UUID);
         return 1;
     }
 
     private static int executeList(ServerPlayerEntity player) {
-        List<UUID> players = PlayerFactory.getPlayersTrust(player.getUUID());
+        List<UUID> players = LegendPlayerFactory.getPlayersTrust(player.getUUID());
 
         if (players.isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
             return 0;
         }
 
-        player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getListTrust()
-                .replace("%amount%", players.size() + "")), Util.NIL_UUID);
+        player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getListTrust()), Util.NIL_UUID);
 
         for (UUID uuid : players) {
             String playerName = UsernameCache.getLastKnownUsername(uuid);

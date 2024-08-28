@@ -16,6 +16,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,25 +44,37 @@ public class LegendControl {
         Pixelmon.EVENT_BUS.register(new LegendaryListener());
     }
 
-    public void loadConfig() {
-        try {
-            this.config = YamlConfigFactory.getInstance(ServerConfig.class);
-            this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
-            this.permissions = YamlConfigFactory.getInstance(PermissionsConfig.class);
-            this.playerProvider = new PlayerProvider();
-            this.playerProvider.init();
-            this.serverProvider = new ServerProvider();
-            this.serverProvider.init();
-        } catch (Exception e) {
-            LOGGER.error("Error load config.");
-        }
-    }
-
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
         CheckLegendsCommand.register(event.getDispatcher());
         LegendaryTrustCommand.register(event.getDispatcher());
         LegendControlCommand.register(event.getDispatcher());
+    }
+
+    @SubscribeEvent
+    public void onServerStarting(FMLServerStartingEvent event) {
+        this.loadStorage();
+    }
+
+    public void loadConfig() {
+        try {
+            this.config = YamlConfigFactory.getInstance(ServerConfig.class);
+            this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
+            this.permissions = YamlConfigFactory.getInstance(PermissionsConfig.class);
+        } catch (Exception e) {
+            LOGGER.error("Error load config.");
+        }
+    }
+
+    public void loadStorage() {
+        try {
+            this.playerProvider = new PlayerProvider();
+            this.playerProvider.init();
+            this.serverProvider = new ServerProvider();
+            this.serverProvider.init();
+        } catch (Exception e) {
+            LOGGER.error("Error load storage.");
+        }
     }
 
     public static LegendControl getInstance() {

@@ -5,7 +5,7 @@ import com.vecoo.legendcontrol.LegendControl;
 import java.util.List;
 import java.util.UUID;
 
-public class PlayerFactory {
+public class LegendPlayerFactory {
     public static boolean hasPlayerTrust(UUID playerUUID, UUID targetUUID) {
         return LegendControl.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).getPlayersTrust().contains(targetUUID);
     }
