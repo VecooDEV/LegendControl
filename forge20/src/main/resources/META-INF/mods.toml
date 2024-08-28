@@ -28,12 +28,12 @@ side="BOTH"
 modId="pixelmon"
 mandatory=true
 versionRange="[9.2,)"
-ordering="BEFORE"
+ordering="AFTER"
 side="BOTH"
 
 [[dependencies.legendcontrol]]
 modId="extralib"
 mandatory=true
 versionRange="[1.1,)"
-ordering="BEFORE"
+ordering="AFTER"
 side="BOTH"
