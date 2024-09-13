@@ -23,6 +23,9 @@ public class ServerConfig extends AbstractYamlConfig {
     @Comment("The number of seconds before the protection of a legendary Pokemon is removed. Set to 0 to disable")
     private int protectedTime = 300;
 
+    @Comment("The amount of time before the Pokemon's location is announced. 0 to disable.")
+    private int locationTime = 600;
+
     @Comment("Base chance for legendary Pokemon.")
     private float baseChance = 10.0F;
 
@@ -80,6 +83,10 @@ public class ServerConfig extends AbstractYamlConfig {
 
     public int getMaxPlayersIP() {
         return this.maxPlayersIP;
+    }
+
+    public int getLocationTime() {
+        return this.locationTime;
     }
 
     public int getRandomTimeSpawnMin() {

@@ -13,6 +13,7 @@ public class ServerConfig {
     private String serverStorage = "/%directory%/storage/LegendControl/";
     private int trustLimit = 15;
     private int protectedTime = 300;
+    private int locationTime = 600;
     private float baseChance = 10.0F;
     private float stepSpawnChance = 5.0F;
     private int maxPlayersIP = 0;
@@ -48,6 +49,10 @@ public class ServerConfig {
 
     public float getStepSpawnChance() {
         return this.stepSpawnChance;
+    }
+
+    public int getLocationTime() {
+        return this.locationTime;
     }
 
     public int getMaxPlayersIP() {
@@ -106,6 +111,7 @@ public class ServerConfig {
                 this.serverStorage = config.getServerStorage();
                 this.trustLimit = config.getTrustLimit();
                 this.protectedTime = config.getProtectedTime();
+                this.locationTime = config.getLocationTime();
                 this.baseChance = config.getBaseChance();
                 this.stepSpawnChance = config.getStepSpawnChance();
                 this.maxPlayersIP = config.getMaxPlayersIP();

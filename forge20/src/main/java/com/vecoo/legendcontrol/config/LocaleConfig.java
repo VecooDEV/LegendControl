@@ -28,6 +28,7 @@ public class LocaleConfig extends AbstractYamlConfig {
         private String listTrust = "&e&lTrust list:";
         private String incorrectCause = "&e(!) At the moment, the legendary Pokemon is protected. Try to enter the battle after a while.";
         private String protection = "&e(!) Pokemon %pokemon%'s protection has expired.";
+        private String location = "&e(!) Location of Pokemon %pokemon%: X: %x%, Y: %y%, Z: %z%.";
 
         private String blacklist = "&e&lPlayers missing legend spawns";
         private String addBlacklist = "&e(!) Player %player% has been added from the legendary blacklist.";
@@ -135,6 +136,10 @@ public class LocaleConfig extends AbstractYamlConfig {
 
         public String getProtection() {
             return this.protection;
+        }
+
+        public String getLocation() {
+            return this.location;
         }
 
         public String getSpawnPlayerLegendary() {

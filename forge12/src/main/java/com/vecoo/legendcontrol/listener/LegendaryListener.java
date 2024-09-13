@@ -97,11 +97,12 @@ public class LegendaryListener {
 
         Utils.countSpawn = 0;
 
-        int num = config.getProtectedTime();
+        int protectedTime = config.getProtectedTime();
+        int locationTime = config.getLocationTime();
 
-        if (num > 0) {
-            Timer timer = new Timer();
+        Timer timer = new Timer();
 
+        if (protectedTime > 0) {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -111,7 +112,22 @@ public class LegendaryListener {
                     }
                     legendMap.remove(pokemon);
                 }
-            }, num * 1000L);
+            }, protectedTime * 1000L);
+        }
+
+        if (locationTime > 0) {
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (pokemon.isEntityAlive()) {
+                        UtilChat.broadcast(LegendControl.getInstance().getLocale().getLocation()
+                                .replace("%pokemon%", pokemon.getSpecies().getLocalizedName())
+                                .replace("%x%", String.valueOf((int) pokemon.posX))
+                                .replace("%y%", String.valueOf((int) pokemon.posY))
+                                .replace("%z%", String.valueOf((int) pokemon.posZ)));
+                    }
+                }
+            }, locationTime * 1000L);
         }
     }
 

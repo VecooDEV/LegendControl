@@ -16,6 +16,7 @@ public class LocaleConfig {
     private String listTrust = "&e&lTrust list:";
     private String incorrectCause = "&e(!) At the moment, the legendary Pokemon is protected. Try to enter the battle after a while.";
     private String protection = "&e(!) Pokemon %pokemon%'s protection has expired.";
+    private String location = "&e(!) Location of Pokemon %pokemon%: X: %x%, Y: %y%, Z: %z%.";
 
     private String blacklist = "&e&lPlayers missing legend spawns:";
     private String addBlacklist = "&e(!) Player %player% has been added to the legendary blacklist.";
@@ -88,6 +89,10 @@ public class LocaleConfig {
 
     public String getListPlayer() {
         return this.listPlayer;
+    }
+
+    public String getLocation() {
+        return this.location;
     }
 
     public String getBlacklist() {
@@ -190,6 +195,7 @@ public class LocaleConfig {
                 this.listTrust = config.getListTrust();
                 this.incorrectCause = config.getIncorrectCause();
                 this.protection = config.getProtection();
+                this.location = config.getLocation();
                 this.blacklist = config.getBlacklist();
                 this.addBlacklist = config.getAddBlacklist();
                 this.removeBlacklist = config.getRemoveBlacklist();
