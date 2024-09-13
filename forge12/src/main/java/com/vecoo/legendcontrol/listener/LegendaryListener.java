@@ -119,7 +119,7 @@ public class LegendaryListener {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if (pokemon.isEntityAlive()) {
+                    if (pokemon.isEntityAlive() && !pokemon.hasOwner()) {
                         UtilChat.broadcast(LegendControl.getInstance().getLocale().getLocation()
                                 .replace("%pokemon%", pokemon.getSpecies().getLocalizedName())
                                 .replace("%x%", String.valueOf((int) pokemon.posX))
