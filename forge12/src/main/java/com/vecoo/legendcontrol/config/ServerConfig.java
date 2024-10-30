@@ -95,17 +95,16 @@ public class ServerConfig {
         return this.blacklistWorldList;
     }
 
-    private boolean write() {
+    private void write() {
         Gson gson = UtilGson.newGson();
         CompletableFuture<Boolean> future = UtilGson.writeFileAsync("/config/LegendControl/", "config.json", gson.toJson(this));
-        return future.join();
+        future.join();
     }
 
     public void init() {
         try {
             CompletableFuture<Boolean> future = UtilGson.readFileAsync("/config/LegendControl/", "config.json", el -> {
-                Gson gson = UtilGson.newGson();
-                ServerConfig config = gson.fromJson(el, ServerConfig.class);
+                ServerConfig config = UtilGson.newGson().fromJson(el, ServerConfig.class);
 
                 this.playerStorage = config.getPlayerStorage();
                 this.serverStorage = config.getServerStorage();
@@ -129,7 +128,8 @@ public class ServerConfig {
                 write();
             }
         } catch (Exception e) {
-            LegendControl.getLogger().error("Error in config.");
+            LegendControl.getLogger().error("[LegendControl] Error in config.");
+            write();
         }
     }
 }

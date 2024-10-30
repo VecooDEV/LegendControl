@@ -1,4 +1,4 @@
-package com.vecoo.legendcontrol.commands;
+package com.vecoo.legendcontrol.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
@@ -15,7 +15,7 @@ public class CheckLegendsCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         for (String command : Arrays.asList("checklegends", "checkleg")) {
             dispatcher.register(Commands.literal(command)
-                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermissions().getPermissions().get("minecraft.command.checklegends")))
+                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermission().getPermissionCommand().get("minecraft.command.checklegends")))
                     .executes(e -> execute(e.getSource())));
         }
     }

@@ -175,17 +175,16 @@ public class LocaleConfig {
         return this.hours;
     }
 
-    private boolean write() {
+    private void write() {
         Gson gson = UtilGson.newGson();
         CompletableFuture<Boolean> future = UtilGson.writeFileAsync("/config/LegendControl/", "locale.json", gson.toJson(this));
-        return future.join();
+        future.join();
     }
 
     public void init() {
         try {
             CompletableFuture<Boolean> future = UtilGson.readFileAsync("/config/LegendControl/", "locale.json", el -> {
-                Gson gson = UtilGson.newGson();
-                LocaleConfig config = gson.fromJson(el, LocaleConfig.class);
+                LocaleConfig config = UtilGson.newGson().fromJson(el, LocaleConfig.class);
 
                 this.reload = config.getReload();
                 this.addTrust = config.getAddTrust();
@@ -224,7 +223,8 @@ public class LocaleConfig {
                 write();
             }
         } catch (Exception e) {
-            LegendControl.getLogger().error("Error in locale config.");
+            LegendControl.getLogger().error("[LegendControl] Error in locale config.");
+            write();
         }
     }
 }

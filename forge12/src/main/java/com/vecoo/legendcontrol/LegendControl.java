@@ -1,10 +1,11 @@
 package com.vecoo.legendcontrol;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.vecoo.legendcontrol.commands.CheckLegendsCommand;
-import com.vecoo.legendcontrol.commands.LegendControlCommand;
-import com.vecoo.legendcontrol.commands.LegendaryTrustCommand;
-import com.vecoo.legendcontrol.config.PermissionsConfig;
+import com.vecoo.extralib.permission.UtilPermissions;
+import com.vecoo.legendcontrol.command.CheckLegendsCommand;
+import com.vecoo.legendcontrol.command.LegendControlCommand;
+import com.vecoo.legendcontrol.command.LegendaryTrustCommand;
+import com.vecoo.legendcontrol.config.PermissionConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.listener.LegendaryListener;
@@ -28,7 +29,7 @@ public class LegendControl {
 
     private ServerConfig config;
     private LocaleConfig locale;
-    private PermissionsConfig permissions;
+    private PermissionConfig permission;
 
     private PlayerProvider playerProvider;
     private ServerProvider serverProvider;
@@ -48,6 +49,7 @@ public class LegendControl {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
+        UtilPermissions.registerPermission(permission.getPermissionCommand());
         event.registerServerCommand(new CheckLegendsCommand());
         event.registerServerCommand(new LegendaryTrustCommand());
         event.registerServerCommand(new LegendControlCommand());
@@ -61,10 +63,10 @@ public class LegendControl {
             this.config.init();
             this.locale = new LocaleConfig();
             this.locale.init();
-            this.permissions = new PermissionsConfig();
-            this.permissions.init();
+            this.permission = new PermissionConfig();
+            this.permission.init();
         } catch (Exception e) {
-            LOGGER.error("Error load config.");
+            LOGGER.error("[LegendControl] Error load config.");
         }
     }
 
@@ -75,7 +77,7 @@ public class LegendControl {
             this.serverProvider = new ServerProvider();
             this.serverProvider.init();
         } catch (Exception e) {
-            LOGGER.error("Error load storage.");
+            LOGGER.error("[LegendControl] Error load storage.");
         }
     }
 
@@ -95,8 +97,8 @@ public class LegendControl {
         return instance.locale;
     }
 
-    public PermissionsConfig getPermissions() {
-        return instance.permissions;
+    public PermissionConfig getPermission() {
+        return instance.permission;
     }
 
     public ServerProvider getServerProvider() {

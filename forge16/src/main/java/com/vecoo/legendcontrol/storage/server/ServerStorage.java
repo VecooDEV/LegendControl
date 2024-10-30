@@ -8,8 +8,8 @@ import java.util.*;
 public class ServerStorage {
     private float legendaryChance;
     private String lastLegend;
-    private List<UUID> playersBlacklist;
-    private LinkedHashMap<UUID, String> playersIP;
+    private final List<UUID> playersBlacklist;
+    private final LinkedHashMap<UUID, String> playersIP;
 
     public ServerStorage(float legendaryChance, String lastLegend) {
         this.legendaryChance = legendaryChance;

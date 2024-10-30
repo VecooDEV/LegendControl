@@ -1,5 +1,6 @@
-package com.vecoo.legendcontrol.commands;
+package com.vecoo.legendcontrol.command;
 
+import com.google.common.collect.Lists;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -7,18 +8,18 @@ import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraftforge.common.UsernameCache;
 
 import java.util.List;
 import java.util.UUID;
 
 public class LegendControlCommand {
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        for (String command : List.of("legendcontrol", "lc")) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+        for (String command : Lists.newArrayList("legendcontrol", "lc")) {
             dispatcher.register(Commands.literal(command)
-                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermissions().getPermissions().get("minecraft.command.legendcontrol")))
+                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermission().getPermissionCommand().get("minecraft.command.legendcontrol")))
                     .then(Commands.literal("add")
                             .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
                                     .executes(e -> executeAdd(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
@@ -56,67 +57,67 @@ public class LegendControlCommand {
         }
     }
 
-    private static int executeAdd(CommandSourceStack source, float chance) {
+    private static int executeAdd(CommandSource source, float chance) {
         if (LegendServerFactory.getLegendaryChance() + chance > 100F) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getErrorChance()));
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getErrorChance()), false);
             return 0;
         }
 
         LegendServerFactory.addLegendaryChance(chance);
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
                 .replace("%chance%", String.format("%.4f", LegendServerFactory.getLegendaryChance())
-                        .replaceAll("\\.?0+$", "") + "%")));
+                        .replaceAll("\\.?0+$", "") + "%")), false);
         return 1;
     }
 
-    private static int executeRemove(CommandSourceStack source, float chance) {
+    private static int executeRemove(CommandSource source, float chance) {
         if (LegendServerFactory.getLegendaryChance() - chance < 0F) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getErrorChance()));
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getErrorChance()), false);
             return 0;
         }
 
         LegendServerFactory.removeLegendaryChance(chance);
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
                 .replace("%chance%", String.format("%.4f", LegendServerFactory.getLegendaryChance())
-                        .replaceAll("\\.?0+$", "") + "%")));
+                        .replaceAll("\\.?0+$", "") + "%")), false);
         return 1;
     }
 
-    private static int executeSet(CommandSourceStack source, float chance) {
+    private static int executeSet(CommandSource source, float chance) {
         LegendServerFactory.setLegendaryChance(chance);
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
                 .replace("%chance%", String.format("%.4f", LegendServerFactory.getLegendaryChance())
-                        .replaceAll("\\.?0+$", "") + "%")));
+                        .replaceAll("\\.?0+$", "") + "%")), false);
         return 1;
     }
 
-    private static int executeBlacklist(CommandSourceStack source) {
+    private static int executeBlacklist(CommandSource source) {
         List<UUID> playersBlacklist = LegendServerFactory.getPlayersBlacklist();
 
         if (playersBlacklist.isEmpty()) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyBlacklist()));
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyBlacklist()), false);
             return 0;
         }
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getBlacklist()));
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getBlacklist()), false);
 
         for (UUID uuid : playersBlacklist) {
             String playerName = UsernameCache.getLastKnownUsername(uuid);
             if (playerName != null) {
-                source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getListPlayer()
-                        .replace("%player%", playerName)));
+                source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getListPlayer()
+                        .replace("%player%", playerName)), false);
             }
         }
         return 1;
     }
 
-    private static int executeBlacklistAdd(CommandSourceStack source, String target) {
+    private static int executeBlacklistAdd(CommandSource source, String target) {
         if (!UtilPlayer.hasUUID(target)) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
-                    .replace("%player%", target)));
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
+                    .replace("%player%", target)), false);
             return 0;
         }
 
@@ -124,21 +125,21 @@ public class LegendControlCommand {
         List<UUID> playersBlacklist = LegendServerFactory.getPlayersBlacklist();
 
         if (playersBlacklist.contains(targetUUID)) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getAlreadyBlacklist()));
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getAlreadyBlacklist()), false);
             return 0;
         }
 
         LegendServerFactory.addPlayerBlacklist(targetUUID);
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getAddBlacklist()
-                .replace("%player%", target)));
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getAddBlacklist()
+                .replace("%player%", target)), false);
         return 1;
     }
 
-    private static int executeBlacklistRemove(CommandSourceStack source, String target) {
+    private static int executeBlacklistRemove(CommandSource source, String target) {
         if (!UtilPlayer.hasUUID(target)) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
-                    .replace("%player%", target)));
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
+                    .replace("%player%", target)), false);
             return 0;
         }
 
@@ -146,37 +147,37 @@ public class LegendControlCommand {
         List<UUID> playersBlacklist = LegendServerFactory.getPlayersBlacklist();
 
         if (playersBlacklist.isEmpty()) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyBlacklist()));
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyBlacklist()), false);
             return 0;
         }
 
         if (!playersBlacklist.contains(targetUUID)) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getNotPlayerBlacklist()));
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getNotPlayerBlacklist()), false);
             return 0;
         }
 
         LegendServerFactory.removePlayerBlacklist(targetUUID);
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveBlacklist()
-                .replace("%player%", target)));
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveBlacklist()
+                .replace("%player%", target)), false);
         return 1;
     }
 
-    private static int executeBlacklistRemoveAll(CommandSourceStack source) {
+    private static int executeBlacklistRemoveAll(CommandSource source) {
         if (LegendServerFactory.getPlayersBlacklist().isEmpty()) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()));
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), false);
             return 0;
         }
 
         LegendServerFactory.removePlayersBlacklist();
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveAllBlacklist()));
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveAllBlacklist()), false);
         return 1;
     }
 
-    private static int executeReload(CommandSourceStack source) {
+    private static int executeReload(CommandSource source) {
         LegendControl.getInstance().loadConfig();
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getReload()));
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getReload()), false);
         return 1;
     }
 }

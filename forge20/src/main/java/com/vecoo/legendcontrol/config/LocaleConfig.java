@@ -7,7 +7,7 @@ import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
 @ConfigPath("config/LegendControl/locale.yml")
 @ConfigSerializable
 public class LocaleConfig extends AbstractYamlConfig {
-    private Messages messages = new Messages();
+    private final Messages messages = new Messages();
 
     public LocaleConfig() {
         super();

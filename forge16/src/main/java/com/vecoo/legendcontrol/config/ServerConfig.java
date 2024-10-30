@@ -56,6 +56,12 @@ public class ServerConfig extends AbstractYamlConfig {
     @Comment("List of Legendary Pokemon that cannot appear.")
     private List<String> blacklistLegendaryList = Lists.newArrayList("Regieleki", "Regidrago");
 
+    @Comment("Will the blacklist of dimension be included?")
+    private boolean blacklistDimensions = false;
+
+    @Comment("Names of all excluded dimensions.")
+    private List<String> blacklistDimensionList = Lists.newArrayList("the_nether", "the_end");
+
     public String getPlayerStorage() {
         return this.playerStorage;
     }
@@ -114,5 +120,13 @@ public class ServerConfig extends AbstractYamlConfig {
 
     public List<String> getBlockedLegendary() {
         return this.blacklistLegendaryList;
+    }
+
+    public boolean isBlacklistDimensions() {
+        return this.blacklistDimensions;
+    }
+
+    public List<String> getBlacklistDimensionList() {
+        return this.blacklistDimensionList;
     }
 }

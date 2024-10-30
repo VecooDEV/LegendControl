@@ -39,11 +39,17 @@ public class LegendaryListener {
         return true;
     }
 
+    @SubscribeEvent
     public void onChoosePlayer(LegendarySpawnEvent.ChoosePlayer event) {
         ServerConfig config = LegendControl.getInstance().getConfig();
         ServerPlayer player = event.player;
 
         if (LegendServerFactory.getPlayersBlacklist().contains(player.getUUID())) {
+            event.setCanceled(true);
+            return;
+        }
+
+        if (config.getBlacklistDimensionList().contains(player.level().dimension().location().getPath()) && config.isBlacklistDimensions()) {
             event.setCanceled(true);
             return;
         }

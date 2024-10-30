@@ -56,10 +56,7 @@ public class ParticleTask {
             Vec3d positionVector = pixelmon.getPositionVector();
 
             worldServer.spawnParticle(EnumParticleTypes.DRAGON_BREATH,
-                    positionVector.x,
-                    positionVector.y,
-                    positionVector.z,
-                    5,
+                    positionVector.x, positionVector.y, positionVector.z, 5,
                     0, 0, 0, 0.05);
         }
     }

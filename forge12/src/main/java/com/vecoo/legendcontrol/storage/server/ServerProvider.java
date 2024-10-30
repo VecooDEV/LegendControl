@@ -2,13 +2,13 @@ package com.vecoo.legendcontrol.storage.server;
 
 import com.google.gson.Gson;
 import com.vecoo.extralib.gson.UtilGson;
+import com.vecoo.extralib.world.UtilWorld;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.util.Utils;
 
 import java.util.concurrent.CompletableFuture;
 
 public class ServerProvider {
-    private String filePath = Utils.worldDirectory(LegendControl.getInstance().getConfig().getServerStorage());
+    private final String filePath = UtilWorld.worldDirectory(LegendControl.getInstance().getConfig().getServerStorage());
     private ServerStorage serverStorage;
 
     public ServerStorage getServerStorage() {

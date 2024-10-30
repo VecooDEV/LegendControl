@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class PlayerStorage {
-    private UUID uuid;
-    private List<UUID> playersTrust;
+    private final UUID uuid;
+    private final List<UUID> playersTrust;
 
     public PlayerStorage(UUID playerUUID) {
         this.uuid = playerUUID;

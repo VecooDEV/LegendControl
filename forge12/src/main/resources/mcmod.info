@@ -3,11 +3,10 @@
     "modid": "legendcontrol",
     "name": "LegendControl",
     "description": "Sidemode for Pixelmon. Changing the spawn elements of legendary Pokémon.",
-    "version": "2.1.1",
+    "version": "2.2.0",
     "mcversion": "1.12.2",
     "logoFile": "logo.png",
     "authorList": ["Vecoo"],
-    "parent": "",
     "useDependencyInformation": true,
     "requiredMods": ["extralib", "pixelmon"],
     "dependencies": ["extralib", "pixelmon"]

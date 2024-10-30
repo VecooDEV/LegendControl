@@ -1,4 +1,4 @@
-package com.vecoo.legendcontrol.commands;
+package com.vecoo.legendcontrol.command;
 
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.vecoo.extralib.chat.UtilChat;
@@ -31,7 +31,7 @@ public class CheckLegendsCommand extends CommandBase {
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return LegendControl.getInstance().getPermissions().getPermissionCommand().get("minecraft.command.checklegends") == 0 || sender.canUseCommand(2, "gamemode");
+        return LegendControl.getInstance().getPermission().getPermissionCommand().get("minecraft.command.checklegends") == 0 || sender.canUseCommand(2, "gamemode");
     }
 
     @Override

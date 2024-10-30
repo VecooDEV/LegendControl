@@ -53,6 +53,11 @@ public class LegendaryListener {
             return;
         }
 
+        if (config.getBlacklistDimensionList().contains(player.getLevel().dimension().location().getPath()) && config.isBlacklistDimensions()) {
+            event.setCanceled(true);
+            return;
+        }
+
         LegendServerFactory.updatePlayerIP(player);
 
         if (LegendServerFactory.getPlayersIP().containsValue(player.getIpAddress()) && config.getMaxPlayersIP() > 0) {

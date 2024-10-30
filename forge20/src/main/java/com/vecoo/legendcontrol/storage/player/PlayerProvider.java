@@ -2,8 +2,8 @@ package com.vecoo.legendcontrol.storage.player;
 
 import com.google.gson.Gson;
 import com.vecoo.extralib.gson.UtilGson;
+import com.vecoo.extralib.world.UtilWorld;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.util.Utils;
 
 import java.io.File;
 import java.util.HashMap;
@@ -11,8 +11,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayerProvider {
-    private String filePath = Utils.worldDirectory(LegendControl.getInstance().getConfig().getPlayerStorage());
-    private HashMap<UUID, PlayerStorage> map;
+    private final String filePath = UtilWorld.worldDirectory(LegendControl.getInstance().getConfig().getPlayerStorage());
+    private final HashMap<UUID, PlayerStorage> map;
 
     public PlayerProvider() {
         this.map = new HashMap<>();

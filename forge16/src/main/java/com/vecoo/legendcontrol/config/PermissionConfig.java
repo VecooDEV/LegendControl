@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 @ConfigPath("config/LegendControl/permissions.yml")
 @ConfigSerializable
-public class PermissionsConfig extends AbstractYamlConfig {
-    private HashMap<String, Integer> permissions = new HashMap<String, Integer>() {
+public class PermissionConfig extends AbstractYamlConfig {
+    private HashMap<String, Integer> permissionCommand = new HashMap<String, Integer>() {
         {
             this.put("minecraft.command.legendcontrol", 2);
             this.put("minecraft.command.legendarytrust", 0);
@@ -17,7 +17,7 @@ public class PermissionsConfig extends AbstractYamlConfig {
         }
     };
 
-    public HashMap<String, Integer> getPermissions() {
-        return this.permissions;
+    public HashMap<String, Integer> getPermissionCommand() {
+        return this.permissionCommand;
     }
 }

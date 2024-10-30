@@ -32,32 +32,29 @@ public class MixinsCoreMod implements IFMLLoadingPlugin {
 
     private void addToCoremodList(String mod, String mixin) {
         if (mod == null || mod.trim().isEmpty() || mixin == null || mixin.trim().isEmpty()) {
-            this.log("Mixins", "Loaded a null mod or mixins (mod=" + mod + ", mixin=" + mixin + ") this is not valid and will be dumped!");
+            this.log("Loaded a null mod or mixins (mod=" + mod + ", mixin=" + mixin + ") this is not valid and will be dumped!");
         } else {
-            this.log("Mixins", "Added Optional Preloader for \"" + mod + "\" using \"" + mixin + "\"");
+            this.log("Added Optional Preloader for \"" + mod + "\" using \"" + mixin + "\"");
             this.coremods.add(new Tuple<>(mod, mixin));
         }
     }
 
-    private boolean loadCoremod(File coremod, Tuple<String, String> target) {
+    private void loadCoremod(File coremod, Tuple<String, String> target) {
         try {
             if (!CoreModManager.getReparseableCoremods().contains(coremod.getName())) {
                 ((LaunchClassLoader) getClass().getClassLoader()).addURL(coremod.toURI().toURL());
                 CoreModManager.getReparseableCoremods().add(coremod.getName());
-                log("Mixins", "Preloaded mod \"" + coremod.getName() + "\" containing \"" + target.getFirst() + "\"");
-                return true;
+                log("Preloaded mod \"" + coremod.getName() + "\" containing \"" + target.getFirst() + "\"");
             } else {
-                log("Mixins", "Skipped Preloading already loaded coremod \"" + coremod.getName() + "\" with \"" + target.getSecond() + "\"");
-                return false;
+                log("Skipped Preloading already loaded coremod \"" + coremod.getName() + "\" with \"" + target.getSecond() + "\"");
             }
         } catch (Throwable t) {
-            log("Mixins", "Failed to  load a coremod! Caught " + t.getClass().getSimpleName() + "!" + " caused by " + (target == null ? "target was null" : target.getFirst() + " - " + target.getSecond()), t);
-            return false;
+            log("Failed to  load a coremod! Caught " + t.getClass().getSimpleName() + "!" + " caused by " + (target == null ? "target was null" : target.getFirst() + " - " + target.getSecond()), t);
         }
     }
 
     private void loadCoremodList() {
-        loadFolder("mods");
+        loadFolder();
         initializeMixins();
     }
 
@@ -66,22 +63,22 @@ public class MixinsCoreMod implements IFMLLoadingPlugin {
             MixinBootstrap.init();
             for (final Tuple<String, String> tuple : new ArrayList<>(loadedCoremods)) {
                 try {
-                    log("Mixins", "Loading Coremod mixins \"" + tuple.getSecond() + "\"");
+                    log("Loading Coremod mixins \"" + tuple.getSecond() + "\"");
                     Mixins.addConfiguration(tuple.getSecond());
                 } catch (Throwable t) {
-                    log("Mixins", "Caught Exception trying to preload mod configurations for \"" + (tuple != null ? tuple.getSecond() : "null entry") + "\"", t);
+                    log("Caught Exception trying to preload mod configurations for \"" + (tuple != null ? tuple.getSecond() : "null entry") + "\"", t);
                 }
             }
         } catch (final Throwable t) {
-            log("Mixins", "Caught Exception trying to preload mod configurations", t);
+            log("Caught Exception trying to preload mod configurations", t);
         }
     }
 
-    private void loadFolder(String path) {
+    private void loadFolder() {
         try {
-            final File modsFolder = new File(System.getProperty("user.dir"), path);
+            final File modsFolder = new File(System.getProperty("user.dir"), "mods");
             if (!modsFolder.exists()) {
-                log("Mixins", "The \"" + path + "\" folder couldn't be found skipping this loader! Folder: " + modsFolder.toString());
+                log("The \"" + "mods" + "\" folder couldn't be found skipping this loader! Folder: " + modsFolder.toString());
                 return;
             }
 
@@ -105,7 +102,7 @@ public class MixinsCoreMod implements IFMLLoadingPlugin {
             }
 
         } catch (Throwable t) {
-            log("Mixins", "Caught Exception trying to load \"" + path + "\" for coremods! This will likely be fatal", t);
+            log("Caught Exception trying to load \"" + "mods" + "\" for coremods! This will likely be fatal", t);
         }
     }
 
@@ -139,16 +136,16 @@ public class MixinsCoreMod implements IFMLLoadingPlugin {
         return null;
     }
 
-    private void log(final String prefix, final String message) {
-        this.log(prefix, message, null);
+    private void log(final String message) {
+        this.log(message, null);
     }
 
-    private void log(final String prefix, final String message, final Throwable e) {
-        FMLLog.log.info("[" + "INFO" + "] [" + prefix + "] " + "> " + message);
+    private void log(final String message, final Throwable e) {
+        FMLLog.log.info("[" + "INFO" + "] [" + "Mixins" + "] " + "> " + message);
 
         if (e != null) {
             for (final String s : getException(e)) {
-                FMLLog.log.info("[" + "INFO" + "] [" + prefix + "] " + "> " + s);
+                FMLLog.log.info("[" + "INFO" + "] [" + "Mixins" + "] " + "> " + s);
             }
         }
     }
