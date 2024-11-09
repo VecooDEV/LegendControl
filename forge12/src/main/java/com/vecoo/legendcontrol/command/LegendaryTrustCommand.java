@@ -2,6 +2,7 @@ package com.vecoo.legendcontrol.command;
 
 import com.vecoo.extralib.ExtraLib;
 import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.permission.UtilPermissions;
 import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.player.LegendPlayerFactory;
@@ -36,7 +37,7 @@ public class LegendaryTrustCommand extends CommandBase {
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return LegendControl.getInstance().getPermission().getPermissionCommand().get("minecraft.command.legendarytrust") == 0 || sender.canUseCommand(2, "gamemode");
+        return UtilPermissions.hasPermission(sender, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand());
     }
 
     @Override
@@ -87,6 +88,11 @@ public class LegendaryTrustCommand extends CommandBase {
     }
 
     private void executeAdd(EntityPlayerMP player, String target) {
+        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         if (!UtilPlayer.hasUUID(target)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotFound()
                     .replace("%player%", target)));
@@ -118,6 +124,11 @@ public class LegendaryTrustCommand extends CommandBase {
     }
 
     private void executeRemove(EntityPlayerMP player, String target) {
+        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         if (!UtilPlayer.hasUUID(target)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotFound()
                     .replace("%player%", target)));
@@ -144,6 +155,11 @@ public class LegendaryTrustCommand extends CommandBase {
     }
 
     private void executeRemoveAll(EntityPlayerMP player) {
+        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         if (LegendPlayerFactory.getPlayersTrust(player.getUniqueID()).isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getEmptyTrust()));
             return;
@@ -155,6 +171,11 @@ public class LegendaryTrustCommand extends CommandBase {
     }
 
     private void executeList(EntityPlayerMP player) {
+        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         List<UUID> players = LegendPlayerFactory.getPlayersTrust(player.getUniqueID());
 
         if (players.isEmpty()) {

@@ -3,6 +3,7 @@ package com.vecoo.legendcontrol.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.permission.UtilPermissions;
 import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.player.LegendPlayerFactory;
@@ -20,7 +21,7 @@ public class LegendaryTrustCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         for (String command : Arrays.asList("legendarytrust", "ltrust")) {
             dispatcher.register(Commands.literal(command)
-                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermission().getPermissionCommand().get("minecraft.command.legendarytrust")))
+                    .requires(p -> UtilPermissions.hasPermission(p, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand()))
                     .then(Commands.literal("add")
                             .then(Commands.argument("player", StringArgumentType.string())
                                     .executes(e -> executeAdd(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))
@@ -47,6 +48,11 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeAdd(ServerPlayerEntity player, String target) {
+        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), Util.NIL_UUID);
+            return 0;
+        }
+
         if (!UtilPlayer.hasUUID(target)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
                     .replace("%player%", target)), Util.NIL_UUID);
@@ -79,6 +85,11 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeRemove(ServerPlayerEntity player, String target) {
+        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), Util.NIL_UUID);
+            return 0;
+        }
+
         if (!UtilPlayer.hasUUID(target)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
                     .replace("%player%", target)), Util.NIL_UUID);
@@ -106,6 +117,11 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeRemoveAll(ServerPlayerEntity player) {
+        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), Util.NIL_UUID);
+            return 0;
+        }
+
         if (LegendPlayerFactory.getPlayersTrust(player.getUUID()).isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
             return 0;
@@ -118,6 +134,11 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeList(ServerPlayerEntity player) {
+        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), Util.NIL_UUID);
+            return 0;
+        }
+
         List<UUID> players = LegendPlayerFactory.getPlayersTrust(player.getUUID());
 
         if (players.isEmpty()) {

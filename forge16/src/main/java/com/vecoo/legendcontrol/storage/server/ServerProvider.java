@@ -1,11 +1,8 @@
 package com.vecoo.legendcontrol.storage.server;
 
-import com.google.gson.Gson;
 import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.extralib.world.UtilWorld;
 import com.vecoo.legendcontrol.LegendControl;
-
-import java.util.concurrent.CompletableFuture;
 
 public class ServerProvider {
     private final String filePath = UtilWorld.worldDirectory(LegendControl.getInstance().getConfig().getServerStorage());
@@ -26,15 +23,10 @@ public class ServerProvider {
     }
 
     private boolean write(ServerStorage server) {
-        Gson gson = UtilGson.newGson();
-        CompletableFuture<Boolean> future = UtilGson.writeFileAsync(filePath, "ServerStorage.json", gson.toJson(server));
-        return future.join();
+        return UtilGson.writeFileAsync(filePath, "ServerStorage.json", UtilGson.newGson().toJson(server)).join();
     }
 
     public void init() {
-        UtilGson.readFileAsync(filePath, "ServerStorage.json", el -> {
-            Gson gson = UtilGson.newGson();
-            this.serverStorage = gson.fromJson(el, ServerStorage.class);
-        });
+        UtilGson.readFileAsync(filePath, "ServerStorage.json", el -> this.serverStorage = UtilGson.newGson().fromJson(el, ServerStorage.class));
     }
 }

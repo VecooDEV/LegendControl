@@ -21,17 +21,12 @@ public class PermissionConfig {
     }
 
     private void write() {
-        CompletableFuture<Boolean> future = UtilGson.writeFileAsync("/config/LegendControl/", "permission.json", UtilGson.newGson().toJson(this));
-        future.join();
+        UtilGson.writeFileAsync("/config/LegendControl/", "permission.json", UtilGson.newGson().toJson(this)).join();
     }
 
     public void init() {
         try {
-            CompletableFuture<Boolean> future = UtilGson.readFileAsync("/config/LegendControl/", "permission.json", el -> {
-                PermissionConfig config = UtilGson.newGson().fromJson(el, PermissionConfig.class);
-
-                this.permissionCommands = config.getPermissionCommand();
-            });
+            CompletableFuture<Boolean> future = UtilGson.readFileAsync("/config/LegendControl/", "permission.json", el -> this.permissionCommands = UtilGson.newGson().fromJson(el, PermissionConfig.class).getPermissionCommand());
             if (!future.join()) {
                 write();
             }

@@ -3,6 +3,7 @@ package com.vecoo.legendcontrol.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.permission.UtilPermissions;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
 import com.vecoo.legendcontrol.util.Utils;
@@ -15,12 +16,17 @@ public class CheckLegendsCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         for (String command : Arrays.asList("checklegends", "checkleg")) {
             dispatcher.register(Commands.literal(command)
-                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermission().getPermissionCommand().get("minecraft.command.checklegends")))
+                    .requires(p -> UtilPermissions.hasPermission(p, "minecraft.command.checklegends", LegendControl.getInstance().getPermission().getPermissionCommand()))
                     .executes(e -> execute(e.getSource())));
         }
     }
 
     private static int execute(CommandSource source) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.checklegends", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), false);
+            return 0;
+        }
+
         int seconds = (int) ((PixelmonSpawning.legendarySpawner.nextSpawnTime - System.currentTimeMillis()) / 1000 + Utils.timeDoLegend);
         int minutes = seconds / 60;
         int hours = minutes / 60;

@@ -1,7 +1,6 @@
 package com.vecoo.legendcontrol.config;
 
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
 import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.legendcontrol.LegendControl;
 
@@ -19,6 +18,7 @@ public class ServerConfig {
     private int maxPlayersIP = 0;
     private int randomTimeSpawnMin = 0;
     private int randomTimeSpawnMax = 300;
+    private String particleName = "dragonbreath";
     private boolean notifyLegendarySpawn = true;
     private boolean legendaryRepeat = true;
     private boolean legendaryParticle = true;
@@ -95,10 +95,12 @@ public class ServerConfig {
         return this.blacklistWorldList;
     }
 
+    public String getParticleName() {
+        return this.particleName;
+    }
+
     private void write() {
-        Gson gson = UtilGson.newGson();
-        CompletableFuture<Boolean> future = UtilGson.writeFileAsync("/config/LegendControl/", "config.json", gson.toJson(this));
-        future.join();
+        UtilGson.writeFileAsync("/config/LegendControl/", "config.json", UtilGson.newGson().toJson(this)).join();
     }
 
     public void init() {
@@ -123,6 +125,7 @@ public class ServerConfig {
                 this.blacklistWorld = config.isBlacklistWorld();
                 this.blacklistWorldList = config.getBlockedWorld();
                 this.blacklistLegendaryList = config.getBlockedLegendary();
+                this.particleName = config.getParticleName();
             });
             if (!future.join()) {
                 write();

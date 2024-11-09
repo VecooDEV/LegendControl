@@ -5,13 +5,13 @@ import com.vecoo.extralib.permission.UtilPermissions;
 import com.vecoo.legendcontrol.command.CheckLegendsCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.command.LegendaryTrustCommand;
+import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.config.PermissionConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
-import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.listener.LegendaryListener;
-import com.vecoo.legendcontrol.task.ParticleTask;
 import com.vecoo.legendcontrol.storage.player.PlayerProvider;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
+import com.vecoo.legendcontrol.task.ParticleTask;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -39,6 +39,8 @@ public class LegendControl {
         instance = this;
 
         this.loadConfig();
+
+        UtilPermissions.registerPermission(permission.getPermissionCommand());
     }
 
     @Mod.EventHandler
@@ -49,7 +51,6 @@ public class LegendControl {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
-        UtilPermissions.registerPermission(permission.getPermissionCommand());
         event.registerServerCommand(new CheckLegendsCommand());
         event.registerServerCommand(new LegendaryTrustCommand());
         event.registerServerCommand(new LegendControlCommand());

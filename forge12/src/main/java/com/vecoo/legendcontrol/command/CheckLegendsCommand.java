@@ -2,6 +2,7 @@ package com.vecoo.legendcontrol.command;
 
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.permission.UtilPermissions;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
 import com.vecoo.legendcontrol.util.Utils;
@@ -31,11 +32,16 @@ public class CheckLegendsCommand extends CommandBase {
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return LegendControl.getInstance().getPermission().getPermissionCommand().get("minecraft.command.checklegends") == 0 || sender.canUseCommand(2, "gamemode");
+        return UtilPermissions.hasPermission(sender, "minecraft.command.checklegends", LegendControl.getInstance().getPermission().getPermissionCommand());
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
+        if (!UtilPermissions.hasPermission(sender, "minecraft.command.checklegends", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            sender.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         int seconds = (int) ((PixelmonSpawning.legendarySpawner.nextSpawnTime - System.currentTimeMillis()) / 1000 + Utils.timeDoLegend);
         int minutes = seconds / 60;
         int hours = minutes / 60;

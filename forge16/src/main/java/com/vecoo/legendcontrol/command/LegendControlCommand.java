@@ -5,11 +5,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.permission.UtilPermissions;
 import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.util.Util;
 import net.minecraftforge.common.UsernameCache;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public class LegendControlCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         for (String command : Lists.newArrayList("legendcontrol", "lc")) {
             dispatcher.register(Commands.literal(command)
-                    .requires(p -> p.hasPermission(LegendControl.getInstance().getPermission().getPermissionCommand().get("minecraft.command.legendcontrol")))
+                    .requires(p -> UtilPermissions.hasPermission(p, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand()))
                     .then(Commands.literal("add")
                             .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
                                     .executes(e -> executeAdd(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
@@ -58,6 +60,11 @@ public class LegendControlCommand {
     }
 
     private static int executeAdd(CommandSource source, float chance) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), false);
+            return 0;
+        }
+
         if (LegendServerFactory.getLegendaryChance() + chance > 100F) {
             source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getErrorChance()), false);
             return 0;
@@ -72,6 +79,11 @@ public class LegendControlCommand {
     }
 
     private static int executeRemove(CommandSource source, float chance) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), false);
+            return 0;
+        }
+
         if (LegendServerFactory.getLegendaryChance() - chance < 0F) {
             source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getErrorChance()), false);
             return 0;
@@ -86,6 +98,11 @@ public class LegendControlCommand {
     }
 
     private static int executeSet(CommandSource source, float chance) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), false);
+            return 0;
+        }
+
         LegendServerFactory.setLegendaryChance(chance);
 
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
@@ -95,6 +112,11 @@ public class LegendControlCommand {
     }
 
     private static int executeBlacklist(CommandSource source) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), false);
+            return 0;
+        }
+
         List<UUID> playersBlacklist = LegendServerFactory.getPlayersBlacklist();
 
         if (playersBlacklist.isEmpty()) {
@@ -115,6 +137,11 @@ public class LegendControlCommand {
     }
 
     private static int executeBlacklistAdd(CommandSource source, String target) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), false);
+            return 0;
+        }
+
         if (!UtilPlayer.hasUUID(target)) {
             source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
                     .replace("%player%", target)), false);
@@ -137,6 +164,11 @@ public class LegendControlCommand {
     }
 
     private static int executeBlacklistRemove(CommandSource source, String target) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), false);
+            return 0;
+        }
+
         if (!UtilPlayer.hasUUID(target)) {
             source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
                     .replace("%player%", target)), false);
@@ -164,6 +196,11 @@ public class LegendControlCommand {
     }
 
     private static int executeBlacklistRemoveAll(CommandSource source) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), false);
+            return 0;
+        }
+
         if (LegendServerFactory.getPlayersBlacklist().isEmpty()) {
             source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), false);
             return 0;
@@ -176,7 +213,14 @@ public class LegendControlCommand {
     }
 
     private static int executeReload(CommandSource source) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), false);
+            return 0;
+        }
+
         LegendControl.getInstance().loadConfig();
+        LegendControl.getInstance().loadStorage();
+
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getReload()), false);
         return 1;
     }

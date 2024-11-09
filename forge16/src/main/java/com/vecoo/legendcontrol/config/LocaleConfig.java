@@ -48,6 +48,7 @@ public class LocaleConfig extends AbstractYamlConfig {
         private String trustLimit = "&c(!) You have reached the maximum number of players on the trust list.";
         private String errorChance = "&c(!) The overall chance should not be less than 0% or greater than 100%.";
         private String playerNotFound = "&c(!) Player %player% not found.";
+        private String playerNotPermission = "&c(!) You do not have sufficient permissions to use the command.";
 
         private String listPlayer = "&e- %player%";
 
@@ -172,6 +173,10 @@ public class LocaleConfig extends AbstractYamlConfig {
 
         public String getHours() {
             return this.hours;
+        }
+
+        public String getPlayerNotPermission() {
+            return this.playerNotPermission;
         }
     }
 }

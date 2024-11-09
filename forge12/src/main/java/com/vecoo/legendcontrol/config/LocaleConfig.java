@@ -1,6 +1,5 @@
 package com.vecoo.legendcontrol.config;
 
-import com.google.gson.Gson;
 import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.legendcontrol.LegendControl;
 
@@ -40,6 +39,7 @@ public class LocaleConfig {
     private String errorChance = "&c(!) The overall chance should not be less than 0% or greater than 100%.";
     private String playerNotFound = "&c(!) Player %player% not found.";
     private String onlyPlayer = "&c(!) This command can only be executed by a player.";
+    private String playerNotPermission = "&c(!) You do not have sufficient permissions to use the command.";
 
     private String listPlayer = "&e- %player%";
 
@@ -175,10 +175,12 @@ public class LocaleConfig {
         return this.hours;
     }
 
+    public String getPlayerNotPermission() {
+        return this.playerNotPermission;
+    }
+
     private void write() {
-        Gson gson = UtilGson.newGson();
-        CompletableFuture<Boolean> future = UtilGson.writeFileAsync("/config/LegendControl/", "locale.json", gson.toJson(this));
-        future.join();
+        UtilGson.writeFileAsync("/config/LegendControl/", "locale.json", UtilGson.newGson().toJson(this)).join();
     }
 
     public void init() {
@@ -218,6 +220,7 @@ public class LocaleConfig {
                 this.seconds = config.getSeconds();
                 this.minutes = config.getMinutes();
                 this.hours = config.getHours();
+                this.playerNotPermission = config.getPlayerNotPermission();
             });
             if (!future.join()) {
                 write();

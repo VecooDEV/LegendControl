@@ -8,7 +8,6 @@ import com.vecoo.legendcontrol.LegendControl;
 import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class PlayerProvider {
     private final String filePath = UtilWorld.worldDirectory(LegendControl.getInstance().getConfig().getPlayerStorage());
@@ -33,16 +32,14 @@ public class PlayerProvider {
     }
 
     private boolean write(PlayerStorage player) {
-        Gson gson = UtilGson.newGson();
-        CompletableFuture<Boolean> future = UtilGson.writeFileAsync(filePath, player.getUuid() + ".json", gson.toJson(player));
-        return future.join();
+        return UtilGson.writeFileAsync(filePath, player.getUuid() + ".json", UtilGson.newGson().toJson(player)).join();
     }
 
     public void init() {
         File dir = UtilGson.checkForDirectory(filePath);
         String[] list = dir.list();
 
-        if (list.length == 0) {
+        if (list == null) {
             return;
         }
 

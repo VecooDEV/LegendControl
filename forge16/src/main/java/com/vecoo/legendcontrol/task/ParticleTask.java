@@ -51,7 +51,9 @@ public class ParticleTask {
                 continue;
             }
 
-            ((ServerWorld) pixelmon.level).sendParticles(ParticleTypes.DRAGON_BREATH,
+            ServerWorld world = (ServerWorld) pixelmon.level;
+
+            world.sendParticles(ParticleTypes.DRAGON_BREATH,
                     pixelmon.getX(), pixelmon.getY(), pixelmon.getZ(),
                     1, pixelmon.level.random.nextDouble() - 0.5, pixelmon.level.random.nextDouble() - 0.5, pixelmon.level.random.nextDouble() - 0.5, 1);
         }

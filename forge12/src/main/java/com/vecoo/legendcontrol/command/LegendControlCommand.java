@@ -2,6 +2,7 @@ package com.vecoo.legendcontrol.command;
 
 import com.vecoo.extralib.ExtraLib;
 import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.permission.UtilPermissions;
 import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
@@ -35,7 +36,7 @@ public class LegendControlCommand extends CommandBase {
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return LegendControl.getInstance().getPermission().getPermissionCommand().get("minecraft.command.legendcontrol") == 0 || sender.canUseCommand(2, "gamemode");
+        return UtilPermissions.hasPermission(sender, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand());
     }
 
     @Override
@@ -118,6 +119,12 @@ public class LegendControlCommand extends CommandBase {
     }
 
     private void executeAdd(ICommandSender source, float chance) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
+
         if (LegendServerFactory.getLegendaryChance() + chance > 100F) {
             source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()));
             return;
@@ -131,6 +138,11 @@ public class LegendControlCommand extends CommandBase {
     }
 
     private void executeRemove(ICommandSender source, float chance) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         if (LegendServerFactory.getLegendaryChance() - chance < 0F) {
             source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()));
             return;
@@ -144,6 +156,11 @@ public class LegendControlCommand extends CommandBase {
     }
 
     private void executeSet(ICommandSender source, float chance) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         LegendServerFactory.setLegendaryChance(chance);
 
         source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
@@ -152,6 +169,11 @@ public class LegendControlCommand extends CommandBase {
     }
 
     private void executeBlacklist(ICommandSender source) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         List<UUID> playersBlacklist = LegendServerFactory.getPlayersBlacklist();
 
         if (playersBlacklist.isEmpty()) {
@@ -171,6 +193,11 @@ public class LegendControlCommand extends CommandBase {
     }
 
     private void executeBlacklistAdd(ICommandSender source, String target) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         if (!UtilPlayer.hasUUID(target)) {
             source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotFound()
                     .replace("%player%", target)));
@@ -192,6 +219,11 @@ public class LegendControlCommand extends CommandBase {
     }
 
     private void executeBlacklistRemove(ICommandSender source, String target) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         if (!UtilPlayer.hasUUID(target)) {
             source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotFound()
                     .replace("%player%", target)));
@@ -218,6 +250,11 @@ public class LegendControlCommand extends CommandBase {
     }
 
     private void executeBlacklistRemoveAll(ICommandSender source) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         if (LegendServerFactory.getPlayersBlacklist().isEmpty()) {
             source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getEmptyTrust()));
             return;
@@ -229,8 +266,14 @@ public class LegendControlCommand extends CommandBase {
     }
 
     private void executeReload(ICommandSender source) {
+        if (!UtilPermissions.hasPermission(source, "minecraft.command.legendcontrol", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+            source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getPlayerNotPermission()));
+            return;
+        }
+
         LegendControl.getInstance().loadConfig();
         LegendControl.getInstance().loadStorage();
+
         source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getReload()));
     }
 }

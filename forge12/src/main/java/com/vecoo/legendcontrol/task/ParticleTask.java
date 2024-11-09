@@ -3,7 +3,9 @@ package com.vecoo.legendcontrol.task;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.vecoo.legendcontrol.LegendControl;
+import net.minecraft.block.SoundType;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -55,9 +57,13 @@ public class ParticleTask {
             WorldServer worldServer = (WorldServer) pixelmon.getEntityWorld();
             Vec3d positionVector = pixelmon.getPositionVector();
 
-            worldServer.spawnParticle(EnumParticleTypes.DRAGON_BREATH,
-                    positionVector.x, positionVector.y, positionVector.z, 5,
-                    0, 0, 0, 0.05);
+            EnumParticleTypes particle = EnumParticleTypes.getByName(LegendControl.getInstance().getConfig().getParticleName());
+
+            if (particle != null) {
+                worldServer.spawnParticle(particle,
+                        positionVector.x, positionVector.y, positionVector.z, 5,
+                        0, 0, 0, 0.05);
+            }
         }
     }
 }
