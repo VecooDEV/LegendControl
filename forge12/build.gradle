@@ -20,12 +20,11 @@ repositories {}
 dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 
-    implementation 'com.pixelmonmod.pixelmon:Pixelmon-1.12.2-8.4.3-server:8.4.3'
-    implementation 'org.spongepowered:mixin:0.8.5-SNAPSHOT'
+    implementation fg.deobf('com.pixelmonmod.pixelmon:Pixelmon-1.12.2-8.4.3-server:8.4.3')
+    implementation fg.deobf('maven.modrinth:extralib:1.2.2-forge,1.12.2')
+    implementation fg.deobf('org.spongepowered:mixin:0.8.5-SNAPSHOT')
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5-SNAPSHOT:processor'
-
-    implementation fileTree(dir: 'libs', include: ['ExtraLib-forge-1.2.1-1.12.2.jar'])
 }
 
 mixin {
@@ -45,7 +44,7 @@ jar {
 shadowJar {
     configurations = [project.configurations.shadow]
     setArchiveClassifier('')
-    setArchiveBaseName("${rootProject.name}-forge")
+    setArchiveBaseName("${rootProject.name}")
 }
 
 jar.finalizedBy('shadowJar')

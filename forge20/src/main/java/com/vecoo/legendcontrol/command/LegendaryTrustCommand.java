@@ -21,22 +21,29 @@ public class LegendaryTrustCommand {
                     .requires(p -> p.hasPermission(LegendControl.getInstance().getPermission().getPermissionCommand().get("minecraft.command.legendarytrust")))
                     .then(Commands.literal("add")
                             .then(Commands.argument("player", StringArgumentType.string())
-                                    .executes(e -> executeAdd(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))
                                     .suggests((s, builder) -> {
                                         for (String nick : s.getSource().getOnlinePlayerNames()) {
-                                            builder.suggest(nick);
+                                            if (nick.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
+                                                builder.suggest(nick);
+                                            }
                                         }
                                         return builder.buildFuture();
-                                    })))
+                                    })
+                                    .executes(e -> executeAdd(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))))
                     .then(Commands.literal("remove")
                             .then(Commands.argument("player", StringArgumentType.string())
-                                    .executes(e -> executeRemove(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))
                                     .suggests((s, builder) -> {
-                                        for (String nick : s.getSource().getOnlinePlayerNames()) {
-                                            builder.suggest(nick);
+                                        for (UUID uuid : LegendPlayerFactory.getPlayersTrust(s.getSource().getPlayerOrException().getUUID())) {
+                                            String name = UsernameCache.getLastKnownUsername(uuid);
+                                            if (name != null) {
+                                                if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
+                                                    builder.suggest(name);
+                                                }
+                                            }
                                         }
                                         return builder.buildFuture();
-                                    }))
+                                    })
+                                    .executes(e -> executeRemove(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player"))))
                             .then(Commands.literal("all")
                                     .executes(e -> executeRemoveAll(e.getSource().getPlayerOrException()))))
                     .then(Commands.literal("list")

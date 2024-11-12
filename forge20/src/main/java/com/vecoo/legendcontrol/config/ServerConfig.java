@@ -20,7 +20,7 @@ public class ServerConfig extends AbstractYamlConfig {
     @Comment("Maximum number of players in the trust list. Set to 0 to disable.")
     private int trustLimit = 15;
 
-    @Comment("The number of seconds before the protection of a legendary Pokemon is removed. Set to 0 to disable")
+    @Comment("The number of seconds before the protection of a legendary Pokemon is removed. Set to 0 to disable.")
     private int protectedTime = 300;
 
     @Comment("The amount of time before the Pokemon's location is announced. 0 to disable.")
@@ -40,6 +40,9 @@ public class ServerConfig extends AbstractYamlConfig {
 
     @Comment("The maximum number of seconds added to display the team time, it only changes the time visually.")
     private int randomTimeSpawnMax = 300;
+
+    @Comment("Name particle to spawn legendary pokemon.")
+    private String particleName = "dragon_breath";
 
     @Comment("Notifying the player about the appearance of a legendary Pokemon (locally).")
     private boolean notifyLegendarySpawn = true;
@@ -101,6 +104,10 @@ public class ServerConfig extends AbstractYamlConfig {
 
     public int getRandomTimeSpawnMax() {
         return this.randomTimeSpawnMax;
+    }
+
+    public String getParticleName() {
+        return this.particleName;
     }
 
     public boolean isNotifyLegendarySpawn() {

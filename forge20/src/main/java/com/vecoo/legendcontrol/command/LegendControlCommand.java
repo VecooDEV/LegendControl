@@ -11,6 +11,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraftforge.common.UsernameCache;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,32 +22,57 @@ public class LegendControlCommand {
                     .requires(p -> p.hasPermission(LegendControl.getInstance().getPermission().getPermissionCommand().get("minecraft.command.legendcontrol")))
                     .then(Commands.literal("add")
                             .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
+                                    .suggests((s, builder) -> {
+                                        for (int chance : Arrays.asList(10, 25, 50)) {
+                                            builder.suggest(chance);
+                                        }
+                                        return builder.buildFuture();
+                                    })
                                     .executes(e -> executeAdd(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
                     .then(Commands.literal("remove")
                             .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
+                                    .suggests((s, builder) -> {
+                                        for (int chance : Arrays.asList(10, 25, 50)) {
+                                            builder.suggest(chance);
+                                        }
+                                        return builder.buildFuture();
+                                    })
                                     .executes(e -> executeRemove(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
                     .then(Commands.literal("set")
                             .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
+                                    .suggests((s, builder) -> {
+                                        for (int chance : Arrays.asList(10, 50, 100)) {
+                                            builder.suggest(chance);
+                                        }
+                                        return builder.buildFuture();
+                                    })
                                     .executes(e -> executeSet(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
                     .then(Commands.literal("blacklist")
                             .then(Commands.literal("add")
                                     .then(Commands.argument("player", StringArgumentType.string())
-                                            .executes(e -> executeBlacklistAdd(e.getSource(), StringArgumentType.getString(e, "player")))
                                             .suggests((s, builder) -> {
                                                 for (String nick : s.getSource().getOnlinePlayerNames()) {
-                                                    builder.suggest(nick);
+                                                    if (nick.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
+                                                        builder.suggest(nick);
+                                                    }
                                                 }
                                                 return builder.buildFuture();
-                                            })))
+                                            })
+                                            .executes(e -> executeBlacklistAdd(e.getSource(), StringArgumentType.getString(e, "player")))))
                             .then(Commands.literal("remove")
                                     .then(Commands.argument("player", StringArgumentType.string())
-                                            .executes(e -> executeBlacklistRemove(e.getSource(), StringArgumentType.getString(e, "player")))
                                             .suggests((s, builder) -> {
-                                                for (String nick : s.getSource().getOnlinePlayerNames()) {
-                                                    builder.suggest(nick);
+                                                for (UUID uuid : LegendServerFactory.getPlayersBlacklist()) {
+                                                    String name = UsernameCache.getLastKnownUsername(uuid);
+                                                    if (name != null) {
+                                                        if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
+                                                            builder.suggest(name);
+                                                        }
+                                                    }
                                                 }
                                                 return builder.buildFuture();
-                                            }))
+                                            })
+                                            .executes(e -> executeBlacklistRemove(e.getSource(), StringArgumentType.getString(e, "player"))))
                                     .then(Commands.literal("all")
                                             .executes(e -> executeBlacklistRemoveAll(e.getSource()))))
                             .then(Commands.literal("list")

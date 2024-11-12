@@ -3,10 +3,12 @@ package com.vecoo.legendcontrol.task;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.legendcontrol.LegendControl;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Iterator;
 import java.util.List;
@@ -51,9 +53,13 @@ public class ParticleTask {
                 continue;
             }
 
-            ((ServerLevel) pixelmon.level()).sendParticles(ParticleTypes.DRAGON_BREATH,
-                    pixelmon.getX(), pixelmon.getY(), pixelmon.getZ(),
-                    1, pixelmon.level().random.nextDouble() - 0.5, pixelmon.level().random.nextDouble() - 0.5, pixelmon.level().random.nextDouble() - 0.5, 1);
+            SimpleParticleType particle = (SimpleParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(LegendControl.getInstance().getConfig().getParticleName()));
+
+            if (particle != null) {
+                ((ServerLevel) pixelmon.level()).sendParticles(particle,
+                        pixelmon.getX(), pixelmon.getY(), pixelmon.getZ(),
+                        1, pixelmon.level().random.nextDouble() - 0.5, pixelmon.level().random.nextDouble() - 0.5, pixelmon.level().random.nextDouble() - 0.5, 1);
+            }
         }
     }
 }

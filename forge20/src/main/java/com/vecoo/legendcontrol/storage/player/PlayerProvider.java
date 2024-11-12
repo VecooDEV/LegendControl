@@ -1,6 +1,5 @@
 package com.vecoo.legendcontrol.storage.player;
 
-import com.google.gson.Gson;
 import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.extralib.world.UtilWorld;
 import com.vecoo.legendcontrol.LegendControl;
@@ -45,8 +44,7 @@ public class PlayerProvider {
 
         for (String file : list) {
             UtilGson.readFileAsync(filePath, file, el -> {
-                Gson gson = UtilGson.newGson();
-                PlayerStorage player = gson.fromJson(el, PlayerStorage.class);
+                PlayerStorage player = UtilGson.newGson().fromJson(el, PlayerStorage.class);
                 this.map.put(player.getUuid(), player);
             });
         }
