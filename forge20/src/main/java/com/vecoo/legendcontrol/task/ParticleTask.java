@@ -16,7 +16,7 @@ import java.util.List;
 public class ParticleTask {
     private static ParticleTask instance;
 
-    private final List<PixelmonEntity> huntPokemon = Lists.newArrayList();
+    private final List<PixelmonEntity> legenaryPokemon = Lists.newArrayList();
 
     private int currentTick = 0;
 
@@ -27,7 +27,7 @@ public class ParticleTask {
     }
 
     public static void addPokemon(PixelmonEntity pixelmon) {
-        instance.huntPokemon.add(pixelmon);
+        instance.legenaryPokemon.add(pixelmon);
     }
 
 
@@ -43,7 +43,7 @@ public class ParticleTask {
             return;
         }
 
-        Iterator<PixelmonEntity> iterator = this.huntPokemon.iterator();
+        Iterator<PixelmonEntity> iterator = this.legenaryPokemon.iterator();
 
         while (iterator.hasNext()) {
             PixelmonEntity pixelmon = iterator.next();

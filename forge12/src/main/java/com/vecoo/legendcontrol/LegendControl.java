@@ -39,12 +39,12 @@ public class LegendControl {
         instance = this;
 
         this.loadConfig();
-
-        UtilPermissions.registerPermission(permission.getPermissionCommand());
     }
 
     @Mod.EventHandler
     public void onInitialization(FMLInitializationEvent event) {
+        UtilPermissions.registerPermission(permission.getPermissionCommand());
+
         MinecraftForge.EVENT_BUS.register(new ParticleTask());
         Pixelmon.EVENT_BUS.register(new LegendaryListener());
     }

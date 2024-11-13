@@ -3,9 +3,7 @@ package com.vecoo.legendcontrol.task;
 import com.google.common.collect.Lists;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.vecoo.legendcontrol.LegendControl;
-import net.minecraft.block.SoundType;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -17,7 +15,7 @@ import java.util.List;
 public class ParticleTask {
     private static ParticleTask instance;
 
-    private final List<EntityPixelmon> huntPokemon = Lists.newArrayList();
+    private final List<EntityPixelmon> legendaryPokemon = Lists.newArrayList();
 
     private int currentTick = 0;
 
@@ -28,7 +26,7 @@ public class ParticleTask {
     }
 
     public static void addPokemon(EntityPixelmon pixelmon) {
-        instance.huntPokemon.add(pixelmon);
+        instance.legendaryPokemon.add(pixelmon);
     }
 
 
@@ -44,7 +42,7 @@ public class ParticleTask {
             return;
         }
 
-        Iterator<EntityPixelmon> iterator = this.huntPokemon.iterator();
+        Iterator<EntityPixelmon> iterator = this.legendaryPokemon.iterator();
 
         while (iterator.hasNext()) {
             EntityPixelmon pixelmon = iterator.next();
