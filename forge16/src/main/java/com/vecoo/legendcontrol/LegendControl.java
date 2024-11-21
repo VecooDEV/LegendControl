@@ -12,7 +12,8 @@ import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.listener.LegendaryListener;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
 import com.vecoo.legendcontrol.storage.player.PlayerProvider;
-import com.vecoo.legendcontrol.task.ParticleTask;
+import com.vecoo.legendcontrol.listener.ParticleListener;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,6 +36,8 @@ public class LegendControl {
     private PlayerProvider playerProvider;
     private ServerProvider serverProvider;
 
+    private MinecraftServer server;
+
     public LegendControl() {
         instance = this;
 
@@ -43,7 +46,7 @@ public class LegendControl {
         UtilPermissions.registerPermission(permission.getPermissionCommand());
 
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(new ParticleTask());
+        MinecraftForge.EVENT_BUS.register(new ParticleListener());
         Pixelmon.EVENT_BUS.register(new LegendaryListener());
     }
 
@@ -56,6 +59,7 @@ public class LegendControl {
 
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
+        this.server = event.getServer();
         this.loadStorage();
     }
 
@@ -71,9 +75,9 @@ public class LegendControl {
 
     public void loadStorage() {
         try {
-            this.playerProvider = new PlayerProvider();
+            this.playerProvider = new PlayerProvider("/%directory%/storage/LegendControl/players/", this.server);
             this.playerProvider.init();
-            this.serverProvider = new ServerProvider();
+            this.serverProvider = new ServerProvider("/%directory%/storage/LegendControl/", this.server);
             this.serverProvider.init();
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load storage.");
@@ -106,5 +110,9 @@ public class LegendControl {
 
     public PlayerProvider getPlayerProvider() {
         return instance.playerProvider;
+    }
+
+    public MinecraftServer getServer() {
+        return instance.server;
     }
 }

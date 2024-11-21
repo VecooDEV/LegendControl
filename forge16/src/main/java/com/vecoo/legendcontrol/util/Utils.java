@@ -2,7 +2,6 @@ package com.vecoo.legendcontrol.util;
 
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
-import com.vecoo.extralib.ExtraLib;
 import com.vecoo.legendcontrol.LegendControl;
 
 public class Utils {
@@ -14,7 +13,7 @@ public class Utils {
             return;
         }
 
-        if (ExtraLib.getInstance().getServer().getPlayerList().getPlayerCount() == 0) {
+        if (LegendControl.getInstance().getServer().getPlayerList().getPlayerCount() == 0) {
             return;
         }
 

@@ -3,10 +3,15 @@ package com.vecoo.legendcontrol.storage.server;
 import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.extralib.world.UtilWorld;
 import com.vecoo.legendcontrol.LegendControl;
+import net.minecraft.server.MinecraftServer;
 
 public class ServerProvider {
-    private final String filePath = UtilWorld.worldDirectory(LegendControl.getInstance().getConfig().getServerStorage());
+    private final String filePath;
     private ServerStorage serverStorage;
+
+    public ServerProvider(String filePath, MinecraftServer server) {
+        this.filePath = UtilWorld.worldDirectory(filePath, server);
+    }
 
     public ServerStorage getServerStorage() {
         if (this.serverStorage == null) {

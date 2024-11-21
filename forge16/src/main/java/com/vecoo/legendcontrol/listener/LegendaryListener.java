@@ -16,7 +16,6 @@ import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.storage.player.LegendPlayerFactory;
 import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
-import com.vecoo.legendcontrol.task.ParticleTask;
 import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -89,8 +88,6 @@ public class LegendaryListener {
 
         legendMap.put(pokemon, player.getUUID());
 
-        ParticleTask.addPokemon(pokemon);
-
         LegendServerFactory.setLegendaryChance(config.getBaseChance());
         LegendServerFactory.setLastLegend(pokemon.getPokemonName());
         LegendServerFactory.replacePlayerIP(player.getUUID(), player.getIpAddress());
@@ -108,7 +105,7 @@ public class LegendaryListener {
                 public void run() {
                     if (pokemon.isAlive() && legendMap.containsKey(pokemon)) {
                         UtilChat.broadcast(LegendControl.getInstance().getLocale().getMessages().getProtection()
-                                .replace("%pokemon%", pokemon.getSpecies().getName()));
+                                .replace("%pokemon%", pokemon.getSpecies().getName()), LegendControl.getInstance().getServer());
                     }
                     legendMap.remove(pokemon);
                 }
@@ -124,7 +121,7 @@ public class LegendaryListener {
                                 .replace("%pokemon%", pokemon.getSpecies().getName())
                                 .replace("%x%", String.valueOf((int) pokemon.getX()))
                                 .replace("%y%", String.valueOf((int) pokemon.getY()))
-                                .replace("%z%", String.valueOf((int) pokemon.getZ())));
+                                .replace("%z%", String.valueOf((int) pokemon.getZ())), LegendControl.getInstance().getServer());
                     }
                 }
             }, locationTime * 1000L);

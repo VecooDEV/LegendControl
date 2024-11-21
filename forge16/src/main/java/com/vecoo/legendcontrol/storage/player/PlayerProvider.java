@@ -2,18 +2,19 @@ package com.vecoo.legendcontrol.storage.player;
 
 import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.extralib.world.UtilWorld;
-import com.vecoo.legendcontrol.LegendControl;
+import net.minecraft.server.MinecraftServer;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class PlayerProvider {
-    private final String filePath = UtilWorld.worldDirectory(LegendControl.getInstance().getConfig().getPlayerStorage());
+    private final String filePath;
     private final HashMap<UUID, PlayerStorage> map;
 
-    public PlayerProvider() {
+    public PlayerProvider(String filePath, MinecraftServer server) {
         this.map = new HashMap<>();
+        this.filePath = UtilWorld.worldDirectory(filePath, server);
     }
 
     public PlayerStorage getPlayerStorage(UUID playerUUID) {

@@ -16,4 +16,4 @@ plugins {
 
 rootProject.name = 'LegendControl'
 
-include 'forge12', 'forge16', 'forge20'
+include 'forge16'

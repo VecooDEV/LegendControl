@@ -11,12 +11,6 @@ import java.util.List;
 @ConfigPath("config/LegendControl/config.yml")
 @ConfigSerializable
 public class ServerConfig extends AbstractYamlConfig {
-    @Comment("Directory for saving player information from root.")
-    private String playerStorage = "/%directory%/storage/LegendControl/players/";
-
-    @Comment("Directory for saving server information from root.")
-    private String serverStorage = "/%directory%/storage/LegendControl/";
-
     @Comment("Maximum number of players in the trust list. Set to 0 to disable.")
     private int trustLimit = 15;
 
@@ -64,14 +58,6 @@ public class ServerConfig extends AbstractYamlConfig {
 
     @Comment("Names of all excluded dimensions.")
     private List<String> blacklistDimensionList = Lists.newArrayList("the_nether", "the_end");
-
-    public String getPlayerStorage() {
-        return this.playerStorage;
-    }
-
-    public String getServerStorage() {
-        return this.serverStorage;
-    }
 
     public int getTrustLimit() {
         return this.trustLimit;
