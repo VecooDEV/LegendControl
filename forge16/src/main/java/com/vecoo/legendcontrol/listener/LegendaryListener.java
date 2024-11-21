@@ -3,6 +3,7 @@ package com.vecoo.legendcontrol.listener;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.KeyEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleStartedEvent;
+import com.pixelmonmod.pixelmon.api.events.spawning.LegendaryCheckSpawnsEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
@@ -181,6 +182,14 @@ public class LegendaryListener {
                 legendMap.remove(event.getPokemon());
                 event.setCanceled(true);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onLegendaryCheckSpawns(LegendaryCheckSpawnsEvent event) {
+        if (LegendControl.getInstance().getConfig().isModifyCheckLegends()) {
+            event.shouldShowTime = false;
+            event.shouldShowChance = false;
         }
     }
 }

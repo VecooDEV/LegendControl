@@ -10,6 +10,7 @@ import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CheckLegendsCommand {
@@ -46,5 +47,8 @@ public class CheckLegendsCommand {
                 .replace("%chance%", String.format("%.4f", LegendServerFactory.getLegendaryChance())
                         .replaceAll("\\.?0+$", "") + "%")
                 .replace("%time%", time + timeUnit)), false);
+        if (LegendControl.getInstance().getConfig().isModifyCheckLegends()) {
+            PixelmonSpawning.legendarySpawner.checkSpawns.checkSpawns(PixelmonSpawning.legendarySpawner, source, new ArrayList<>());
+        }
     }
 }

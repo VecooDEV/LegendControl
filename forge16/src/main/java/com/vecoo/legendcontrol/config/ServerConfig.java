@@ -35,6 +35,9 @@ public class ServerConfig extends AbstractYamlConfig {
     @Comment("The maximum number of seconds added to display the team time, it only changes the time visually.")
     private int randomTimeSpawnMax = 300;
 
+    @Comment("When this feature is enabled, the command will output a list of legendary Pokemon.")
+    private boolean modifyCheckLegends = false;
+
     @Comment("Name particle to spawn legendary pokemon.")
     private String particleName = "dragon_breath";
 
@@ -121,5 +124,9 @@ public class ServerConfig extends AbstractYamlConfig {
 
     public List<String> getBlacklistDimensionList() {
         return this.blacklistDimensionList;
+    }
+
+    public boolean isModifyCheckLegends() {
+        return this.modifyCheckLegends;
     }
 }
