@@ -3,7 +3,7 @@ subprojects {
     apply plugin: 'idea'
 
     group = 'com.vecoo.legendcontrol'
-    version = '2.3.2'
+    version = '2.3.3'
 
     ext {
         forgeVersion = "none"
