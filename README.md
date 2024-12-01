@@ -5,7 +5,7 @@ Sidemode for [Pixelmon](https://modrinth.com/mod/pixelmon). Changing the spawn e
 * Changed system of legendary Pokemon appearance.
 * Protection of legendary Pokemon from other players.
 * Personal notifications about the appearance of a legendary Pokemon.
-* Blacklists for players and Pokemon.
+* Blacklists for Pokemon.
 * Various restrictions for players and legendary Pokemon.
 * Fully customizable mod
 
