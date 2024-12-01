@@ -23,9 +23,13 @@ public class Utils {
     }
 
     public static String getFormattedChance(float chance) {
-        String chanceString = (chance == 0) ? "" : String.format("%.4f", chance).replaceAll("\\.?0+$", "");
-        String result = chanceString.isEmpty() ? "" : chanceString + "%";
-        result = result.replace(",", "");
-        return result.replace("%chance%", result);
+        String format = String.format("%.4f", chance)
+                .replaceAll("\\.?0+$", "");
+
+        if (format.endsWith(",")) {
+            format = format.replace(",", "");
+        }
+
+        return format + "%";
     }
 }
