@@ -30,12 +30,6 @@ public class LocaleConfig extends AbstractYamlConfig {
         private String protection = "&e(!) Pokemon %pokemon%'s protection has expired.";
         private String location = "&e(!) Location of Pokemon %pokemon%: X: %x%, Y: %y%, Z: %z%.";
 
-        private String blacklist = "&e&lPlayers missing legend spawns";
-        private String addBlacklist = "&e(!) Player %player% has been added from the legendary blacklist.";
-        private String removeBlacklist = "&e(!) Player %player% has been removed from the legendary blacklist.";
-        private String removeAllBlacklist = "&e(!) The all players has been removed from the legendary blacklist.";
-        private String emptyBlacklist = "&e(!) Legendary blacklist is empty.";
-
         private String spawnPlayerLegendary = "&e(!) A legendary Pokemon has appeared near you!";
         private String checkLegendary = "&e(!) Chance %chance%, legendary Pokemon will appear in ~%time%.";
         private String changeChanceLegendary = "&e(!) New chance: %chance%.";
@@ -43,12 +37,9 @@ public class LocaleConfig extends AbstractYamlConfig {
         private String cantSelfTrust = "&c(!) You cannot add yourself to the trust list.";
         private String alreadyTrusted = "&c(!) This player is already on your trust list.";
         private String notPlayerTrust = "&c(!) This player is not yet on your trust list.";
-        private String notPlayerBlacklist = "&c(!) This player is not yet on legendary blacklist.";
-        private String alreadyBlacklist = "&c(!) This player is already on legendary blacklist.";
         private String trustLimit = "&c(!) You have reached the maximum number of players on the trust list.";
         private String errorChance = "&c(!) The overall chance should not be less than 0% or greater than 100%.";
         private String playerNotFound = "&c(!) Player %player% not found.";
-        private String playerNotPermission = "&c(!) You do not have sufficient permissions to use the command.";
 
         private String listPlayer = "&e- %player%";
 
@@ -103,36 +94,8 @@ public class LocaleConfig extends AbstractYamlConfig {
             return this.listPlayer;
         }
 
-        public String getBlacklist() {
-            return this.blacklist;
-        }
-
-        public String getAddBlacklist() {
-            return this.addBlacklist;
-        }
-
-        public String getRemoveBlacklist() {
-            return this.removeBlacklist;
-        }
-
-        public String getRemoveAllBlacklist() {
-            return this.removeAllBlacklist;
-        }
-
-        public String getEmptyBlacklist() {
-            return this.emptyBlacklist;
-        }
-
-        public String getNotPlayerBlacklist() {
-            return this.notPlayerBlacklist;
-        }
-
         public String getLocation() {
             return this.location;
-        }
-
-        public String getAlreadyBlacklist() {
-            return this.alreadyBlacklist;
         }
 
         public String getIncorrectCause() {
@@ -173,10 +136,6 @@ public class LocaleConfig extends AbstractYamlConfig {
 
         public String getHours() {
             return this.hours;
-        }
-
-        public String getPlayerNotPermission() {
-            return this.playerNotPermission;
         }
     }
 }

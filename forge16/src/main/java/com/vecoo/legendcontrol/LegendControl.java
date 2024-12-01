@@ -2,17 +2,15 @@ package com.vecoo.legendcontrol;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
-import com.vecoo.extralib.permission.UtilPermissions;
 import com.vecoo.legendcontrol.command.CheckLegendsCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.command.LegendaryTrustCommand;
 import com.vecoo.legendcontrol.config.LocaleConfig;
-import com.vecoo.legendcontrol.config.PermissionConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.listener.LegendaryListener;
-import com.vecoo.legendcontrol.storage.server.ServerProvider;
-import com.vecoo.legendcontrol.storage.player.PlayerProvider;
 import com.vecoo.legendcontrol.listener.ParticleListener;
+import com.vecoo.legendcontrol.storage.player.PlayerProvider;
+import com.vecoo.legendcontrol.storage.server.ServerProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -31,7 +29,6 @@ public class LegendControl {
 
     private ServerConfig config;
     private LocaleConfig locale;
-    private PermissionConfig permission;
 
     private PlayerProvider playerProvider;
     private ServerProvider serverProvider;
@@ -42,8 +39,6 @@ public class LegendControl {
         instance = this;
 
         this.loadConfig();
-
-        UtilPermissions.registerPermission(permission.getPermissionCommand());
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ParticleListener());
@@ -67,7 +62,6 @@ public class LegendControl {
         try {
             this.config = YamlConfigFactory.getInstance(ServerConfig.class);
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
-            this.permission = YamlConfigFactory.getInstance(PermissionConfig.class);
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load config.");
         }
@@ -98,10 +92,6 @@ public class LegendControl {
 
     public LocaleConfig getLocale() {
         return instance.locale;
-    }
-
-    public PermissionConfig getPermission() {
-        return instance.permission;
     }
 
     public ServerProvider getServerProvider() {

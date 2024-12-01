@@ -3,63 +3,52 @@ package com.vecoo.legendcontrol.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.vecoo.extralib.chat.UtilChat;
-import com.vecoo.extralib.permission.UtilPermissions;
+import com.vecoo.extralib.permission.UtilPermission;
 import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.storage.player.LegendPlayerFactory;
+import com.vecoo.legendcontrol.storage.LegendFactory;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
-import net.minecraftforge.common.UsernameCache;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 public class LegendaryTrustCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        for (String command : Arrays.asList("legendarytrust", "ltrust")) {
-            dispatcher.register(Commands.literal(command)
-                    .requires(p -> UtilPermissions.hasPermission(p, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand()))
-                    .then(Commands.literal("add")
-                            .then(Commands.argument("player", StringArgumentType.string())
-                                    .suggests((s, builder) -> {
-                                        for (String nick : s.getSource().getOnlinePlayerNames()) {
-                                            if (nick.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
-                                                builder.suggest(nick);
-                                            }
+        dispatcher.register(Commands.literal("ltrust")
+                .requires(p -> UtilPermission.hasPermission(p, "minecraft.command.ltrust"))
+                .then(Commands.literal("add")
+                        .then(Commands.argument("player", StringArgumentType.string())
+                                .suggests((s, builder) -> {
+                                    for (String nick : s.getSource().getOnlinePlayerNames()) {
+                                        if (nick.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
+                                            builder.suggest(nick);
                                         }
-                                        return builder.buildFuture();
-                                    })
-                                    .executes(e -> executeAdd(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))))
-                    .then(Commands.literal("remove")
-                            .then(Commands.argument("player", StringArgumentType.string())
-                                    .suggests((s, builder) -> {
-                                        for (UUID uuid : LegendPlayerFactory.getPlayersTrust(s.getSource().getPlayerOrException().getUUID())) {
-                                            String name = UsernameCache.getLastKnownUsername(uuid);
-                                            if (name != null) {
-                                                if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
-                                                    builder.suggest(name);
-                                                }
-                                            }
+                                    }
+                                    return builder.buildFuture();
+                                })
+                                .executes(e -> executeAdd(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))))
+                .then(Commands.literal("remove")
+                        .then(Commands.argument("player", StringArgumentType.string())
+                                .suggests((s, builder) -> {
+                                    for (UUID uuid : LegendFactory.getPlayersTrust(s.getSource().getPlayerOrException().getUUID())) {
+                                        String name = UtilPlayer.getPlayerName(uuid);
+                                        if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
+                                            builder.suggest(name);
                                         }
-                                        return builder.buildFuture();
-                                    })
-                                    .executes(e -> executeRemove(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player"))))
-                            .then(Commands.literal("all")
-                                    .executes(e -> executeRemoveAll(e.getSource().getPlayerOrException()))))
-                    .then(Commands.literal("list")
-                            .executes(e -> executeList(e.getSource().getPlayerOrException()))));
-        }
+                                    }
+                                    return builder.buildFuture();
+                                })
+                                .executes(e -> executeRemove(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player"))))
+                        .then(Commands.literal("all")
+                                .executes(e -> executeRemoveAll(e.getSource().getPlayerOrException()))))
+                .then(Commands.literal("list")
+                        .executes(e -> executeList(e.getSource().getPlayerOrException()))));
     }
 
     private static int executeAdd(ServerPlayerEntity player, String target) {
-        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
-            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), Util.NIL_UUID);
-            return 0;
-        }
-
         if (!UtilPlayer.hasUUID(target)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
                     .replace("%player%", target)), Util.NIL_UUID);
@@ -67,7 +56,7 @@ public class LegendaryTrustCommand {
         }
 
         UUID targetUUID = UtilPlayer.getUUID(target);
-        List<UUID> trustedPlayers = LegendPlayerFactory.getPlayersTrust(player.getUUID());
+        List<UUID> trustedPlayers = LegendFactory.getPlayersTrust(player.getUUID());
 
         if (player.getUUID().equals(targetUUID)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getCantSelfTrust()), Util.NIL_UUID);
@@ -84,7 +73,7 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        LegendPlayerFactory.addPlayerTrust(player.getUUID(), targetUUID);
+        LegendFactory.addPlayerTrust(player.getUUID(), targetUUID);
 
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getAddTrust()
                 .replace("%player%", target)), Util.NIL_UUID);
@@ -92,11 +81,6 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeRemove(ServerPlayerEntity player, String target) {
-        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
-            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), Util.NIL_UUID);
-            return 0;
-        }
-
         if (!UtilPlayer.hasUUID(target)) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotFound()
                     .replace("%player%", target)), Util.NIL_UUID);
@@ -104,7 +88,7 @@ public class LegendaryTrustCommand {
         }
 
         UUID targetUUID = UtilPlayer.getUUID(target);
-        List<UUID> trustedPlayers = LegendPlayerFactory.getPlayersTrust(player.getUUID());
+        List<UUID> trustedPlayers = LegendFactory.getPlayersTrust(player.getUUID());
 
         if (trustedPlayers.isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
@@ -116,7 +100,7 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        LegendPlayerFactory.removePlayerTrust(player.getUUID(), targetUUID);
+        LegendFactory.removePlayerTrust(player.getUUID(), targetUUID);
 
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveTrust()
                 .replace("%player%", target)), Util.NIL_UUID);
@@ -124,29 +108,19 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeRemoveAll(ServerPlayerEntity player) {
-        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
-            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), Util.NIL_UUID);
-            return 0;
-        }
-
-        if (LegendPlayerFactory.getPlayersTrust(player.getUUID()).isEmpty()) {
+        if (LegendFactory.getPlayersTrust(player.getUUID()).isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
             return 0;
         }
 
-        LegendPlayerFactory.removePlayersTrust(player.getUUID());
+        LegendFactory.removePlayersTrust(player.getUUID());
 
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getRemoveAllTrust()), Util.NIL_UUID);
         return 1;
     }
 
     private static int executeList(ServerPlayerEntity player) {
-        if (!UtilPermissions.hasPermission(player, "minecraft.command.legendarytrust", LegendControl.getInstance().getPermission().getPermissionCommand())) {
-            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), Util.NIL_UUID);
-            return 0;
-        }
-
-        List<UUID> players = LegendPlayerFactory.getPlayersTrust(player.getUUID());
+        List<UUID> players = LegendFactory.getPlayersTrust(player.getUUID());
 
         if (players.isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getEmptyTrust()), Util.NIL_UUID);
@@ -156,11 +130,8 @@ public class LegendaryTrustCommand {
         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getListTrust()), Util.NIL_UUID);
 
         for (UUID uuid : players) {
-            String playerName = UsernameCache.getLastKnownUsername(uuid);
-            if (playerName != null) {
-                player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getListPlayer()
-                        .replace("%player%", playerName)), Util.NIL_UUID);
-            }
+            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getListPlayer()
+                    .replace("%player%", UtilPlayer.getPlayerName(uuid))), Util.NIL_UUID);
         }
         return 1;
     }

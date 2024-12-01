@@ -3,31 +3,23 @@ package com.vecoo.legendcontrol.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.vecoo.extralib.chat.UtilChat;
-import com.vecoo.extralib.permission.UtilPermissions;
+import com.vecoo.extralib.permission.UtilPermission;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
+import com.vecoo.legendcontrol.storage.LegendFactory;
 import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class CheckLegendsCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        for (String command : Arrays.asList("checklegends", "checkleg")) {
-            dispatcher.register(Commands.literal(command)
-                    .requires(p -> UtilPermissions.hasPermission(p, "minecraft.command.checklegends", LegendControl.getInstance().getPermission().getPermissionCommand()))
-                    .executes(e -> execute(e.getSource())));
-        }
+        dispatcher.register(Commands.literal("checkleg")
+                .requires(p -> UtilPermission.hasPermission(p, "minecraft.command.checkleg"))
+                .executes(e -> execute(e.getSource())));
     }
 
     private static int execute(CommandSource source) {
-        if (!UtilPermissions.hasPermission(source, "minecraft.command.checklegends", LegendControl.getInstance().getPermission().getPermissionCommand())) {
-            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getPlayerNotPermission()), false);
-            return 0;
-        }
-
         int seconds = (int) ((PixelmonSpawning.legendarySpawner.nextSpawnTime - System.currentTimeMillis()) / 1000 + Utils.timeDoLegend);
         int minutes = seconds / 60;
         int hours = minutes / 60;
@@ -44,10 +36,9 @@ public class CheckLegendsCommand {
 
     private static void sendMessage(CommandSource source, int time, String timeUnit) {
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
-                .replace("%chance%", String.format("%.4f", LegendServerFactory.getLegendaryChance())
-                        .replaceAll("\\.?0+$", "") + "%")
+                .replace("%chance%", Utils.getFormattedChance(LegendFactory.getLegendaryChance()))
                 .replace("%time%", time + timeUnit)), false);
-        if (LegendControl.getInstance().getConfig().isModifyCheckLegends() && UtilPermissions.hasPermission(source, "minecraft.command.checklegends.modify", LegendControl.getInstance().getPermission().getPermissionCommand())) {
+        if (UtilPermission.hasPermission(source, "minecraft.command.checkleg.modify")) {
             PixelmonSpawning.legendarySpawner.checkSpawns.checkSpawns(PixelmonSpawning.legendarySpawner, source, new ArrayList<>());
         }
     }

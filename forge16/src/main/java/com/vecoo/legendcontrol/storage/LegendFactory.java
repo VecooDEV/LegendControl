@@ -1,4 +1,4 @@
-package com.vecoo.legendcontrol.storage.server;
+package com.vecoo.legendcontrol.storage;
 
 import com.vecoo.legendcontrol.LegendControl;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class LegendServerFactory {
+public class LegendFactory {
     public static float getLegendaryChance() {
         return LegendControl.getInstance().getServerProvider().getServerStorage().getLegendaryChance();
     }
@@ -20,28 +20,12 @@ public class LegendServerFactory {
         return LegendControl.getInstance().getServerProvider().getServerStorage().getPlayersIP();
     }
 
-    public static List<UUID> getPlayersBlacklist() {
-        return LegendControl.getInstance().getServerProvider().getServerStorage().getPlayersBlacklist();
-    }
-
     public static void addLegendaryChance(float legendaryChance) {
         setLegendaryChance(Math.min(getLegendaryChance() + legendaryChance, 100F));
     }
 
     public static void removeLegendaryChance(float legendaryChance) {
         setLegendaryChance(Math.max(getLegendaryChance() - legendaryChance, 0F));
-    }
-
-    public static void addPlayerBlacklist(UUID playerUUID) {
-        LegendControl.getInstance().getServerProvider().getServerStorage().addPlayerBlacklist(playerUUID);
-    }
-
-    public static void removePlayerBlacklist(UUID playerUUID) {
-        LegendControl.getInstance().getServerProvider().getServerStorage().removePlayerBlacklist(playerUUID);
-    }
-
-    public static void removePlayersBlacklist() {
-        LegendControl.getInstance().getServerProvider().getServerStorage().removePlayersBlacklist();
     }
 
     public static void replacePlayerIP(UUID playerUUID, String playerIP) {
@@ -58,5 +42,25 @@ public class LegendServerFactory {
 
     public static void setLastLegend(String lastLegend) {
         LegendControl.getInstance().getServerProvider().getServerStorage().setLastLegend(lastLegend);
+    }
+
+    public static boolean hasPlayerTrust(UUID playerUUID, UUID targetUUID) {
+        return LegendControl.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).getPlayersTrust().contains(targetUUID);
+    }
+
+    public static List<UUID> getPlayersTrust(UUID playerUUID) {
+        return LegendControl.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).getPlayersTrust();
+    }
+
+    public static void addPlayerTrust(UUID playerUUID, UUID targetUUID) {
+        LegendControl.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).addPlayerTrust(targetUUID);
+    }
+
+    public static void removePlayerTrust(UUID playerUUID, UUID targetUUID) {
+        LegendControl.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayerTrust(targetUUID);
+    }
+
+    public static void removePlayersTrust(UUID playerUUID) {
+        LegendControl.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayersTrust();
     }
 }

@@ -3,19 +3,20 @@ package com.vecoo.legendcontrol.storage.server;
 import com.vecoo.legendcontrol.LegendControl;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class ServerStorage {
     private float legendaryChance;
     private String lastLegend;
-    private final List<UUID> playersBlacklist;
     private final LinkedHashMap<UUID, String> playersIP;
 
     public ServerStorage(float legendaryChance, String lastLegend) {
         this.legendaryChance = legendaryChance;
         this.lastLegend = lastLegend;
         this.playersIP = new LinkedHashMap<>();
-        this.playersBlacklist = new ArrayList<>();
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
@@ -29,10 +30,6 @@ public class ServerStorage {
 
     public LinkedHashMap<UUID, String> getPlayersIP() {
         return this.playersIP;
-    }
-
-    public List<UUID> getPlayersBlacklist() {
-        return this.playersBlacklist;
     }
 
     public void setLegendaryChance(float legendaryChance) {
@@ -67,21 +64,6 @@ public class ServerStorage {
         if (this.playersIP.containsKey(player.getUUID())) {
             this.playersIP.replace(player.getUUID(), player.getIpAddress());
         }
-        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
-    }
-
-    public void addPlayerBlacklist(UUID playerUUID) {
-        this.playersBlacklist.add(playerUUID);
-        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
-    }
-
-    public void removePlayerBlacklist(UUID playerUUID) {
-        this.playersBlacklist.remove(playerUUID);
-        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
-    }
-
-    public void removePlayersBlacklist() {
-        this.playersBlacklist.clear();
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 }

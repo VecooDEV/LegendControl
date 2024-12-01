@@ -24,9 +24,9 @@ public class ParticleListener {
             return;
         }
 
-        for (PixelmonEntity entity : LegendaryListener.legendMap.keySet()) {
+        for (PixelmonEntity entity : LegendaryListener.playerEntity.keySet()) {
             if (entity == null || !entity.isAlive() || entity.hasOwner()) {
-                return;
+                continue;
             }
 
             ServerWorld world = (ServerWorld) entity.level;
@@ -34,8 +34,7 @@ public class ParticleListener {
             BasicParticleType particle = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(LegendControl.getInstance().getConfig().getParticleName()));
 
             if (particle != null) {
-                world.sendParticles(particle,
-                        entity.getX(), entity.getY(), entity.getZ(),
+                world.sendParticles(particle, entity.getX(), entity.getY(), entity.getZ(),
                         1, entity.level.random.nextDouble() - 0.5, entity.level.random.nextDouble() - 0.5, entity.level.random.nextDouble() - 0.5, 1);
             }
         }

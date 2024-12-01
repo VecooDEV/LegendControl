@@ -6,7 +6,7 @@ import com.pixelmonmod.pixelmon.api.spawning.archetypes.spawners.TickingSpawner;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.spawning.LegendarySpawner;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
+import com.vecoo.legendcontrol.storage.LegendFactory;
 import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -50,9 +50,9 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
             if (this.firesChooseEvent) {
                 Utils.timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
             }
-            if (this.firesChooseEvent && !RandomHelper.getRandomChance(LegendControl.getInstance().getServerProvider().getServerStorage().getLegendaryChance() / 100.0F) || !this.firesChooseEvent && !RandomHelper.getRandomChance(PixelmonConfigProxy.getSpawning().getBossSpawning().getBossSpawnChance())) {
+            if (this.firesChooseEvent && !RandomHelper.getRandomChance(LegendFactory.getLegendaryChance() / 100.0F) || !this.firesChooseEvent && !RandomHelper.getRandomChance(PixelmonConfigProxy.getSpawning().getBossSpawning().getBossSpawnChance())) {
                 if (this.firesChooseEvent && LegendControl.getInstance().getServer().getPlayerList().getPlayerCount() > 0) {
-                    LegendServerFactory.addLegendaryChance(LegendControl.getInstance().getConfig().getStepSpawnChance());
+                    LegendFactory.addLegendaryChance(LegendControl.getInstance().getConfig().getStepSpawnChance());
                 }
                 return null;
             } else {

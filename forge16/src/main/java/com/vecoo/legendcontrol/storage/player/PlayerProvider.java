@@ -4,7 +4,6 @@ import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.extralib.world.UtilWorld;
 import net.minecraft.server.MinecraftServer;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -13,8 +12,9 @@ public class PlayerProvider {
     private final HashMap<UUID, PlayerStorage> map;
 
     public PlayerProvider(String filePath, MinecraftServer server) {
-        this.map = new HashMap<>();
         this.filePath = UtilWorld.worldDirectory(filePath, server);
+
+        this.map = new HashMap<>();
     }
 
     public PlayerStorage getPlayerStorage(UUID playerUUID) {
@@ -36,8 +36,7 @@ public class PlayerProvider {
     }
 
     public void init() {
-        File dir = UtilGson.checkForDirectory(filePath);
-        String[] list = dir.list();
+        String[] list = UtilGson.checkForDirectory(filePath).list();
 
         if (list == null) {
             return;

@@ -15,8 +15,7 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.ServerConfig;
-import com.vecoo.legendcontrol.storage.player.LegendPlayerFactory;
-import com.vecoo.legendcontrol.storage.server.LegendServerFactory;
+import com.vecoo.legendcontrol.storage.LegendFactory;
 import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -29,13 +28,13 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 public class LegendaryListener {
-    public static HashMap<PixelmonEntity, UUID> legendMap = new HashMap<>();
+    public static HashMap<PixelmonEntity, UUID> playerEntity = new HashMap<>();
 
-    private boolean hasMap(ServerPlayerEntity player, PixelmonEntity pokemon) {
-        if (legendMap.containsKey(pokemon)) {
-            UUID invokerUUID = legendMap.get(pokemon);
+    private boolean hasPlayerEntity(ServerPlayerEntity player, PixelmonEntity pokemon) {
+        if (playerEntity.containsKey(pokemon)) {
+            UUID invokerUUID = playerEntity.get(pokemon);
 
-            if (!invokerUUID.equals(player.getUUID()) && !LegendPlayerFactory.hasPlayerTrust(invokerUUID, player.getUUID())) {
+            if (!invokerUUID.equals(player.getUUID()) && !LegendFactory.hasPlayerTrust(invokerUUID, player.getUUID())) {
                 player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getIncorrectCause()), Util.NIL_UUID);
                 return false;
             }
@@ -48,19 +47,14 @@ public class LegendaryListener {
         ServerConfig config = LegendControl.getInstance().getConfig();
         ServerPlayerEntity player = event.player;
 
-        if (LegendServerFactory.getPlayersBlacklist().contains(player.getUUID())) {
-            event.setCanceled(true);
-            return;
-        }
-
         if (config.getBlacklistDimensionList().contains(player.getLevel().dimension().location().getPath()) && config.isBlacklistDimensions()) {
             event.setCanceled(true);
             return;
         }
 
-        LegendServerFactory.updatePlayerIP(player);
+        LegendFactory.updatePlayerIP(player);
 
-        if (LegendServerFactory.getPlayersIP().containsValue(player.getIpAddress()) && config.getMaxPlayersIP() > 0) {
+        if (LegendFactory.getPlayersIP().containsValue(player.getIpAddress()) && config.getMaxPlayersIP() > 0) {
             event.setCanceled(true);
         }
     }
@@ -77,7 +71,7 @@ public class LegendaryListener {
             return;
         }
 
-        if (!config.isLegendaryRepeat() && LegendServerFactory.getLastLegend().equals(pokemon.getPokemonName())) {
+        if (!config.isLegendaryRepeat() && LegendFactory.getLastLegend().equals(pokemon.getPokemonName())) {
             Utils.doSpawn();
             event.setCanceled(true);
             return;
@@ -87,11 +81,11 @@ public class LegendaryListener {
             player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getSpawnPlayerLegendary()), Util.NIL_UUID);
         }
 
-        legendMap.put(pokemon, player.getUUID());
+        playerEntity.put(pokemon, player.getUUID());
 
-        LegendServerFactory.setLegendaryChance(config.getBaseChance());
-        LegendServerFactory.setLastLegend(pokemon.getPokemonName());
-        LegendServerFactory.replacePlayerIP(player.getUUID(), player.getIpAddress());
+        LegendFactory.setLegendaryChance(config.getBaseChance());
+        LegendFactory.setLastLegend(pokemon.getPokemonName());
+        LegendFactory.replacePlayerIP(player.getUUID(), player.getIpAddress());
 
         Utils.countSpawn = 0;
 
@@ -104,11 +98,11 @@ public class LegendaryListener {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if (pokemon.isAlive() && legendMap.containsKey(pokemon)) {
+                    if (pokemon.isAlive() && playerEntity.containsKey(pokemon)) {
                         UtilChat.broadcast(LegendControl.getInstance().getLocale().getMessages().getProtection()
                                 .replace("%pokemon%", pokemon.getSpecies().getName()), LegendControl.getInstance().getServer());
                     }
-                    legendMap.remove(pokemon);
+                    playerEntity.remove(pokemon);
                 }
             }, protectedTime * 1000L);
         }
@@ -131,12 +125,12 @@ public class LegendaryListener {
 
     @SubscribeEvent
     public void onKey(KeyEvent event) {
-        if (event.key == EnumKeyPacketMode.ActionKeyEntity && !legendMap.isEmpty() && LegendControl.getInstance().getConfig().getProtectedTime() != 0) {
+        if (event.key == EnumKeyPacketMode.ActionKeyEntity && !playerEntity.isEmpty() && LegendControl.getInstance().getConfig().getProtectedTime() != 0) {
             for (Pokemon pokemon : StorageProxy.getStorageManager().getParty(event.player).getTeam()) {
                 pokemon.ifEntityExists(entityPixelmon -> {
                     Entity target = entityPixelmon.getTarget();
                     if (target instanceof PixelmonEntity) {
-                        if (!hasMap(event.player, (PixelmonEntity) target)) {
+                        if (!hasPlayerEntity(event.player, (PixelmonEntity) target)) {
                             event.setCanceled(true);
                         }
                     }
@@ -165,7 +159,7 @@ public class LegendaryListener {
 
                 WildPixelmonParticipant wildPokemon = participant1 instanceof PlayerParticipant ? (WildPixelmonParticipant) participant2 : (WildPixelmonParticipant) participant1;
 
-                if (!hasMap((ServerPlayerEntity) playerParticipant.getEntity(), (PixelmonEntity) wildPokemon.getEntity())) {
+                if (!hasPlayerEntity((ServerPlayerEntity) playerParticipant.getEntity(), (PixelmonEntity) wildPokemon.getEntity())) {
                     event.setCanceled(true);
                 }
             }
@@ -177,9 +171,9 @@ public class LegendaryListener {
         if (LegendControl.getInstance().getConfig().getProtectedTime() > 0) {
             ServerPlayerEntity player = event.getPlayer();
 
-            if (!hasMap(player, event.getPokemon())) {
+            if (!hasPlayerEntity(player, event.getPokemon())) {
                 player.inventory.add(event.getPokeBall().getBallType().getBallItem());
-                legendMap.remove(event.getPokemon());
+                playerEntity.remove(event.getPokemon());
                 event.setCanceled(true);
             }
         }
@@ -187,9 +181,7 @@ public class LegendaryListener {
 
     @SubscribeEvent
     public void onLegendaryCheckSpawns(LegendaryCheckSpawnsEvent event) {
-        if (LegendControl.getInstance().getConfig().isModifyCheckLegends()) {
-            event.shouldShowTime = false;
-            event.shouldShowChance = false;
-        }
+        event.shouldShowTime = false;
+        event.shouldShowChance = false;
     }
 }

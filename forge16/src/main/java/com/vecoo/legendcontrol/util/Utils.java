@@ -21,4 +21,11 @@ public class Utils {
 
         countSpawn++;
     }
+
+    public static String getFormattedChance(float chance) {
+        String chanceString = (chance == 0) ? "" : String.format("%.4f", chance).replaceAll("\\.?0+$", "");
+        String result = chanceString.isEmpty() ? "" : chanceString + "%";
+        result = result.replace(",", "");
+        return result.replace("%chance%", result);
+    }
 }
