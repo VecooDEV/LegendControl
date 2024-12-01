@@ -27,7 +27,7 @@ A: Only server.
 **Q: Will the mod work in single player mode?**  
 A: Should work.
 
-**Q: What java does the mod require?**
+**Q: What java does the mod require?**  
 A: Java 8+ (1.12.2-1.16.5) or Java 17+ (1.20.2). 
 
 **Q: Where can I report a bug or suggest my idea for a mod?**     
