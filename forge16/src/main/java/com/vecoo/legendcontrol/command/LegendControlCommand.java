@@ -4,9 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.permission.UtilPermission;
+import com.vecoo.extralib.text.UtilText;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.LegendFactory;
-import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
@@ -56,7 +56,7 @@ public class LegendControlCommand {
         LegendFactory.addLegendaryChance(chance);
 
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
-                .replace("%chance%", Utils.getFormattedChance(LegendFactory.getLegendaryChance()))), false);
+                .replace("%chance%", UtilText.getFormattedFloat(LegendFactory.getLegendaryChance()))), false);
         return 1;
     }
 
@@ -69,7 +69,7 @@ public class LegendControlCommand {
         LegendFactory.removeLegendaryChance(chance);
 
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
-                .replace("%chance%", Utils.getFormattedChance(LegendFactory.getLegendaryChance()))), false);
+                .replace("%chance%", UtilText.getFormattedFloat(LegendFactory.getLegendaryChance()))), false);
         return 1;
     }
 
@@ -77,7 +77,7 @@ public class LegendControlCommand {
         LegendFactory.setLegendaryChance(chance);
 
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
-                .replace("%chance%", Utils.getFormattedChance(LegendFactory.getLegendaryChance()))), false);
+                .replace("%chance%", UtilText.getFormattedFloat(LegendFactory.getLegendaryChance()))), false);
         return 1;
     }
 
