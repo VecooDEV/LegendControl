@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.permission.UtilPermission;
+import com.vecoo.extralib.text.UtilText;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.storage.LegendFactory;
 import com.vecoo.legendcontrol.util.Utils;
@@ -36,7 +37,7 @@ public class CheckLegendsCommand {
 
     private static void sendMessage(CommandSource source, int time, String timeUnit) {
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getCheckLegendary()
-                .replace("%chance%", Utils.getFormattedChance(LegendFactory.getLegendaryChance()))
+                .replace("%chance%", UtilText.getFormattedFloat(LegendFactory.getLegendaryChance()))
                 .replace("%time%", time + timeUnit)), false);
         if (UtilPermission.hasPermission(source, "minecraft.command.checkleg.modify")) {
             PixelmonSpawning.legendarySpawner.checkSpawns.checkSpawns(PixelmonSpawning.legendarySpawner, source, new ArrayList<>());

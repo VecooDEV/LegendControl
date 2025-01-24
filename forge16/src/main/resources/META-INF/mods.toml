@@ -4,7 +4,7 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="legendcontrol"
-version="2.4.0"
+version="2.4.1"
 displayName="LegendControl"
 logoFile ="logo.png"
 authors="Vecoo"
@@ -34,6 +34,6 @@ side="BOTH"
 [[dependencies.legendcontrol]]
 modId="extralib"
 mandatory=true
-versionRange="[1.4,)"
+versionRange="[1.5,)"
 ordering="NONE"
 side="BOTH"
