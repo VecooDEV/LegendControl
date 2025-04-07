@@ -1,11 +1,10 @@
 plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
-forgeVersion = "1.16.5"
+forgeVersion = "1.16.5-Defender"
 
 minecraft {
     mappings channel: 'official', version: '1.16.5'
@@ -21,13 +20,6 @@ dependencies {
 
     compileOnly fg.deobf('pixelmon:Pixelmon-1.16.5-9.1.13-server:9.1.13')
     compileOnly fg.deobf('maven.modrinth:extralib:1.5.1-forge,1.16.5')
-
-    annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
-}
-
-mixin {
-    add sourceSets.main, 'mixins.legendcontrol.refmap.json'
-    config 'mixins.legendcontrol.json'
 }
 
 jar.finalizedBy('reobfJar')

@@ -1,22 +1,19 @@
 package com.vecoo.legendcontrol.storage.server;
 
 import com.vecoo.legendcontrol.LegendControl;
-import net.minecraft.entity.player.ServerPlayerEntity;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.UUID;
 
 public class ServerStorage {
     private float legendaryChance;
     private String lastLegend;
-    private final LinkedHashMap<UUID, String> playersIP;
+    private final HashSet<UUID> legends;
 
     public ServerStorage(float legendaryChance, String lastLegend) {
         this.legendaryChance = legendaryChance;
         this.lastLegend = lastLegend;
-        this.playersIP = new LinkedHashMap<>();
+        this.legends = new HashSet<>();
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
@@ -28,8 +25,8 @@ public class ServerStorage {
         return this.lastLegend;
     }
 
-    public LinkedHashMap<UUID, String> getPlayersIP() {
-        return this.playersIP;
+    public HashSet<UUID> getLegends() {
+        return this.legends;
     }
 
     public void setLegendaryChance(float legendaryChance) {
@@ -42,28 +39,18 @@ public class ServerStorage {
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
-    public void replacePlayerIP(UUID playerUUID, String playerIP) {
-        if (this.playersIP.containsKey(playerUUID) || this.playersIP.containsValue(playerIP)) {
-            return;
-        }
-
-        if (this.playersIP.size() < LegendControl.getInstance().getConfig().getMaxPlayersIP()) {
-            this.playersIP.put(playerUUID, playerIP);
-        } else {
-            Iterator<Map.Entry<UUID, String>> iterator = this.playersIP.entrySet().iterator();
-            if (iterator.hasNext()) {
-                iterator.next();
-                iterator.remove();
-            }
-            this.playersIP.put(playerUUID, playerIP);
-        }
+    public void addLegends(UUID pokemonUUID) {
+        this.legends.add(pokemonUUID);
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
-    public void updatePlayerIP(ServerPlayerEntity player) {
-        if (this.playersIP.containsKey(player.getUUID())) {
-            this.playersIP.replace(player.getUUID(), player.getIpAddress());
-        }
+    public void removeLegends(UUID pokemonUUID) {
+        this.legends.remove(pokemonUUID);
+        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+    }
+
+    public void clearLegends() {
+        this.legends.clear();
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 }

@@ -6,7 +6,7 @@ import com.vecoo.legendcontrol.LegendControl;
 import net.minecraft.server.MinecraftServer;
 
 public class ServerProvider {
-    private final String filePath;
+    private transient final String filePath;
     private ServerStorage serverStorage;
 
     public ServerProvider(String filePath, MinecraftServer server) {
@@ -15,7 +15,7 @@ public class ServerProvider {
 
     public ServerStorage getServerStorage() {
         if (this.serverStorage == null) {
-            new ServerStorage(LegendControl.getInstance().getConfig().getBaseChance(), "Undefined");
+            new ServerStorage(LegendControl.getInstance().getConfig().getBaseChance(), "None");
         }
         return this.serverStorage;
     }
@@ -28,10 +28,10 @@ public class ServerProvider {
     }
 
     private boolean write(ServerStorage server) {
-        return UtilGson.writeFileAsync(filePath, "ServerStorage.json", UtilGson.newGson().toJson(server)).join();
+        return UtilGson.writeFileAsync(filePath, "Server.json", UtilGson.newGson().toJson(server)).join();
     }
 
     public void init() {
-        UtilGson.readFileAsync(filePath, "ServerStorage.json", el -> this.serverStorage = UtilGson.newGson().fromJson(el, ServerStorage.class));
+        UtilGson.readFileAsync(filePath, "Server.json", el -> this.serverStorage = UtilGson.newGson().fromJson(el, ServerStorage.class));
     }
 }

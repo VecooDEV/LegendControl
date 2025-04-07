@@ -7,135 +7,68 @@ import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
 @ConfigPath("config/LegendControl/locale.yml")
 @ConfigSerializable
 public class LocaleConfig extends AbstractYamlConfig {
-    private final Messages messages = new Messages();
+    private String reload = "&e(!) Configs have been reloaded.";
 
-    public LocaleConfig() {
-        super();
+    private String location = "&e(!) Location of Pokemon %pokemon%: X: %x%, Y: %y%, Z: %z%.";
+    private String notifyCatch = "&e(!) Player %player% catch to legendary pokemon %pokemon%!";
+    private String notifyDefeat = "&e(!) Player %player% defeat to legendary pokemon %pokemon%!";
+    private String notifyDespawn = "&e(!) Legendary pokemon %pokemon% despawned!";
+
+    private String spawnPlayerLegendary = "&e(!) A legendary Pokemon has appeared near you.";
+    private String checkLegendary = "&e(!) Chance %chance%%, legendary Pokemon will appear in ~%time%.";
+    private String changeChanceLegendary = "&e(!) New chance: %chance%%.";
+
+    private String errorChance = "&c(!) The overall chance should not be less than 0% or greater than 100%.";
+
+    private String seconds = " seconds";
+    private String minutes = " minutes";
+    private String hours = " hours";
+
+    public String getReload() {
+        return this.reload;
     }
 
-    public Messages getMessages() {
-        return this.messages;
+    public String getNotifyCatch() {
+        return this.notifyCatch;
     }
 
-    @ConfigSerializable
-    public static class Messages {
-        private String reload = "&e(!) Configs have been reloaded.";
+    public String getNotifyDefeat() {
+        return this.notifyDefeat;
+    }
 
-        private String addTrust = "&e(!) Player %player% has been successfully added to your trust list.";
-        private String removeTrust = "&e(!) Player %player% has been removed from your trust list.";
-        private String removeAllTrust = "&e(!) All players have been removed from your trust list.";
-        private String emptyTrust = "&e(!) Your trust list is empty.";
-        private String listTrust = "&e&lTrust list:";
-        private String incorrectCause = "&e(!) At the moment, the legendary Pokemon is protected. Try to enter the battle after a while.";
-        private String protection = "&e(!) Pokemon %pokemon%'s protection has expired.";
-        private String location = "&e(!) Location of Pokemon %pokemon%: X: %x%, Y: %y%, Z: %z%.";
+    public String getNotifyDespawn() {
+        return this.notifyDespawn;
+    }
 
-        private String spawnPlayerLegendary = "&e(!) A legendary Pokemon has appeared near you!";
-        private String checkLegendary = "&e(!) Chance %chance%, legendary Pokemon will appear in ~%time%.";
-        private String changeChanceLegendary = "&e(!) New chance: %chance%.";
+    public String getLocation() {
+        return this.location;
+    }
 
-        private String cantSelfTrust = "&c(!) You cannot add yourself to the trust list.";
-        private String alreadyTrusted = "&c(!) This player is already on your trust list.";
-        private String notPlayerTrust = "&c(!) This player is not yet on your trust list.";
-        private String trustLimit = "&c(!) You have reached the maximum number of players on the trust list.";
-        private String errorChance = "&c(!) The overall chance should not be less than 0% or greater than 100%.";
-        private String playerNotFound = "&c(!) Player %player% not found.";
+    public String getSpawnPlayerLegendary() {
+        return this.spawnPlayerLegendary;
+    }
 
-        private String listPlayer = "&e- %player%";
+    public String getCheckLegendary() {
+        return this.checkLegendary;
+    }
 
-        private String seconds = " seconds";
-        private String minutes = " minutes";
-        private String hours = " hours";
+    public String getChangeChanceLegendary() {
+        return this.changeChanceLegendary;
+    }
 
-        public Messages() {
-        }
+    public String getErrorChance() {
+        return this.errorChance;
+    }
 
-        public String getReload() {
-            return this.reload;
-        }
+    public String getSeconds() {
+        return this.seconds;
+    }
 
-        public String getCantSelfTrust() {
-            return this.cantSelfTrust;
-        }
+    public String getMinutes() {
+        return this.minutes;
+    }
 
-        public String getAlreadyTrusted() {
-            return this.alreadyTrusted;
-        }
-
-        public String getAddTrust() {
-            return this.addTrust;
-        }
-
-        public String getNotPlayerTrust() {
-            return this.notPlayerTrust;
-        }
-
-        public String getRemoveTrust() {
-            return this.removeTrust;
-        }
-
-        public String getRemoveAllTrust() {
-            return this.removeAllTrust;
-        }
-
-        public String getEmptyTrust() {
-            return this.emptyTrust;
-        }
-
-        public String getListTrust() {
-            return this.listTrust;
-        }
-
-        public String getTrustLimit() {
-            return this.trustLimit;
-        }
-
-        public String getListPlayer() {
-            return this.listPlayer;
-        }
-
-        public String getLocation() {
-            return this.location;
-        }
-
-        public String getIncorrectCause() {
-            return this.incorrectCause;
-        }
-
-        public String getProtection() {
-            return this.protection;
-        }
-
-        public String getSpawnPlayerLegendary() {
-            return this.spawnPlayerLegendary;
-        }
-
-        public String getCheckLegendary() {
-            return this.checkLegendary;
-        }
-
-        public String getChangeChanceLegendary() {
-            return this.changeChanceLegendary;
-        }
-
-        public String getErrorChance() {
-            return this.errorChance;
-        }
-
-        public String getPlayerNotFound() {
-            return this.playerNotFound;
-        }
-
-        public String getSeconds() {
-            return this.seconds;
-        }
-
-        public String getMinutes() {
-            return this.minutes;
-        }
-
-        public String getHours() {
-            return this.hours;
-        }
+    public String getHours() {
+        return this.hours;
     }
 }

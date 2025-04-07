@@ -14,29 +14,26 @@ public class ParticleListener {
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
-        if (!LegendControl.getInstance().getConfig().isLegendaryParticle()) {
+        if (!LegendControl.getInstance().getConfig().isLegendaryParticle() || ++this.currentTick % 20 != 0) {
             return;
         }
 
-        ++this.currentTick;
+        BasicParticleType particle = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(LegendControl.getInstance().getConfig().getParticleName()));
 
-        if (this.currentTick % 20 != 0) {
+        if (particle == null) {
             return;
         }
 
-        for (PixelmonEntity entity : LegendaryListener.playerEntity.keySet()) {
-            if (entity == null || !entity.isAlive() || entity.hasOwner()) {
+        LegendarySpawnListener.getLegendaryList().removeIf(entity -> entity == null || !entity.isAlive() || entity.hasOwner());
+
+        for (PixelmonEntity entity : LegendarySpawnListener.getLegendaryList()) {
+            if (!(entity.level instanceof ServerWorld)) {
                 continue;
             }
 
             ServerWorld world = (ServerWorld) entity.level;
 
-            BasicParticleType particle = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(LegendControl.getInstance().getConfig().getParticleName()));
-
-            if (particle != null) {
-                world.sendParticles(particle, entity.getX(), entity.getY(), entity.getZ(),
-                        1, entity.level.random.nextDouble() - 0.5, entity.level.random.nextDouble() - 0.5, entity.level.random.nextDouble() - 0.5, 1);
-            }
+            world.sendParticles(particle, entity.getX(), entity.getY(), entity.getZ(), 1, world.random.nextDouble() - 0.5, world.random.nextDouble() - 0.5, world.random.nextDouble() - 0.5, 1.0);
         }
     }
 }

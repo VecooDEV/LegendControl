@@ -6,7 +6,7 @@ import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.permission.UtilPermission;
 import com.vecoo.extralib.text.UtilText;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.storage.LegendFactory;
+import com.vecoo.legendcontrol.api.factory.LegendControlFactory;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
@@ -48,36 +48,36 @@ public class LegendControlCommand {
     }
 
     private static int executeAdd(CommandSource source, float chance) {
-        if (LegendFactory.getLegendaryChance() + chance > 100F) {
-            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getErrorChance()), false);
+        if (LegendControlFactory.ServerProvider.getLegendaryChance() + chance > 100F) {
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()), false);
             return 0;
         }
 
-        LegendFactory.addLegendaryChance(chance);
+        LegendControlFactory.ServerProvider.addLegendaryChance(chance);
 
-        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendFactory.getLegendaryChance()))), false);
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
+                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))), false);
         return 1;
     }
 
     private static int executeRemove(CommandSource source, float chance) {
-        if (LegendFactory.getLegendaryChance() - chance < 0F) {
-            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getErrorChance()), false);
+        if (LegendControlFactory.ServerProvider.getLegendaryChance() - chance < 0F) {
+            source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()), false);
             return 0;
         }
 
-        LegendFactory.removeLegendaryChance(chance);
+        LegendControlFactory.ServerProvider.removeLegendaryChance(chance);
 
-        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendFactory.getLegendaryChance()))), false);
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
+                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))), false);
         return 1;
     }
 
     private static int executeSet(CommandSource source, float chance) {
-        LegendFactory.setLegendaryChance(chance);
+        LegendControlFactory.ServerProvider.setLegendaryChance(chance);
 
-        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendFactory.getLegendaryChance()))), false);
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
+                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))), false);
         return 1;
     }
 
@@ -85,7 +85,7 @@ public class LegendControlCommand {
         LegendControl.getInstance().loadConfig();
         LegendControl.getInstance().loadStorage();
 
-        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getMessages().getReload()), false);
+        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getReload()), false);
         return 1;
     }
 }

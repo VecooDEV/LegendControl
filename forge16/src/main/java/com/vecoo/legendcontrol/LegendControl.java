@@ -4,12 +4,14 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
 import com.vecoo.legendcontrol.command.CheckLegendsCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
-import com.vecoo.legendcontrol.command.LegendaryTrustCommand;
+import com.vecoo.legendcontrol.config.DiscordConfig;
 import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
-import com.vecoo.legendcontrol.listener.LegendaryListener;
+import com.vecoo.legendcontrol.discord.DiscordWebhook;
+import com.vecoo.legendcontrol.listener.FinalListener;
+import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
+import com.vecoo.legendcontrol.listener.OtherListener;
 import com.vecoo.legendcontrol.listener.ParticleListener;
-import com.vecoo.legendcontrol.storage.player.PlayerProvider;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,6 +19,9 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,11 +34,13 @@ public class LegendControl {
 
     private ServerConfig config;
     private LocaleConfig locale;
+    private DiscordConfig discord;
 
-    private PlayerProvider playerProvider;
     private ServerProvider serverProvider;
 
     private MinecraftServer server;
+
+    private DiscordWebhook webhook;
 
     public LegendControl() {
         instance = this;
@@ -42,13 +49,15 @@ public class LegendControl {
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ParticleListener());
-        Pixelmon.EVENT_BUS.register(new LegendaryListener());
+        MinecraftForge.EVENT_BUS.register(new FinalListener());
+        Pixelmon.EVENT_BUS.register(new FinalListener());
+        Pixelmon.EVENT_BUS.register(new LegendarySpawnListener());
+        Pixelmon.EVENT_BUS.register(new OtherListener());
     }
 
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
         CheckLegendsCommand.register(event.getDispatcher());
-        LegendaryTrustCommand.register(event.getDispatcher());
         LegendControlCommand.register(event.getDispatcher());
     }
 
@@ -56,25 +65,35 @@ public class LegendControl {
     public void onServerStarting(FMLServerStartingEvent event) {
         this.server = event.getServer();
         this.loadStorage();
+
+        PermissionAPI.registerNode("minecraft.command.checkleg", DefaultPermissionLevel.OP, "/checkleg");
+        PermissionAPI.registerNode("minecraft.command.checkleg.modify", DefaultPermissionLevel.OP, "Modify version /checkleg");
+        PermissionAPI.registerNode("minecraft.command.lc", DefaultPermissionLevel.OP, "/lc");
+    }
+
+    @SubscribeEvent
+    public void onServerStopping(FMLServerStoppingEvent event) {
+        this.serverProvider.getServerStorage().clearLegends();
+        LegendarySpawnListener.SCHEDULER.shutdownNow();
     }
 
     public void loadConfig() {
         try {
             this.config = YamlConfigFactory.getInstance(ServerConfig.class);
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
+            this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
         } catch (Exception e) {
-            LOGGER.error("[LegendControl] Error load config.");
+            LOGGER.error("[LegendControl] Error load config.", e);
         }
+        this.webhook = new DiscordWebhook(discord.getWebhookUrl());
     }
 
     public void loadStorage() {
         try {
-            this.playerProvider = new PlayerProvider("/%directory%/storage/LegendControl/players/", this.server);
-            this.playerProvider.init();
             this.serverProvider = new ServerProvider("/%directory%/storage/LegendControl/", this.server);
             this.serverProvider.init();
         } catch (Exception e) {
-            LOGGER.error("[LegendControl] Error load storage.");
+            LOGGER.error("[LegendControl] Error load storage.", e);
         }
     }
 
@@ -94,15 +113,19 @@ public class LegendControl {
         return instance.locale;
     }
 
+    public DiscordConfig getDiscord() {
+        return instance.discord;
+    }
+
     public ServerProvider getServerProvider() {
         return instance.serverProvider;
     }
 
-    public PlayerProvider getPlayerProvider() {
-        return instance.playerProvider;
-    }
-
     public MinecraftServer getServer() {
         return instance.server;
+    }
+
+    public DiscordWebhook getWebhook() {
+        return instance.webhook;
     }
 }

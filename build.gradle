@@ -3,7 +3,7 @@ subprojects {
     apply plugin: 'idea'
 
     group = 'com.vecoo.legendcontrol'
-    version = '2.4.1'
+    version = '3.0.0'
 
     ext {
         forgeVersion = "none"
@@ -33,7 +33,6 @@ subprojects {
     }
 
     task versionedRelease(type: Copy) {
-        dependsOn('shadowJar')
         delete fileTree('../release/') {
             include '**/*.jar'
         }
@@ -41,8 +40,8 @@ subprojects {
         from("./build/libs/${rootProject.name}-${version}.jar")
         into('../release/')
         include '*.jar'
-        rename { String filename ->
-            filename.replace("-${version}.jar", "-${project.version}-${forgeVersion}.jar")
+        rename { filename ->
+            "${rootProject.name}-${project.version}-${forgeVersion}.jar"
         }
     }
 }
