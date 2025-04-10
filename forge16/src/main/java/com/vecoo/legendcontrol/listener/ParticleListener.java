@@ -24,9 +24,9 @@ public class ParticleListener {
             return;
         }
 
-        LegendarySpawnListener.getLegendaryList().removeIf(entity -> entity == null || !entity.isAlive() || entity.hasOwner());
+        LegendarySpawnListener.getLegends().removeIf(entity -> entity == null || !entity.isAlive() || entity.hasOwner());
 
-        for (PixelmonEntity entity : LegendarySpawnListener.getLegendaryList()) {
+        for (PixelmonEntity entity : LegendarySpawnListener.getLegends()) {
             if (!(entity.level instanceof ServerWorld)) {
                 continue;
             }

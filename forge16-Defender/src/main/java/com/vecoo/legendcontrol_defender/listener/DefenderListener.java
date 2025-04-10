@@ -14,9 +14,9 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import com.vecoo.legendcontrol_defender.api.factory.LegendControlFactory;
+import com.vecoo.legendcontrol_defender.utils.TaskUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Util;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,12 +24,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class DefenderListener {
-    public static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
     private final Map<UUID, UUID> legendaryDefender = new ConcurrentHashMap<>();
 
     public boolean hasLegendaryDefender(UUID pokemonUUID) {
@@ -74,15 +70,28 @@ public class DefenderListener {
 
         addLegendaryDefender(pixelmonEntity.getUUID(), event.action.spawnLocation.cause.getUUID());
 
-        SCHEDULER.schedule(() -> {
-            if (hasLegendaryDefender(pixelmonEntity.getUUID()) && pixelmonEntity.isAlive() && !pixelmonEntity.hasOwner()) {
-                MinecraftServer server = LegendControlDefender.getInstance().getServer();
+        TaskUtils.builder()
+                .delay(20L)
+                .consume(task -> {
+                    if (!pixelmonEntity.isAlive() || pixelmonEntity.hasOwner()) {
+                        task.cancel();
+                        return;
+                    }
 
-                server.execute(() -> UtilChat.broadcast(LegendControlDefender.getInstance().getLocale().getProtection()
-                        .replace("%pokemon%", pixelmonEntity.getPokemonName()), server));
-            }
-            removeLegendaryDefender(pixelmonEntity.getUUID());
-        }, LegendControlDefender.getInstance().getConfig().getProtectedTime(), TimeUnit.SECONDS);
+                    startDefender(pixelmonEntity);
+                }).build();
+    }
+
+    private void startDefender(PixelmonEntity pixelmonEntity) {
+        TaskUtils.builder()
+                .delay(LegendControlDefender.getInstance().getConfig().getProtectedTime() * 20L)
+                .consume(task -> {
+                    if (hasLegendaryDefender(pixelmonEntity.getUUID()) && pixelmonEntity.isAlive() && !pixelmonEntity.hasOwner()) {
+                        UtilChat.broadcast(LegendControlDefender.getInstance().getLocale().getProtection()
+                                .replace("%pokemon%", pixelmonEntity.getPokemonName()), LegendControlDefender.getInstance().getServer());
+                    }
+                    removeLegendaryDefender(pixelmonEntity.getUUID());
+                }).build();
     }
 
     @SubscribeEvent

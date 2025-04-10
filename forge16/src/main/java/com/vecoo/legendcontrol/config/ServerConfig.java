@@ -11,9 +11,9 @@ import java.util.List;
 @ConfigSerializable
 public class ServerConfig extends AbstractYamlConfig {
     private int locationTime = 600;
+    private int despawnTime = 1800;
     private float baseChance = 10.0F;
     private float stepSpawnChance = 5.0F;
-    private int rerollSpawn = 5;
     private int randomTimeSpawnMin = 0;
     private int randomTimeSpawnMax = 300;
     private String particleName = "dragon_breath";
@@ -21,10 +21,7 @@ public class ServerConfig extends AbstractYamlConfig {
     private boolean notifyLegendaryCatch = true;
     private boolean notifyLegendaryDefeat = true;
     private boolean notifyLegendaryDespawn = true;
-    private boolean legendaryRepeat = true;
     private boolean legendaryParticle = true;
-    private boolean blacklistLegendary = false;
-    private List<String> blacklistLegendaryList = Lists.newArrayList("Regieleki", "Regidrago");
     private boolean blacklistDimensions = false;
     private List<String> blacklistDimensionList = Lists.newArrayList("the_nether", "the_end");
 
@@ -40,12 +37,12 @@ public class ServerConfig extends AbstractYamlConfig {
         return this.notifyLegendaryCatch;
     }
 
-    public int getRerollSpawn() {
-        return this.rerollSpawn;
-    }
-
     public int getLocationTime() {
         return this.locationTime;
+    }
+
+    public int getDespawnTime() {
+        return this.despawnTime;
     }
 
     public int getRandomTimeSpawnMin() {
@@ -68,24 +65,12 @@ public class ServerConfig extends AbstractYamlConfig {
         return this.legendaryParticle;
     }
 
-    public boolean isLegendaryRepeat() {
-        return this.legendaryRepeat;
-    }
-
     public boolean isNotifyLegendaryDefeat() {
         return this.notifyLegendaryDefeat;
     }
 
-    public boolean isBlacklistLegendary() {
-        return this.blacklistLegendary;
-    }
-
     public boolean isNotifyLegendaryDespawn() {
         return this.notifyLegendaryDespawn;
-    }
-
-    public List<String> getBlockedLegendary() {
-        return this.blacklistLegendaryList;
     }
 
     public boolean isBlacklistDimensions() {

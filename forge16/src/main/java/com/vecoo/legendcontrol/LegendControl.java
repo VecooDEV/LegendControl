@@ -2,16 +2,17 @@ package com.vecoo.legendcontrol;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
+import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.legendcontrol.command.CheckLegendsCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.config.DiscordConfig;
 import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.discord.DiscordWebhook;
-import com.vecoo.legendcontrol.listener.FinalListener;
 import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
 import com.vecoo.legendcontrol.listener.OtherListener;
 import com.vecoo.legendcontrol.listener.ParticleListener;
+import com.vecoo.legendcontrol.listener.ResultListener;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,6 +25,8 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.ScheduledExecutorService;
 
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
@@ -49,8 +52,8 @@ public class LegendControl {
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ParticleListener());
-        MinecraftForge.EVENT_BUS.register(new FinalListener());
-        Pixelmon.EVENT_BUS.register(new FinalListener());
+        MinecraftForge.EVENT_BUS.register(new ResultListener());
+        Pixelmon.EVENT_BUS.register(new ResultListener());
         Pixelmon.EVENT_BUS.register(new LegendarySpawnListener());
         Pixelmon.EVENT_BUS.register(new OtherListener());
     }
@@ -73,8 +76,16 @@ public class LegendControl {
 
     @SubscribeEvent
     public void onServerStopping(FMLServerStoppingEvent event) {
-        this.serverProvider.getServerStorage().clearLegends();
-        LegendarySpawnListener.SCHEDULER.shutdownNow();
+        if (config.getDespawnTime() > 0) {
+            for (PixelmonEntity pixelmonEntity : LegendarySpawnListener.getLegends()) {
+                if (pixelmonEntity.isAlive() && !pixelmonEntity.hasOwner()) {
+                    if (pixelmonEntity.battleController != null) {
+                        pixelmonEntity.battleController.endBattle();
+                    }
+                    pixelmonEntity.remove();
+                }
+            }
+        }
     }
 
     public void loadConfig() {

@@ -7,14 +7,20 @@ import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.spawning.LegendarySpawner;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.factory.LegendControlFactory;
+import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(value = LegendarySpawner.class, remap = false)
@@ -40,7 +46,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
      */
     @Overwrite
     public List<SpawnAction<? extends Entity>> getSpawns(int pass) {
-        if (pass == 0) {
+        if (pass != 0) {
             return this.possibleSpawns != null && !this.possibleSpawns.isEmpty() ? this.possibleSpawns : null;
         }
 
@@ -58,7 +64,6 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
         if (!RandomHelper.getRandomChance(chance)) {
             if (this.firesChooseEvent && numPlayers > 0) {
                 LegendControlFactory.ServerProvider.addLegendaryChance(LegendControl.getInstance().getConfig().getStepSpawnChance());
-                Utils.countSpawn = 0;
             }
             return null;
         }
@@ -67,5 +72,16 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
             this.forcefullySpawn(null);
         }
         return null;
+    }
+
+    @Inject(method = "forcefullySpawn", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;remove(I)Ljava/lang/Object;"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    public void forcefullySpawn(ServerPlayerEntity onlyFocus, CallbackInfo ci, ArrayList<ArrayList<ServerPlayerEntity>> clusters, ArrayList<ServerPlayerEntity> players, ArrayList<ServerPlayerEntity> cluster) {
+        ServerConfig config = LegendControl.getInstance().getConfig();
+
+        players.removeIf(player -> config.isBlacklistDimensions() && config.getBlacklistDimensionList().contains(player.getLevel().dimension().location().getPath()));
+
+        if (players.isEmpty()) {
+            ci.cancel();
+        }
     }
 }
