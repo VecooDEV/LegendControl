@@ -1,13 +1,12 @@
 package com.vecoo.legendcontrol.util;
 
 import com.vecoo.legendcontrol.LegendControl;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class TaskUtils {
@@ -18,8 +17,7 @@ public class TaskUtils {
     private long ticksRemaining;
     private boolean expired;
 
-    private static final List<TaskUtils> tasks = new CopyOnWriteArrayList<>();
-    private static final EventHandler eventHandler = new EventHandler();
+    private static final Set<TaskUtils> tasks = new HashSet<>();
 
     private TaskUtils(Consumer<TaskUtils> consumer, long delay, long interval, long iterations) {
         this.consumer = consumer;
@@ -115,13 +113,10 @@ public class TaskUtils {
     }
 
     private static synchronized void addTask(@Nonnull TaskUtils task) {
-        if (tasks.isEmpty()) {
-            MinecraftForge.EVENT_BUS.register(eventHandler);
-        }
         tasks.add(task);
     }
 
-    private static class EventHandler {
+    public static class EventHandler {
         @SubscribeEvent
         public void onServerTick(TickEvent.ServerTickEvent event) {
             if (event.phase == TickEvent.Phase.END) {
@@ -130,9 +125,6 @@ public class TaskUtils {
                     if (task.isExpired()) {
                         tasks.remove(task);
                     }
-                }
-                if (tasks.isEmpty()) {
-                    MinecraftForge.EVENT_BUS.unregister(this);
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.vecoo.legendcontrol_defender;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
+import com.vecoo.legendcontrol.util.TaskUtils;
 import com.vecoo.legendcontrol_defender.command.LegendaryTrustCommand;
 import com.vecoo.legendcontrol_defender.config.LocaleConfig;
 import com.vecoo.legendcontrol_defender.config.ServerConfig;
@@ -13,7 +14,6 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +39,7 @@ public class LegendControlDefender {
         this.loadConfig();
 
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(new TaskUtils.EventHandler());
         Pixelmon.EVENT_BUS.register(new DefenderListener());
     }
 
@@ -54,11 +55,6 @@ public class LegendControlDefender {
 
         PermissionAPI.registerNode("minecraft.command.ltrust", DefaultPermissionLevel.OP, "/ltrust");
         PermissionAPI.registerNode("minecraft.command.ltrust.reload", DefaultPermissionLevel.OP, "/ltrust reload");
-    }
-
-    @SubscribeEvent
-    public void onServerStopping(FMLServerStoppingEvent event) {
-        DefenderListener.SCHEDULER.shutdownNow();
     }
 
     public void loadConfig() {

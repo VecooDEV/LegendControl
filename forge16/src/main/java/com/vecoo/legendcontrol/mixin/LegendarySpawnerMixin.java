@@ -2,6 +2,7 @@ package com.vecoo.legendcontrol.mixin;
 
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.spawning.SpawnAction;
+import com.pixelmonmod.pixelmon.api.spawning.SpawnLocation;
 import com.pixelmonmod.pixelmon.api.spawning.archetypes.spawners.TickingSpawner;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.spawning.LegendarySpawner;
@@ -21,7 +22,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Mixin(value = LegendarySpawner.class, remap = false)
 public abstract class LegendarySpawnerMixin extends TickingSpawner {
@@ -39,6 +42,18 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
 
     @Shadow
     public boolean firesChooseEvent;
+
+    @Shadow
+    public int minDistFromCentre;
+
+    @Shadow
+    public int maxDistFromCentre;
+
+    @Shadow
+    public int horizontalSliceRadius;
+
+    @Shadow
+    public int verticalSliceRadius;
 
     /**
      * @author Vecoo
@@ -83,5 +98,25 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
         if (players.isEmpty()) {
             ci.cancel();
         }
+    }
+
+    /**
+     * @author Vecoo
+     * @reason Fix not possibleSpawns.
+     */
+    @Overwrite
+    public CompletableFuture<List<SpawnAction<?>>> doLegendarySpawn(ServerPlayerEntity target) {
+        return target == null ? CompletableFuture.completedFuture(Collections.emptyList()) : this.getTrackedBlockCollection(target, 0.0F, 0.0F, horizontalSliceRadius, this.verticalSliceRadius, this.minDistFromCentre, this.maxDistFromCentre).thenApply((blockCollection) -> {
+            ArrayList<SpawnLocation> spawnLocations = this.spawnLocationCalculator.calculateSpawnableLocations(blockCollection);
+            Collections.shuffle(spawnLocations);
+            List<SpawnAction<?>> possibleSpawns = this.selectionAlgorithm.calculateSpawnActions(this, this.spawnSets, spawnLocations);
+            if (possibleSpawns != null && !possibleSpawns.isEmpty()) {
+                possibleSpawns.forEach(SpawnAction::applyLocationMutations);
+                return possibleSpawns;
+            } else {
+                LegendControlFactory.ServerProvider.addLegendaryChance(LegendControl.getInstance().getConfig().getStepSpawnChance());
+                return Collections.emptyList();
+            }
+        });
     }
 }

@@ -30,7 +30,7 @@ public class LegendarySpawnListener {
         ServerConfig config = LegendControl.getInstance().getConfig();
 
         TaskUtils.builder()
-                .delay(20L)
+                .delay(1L)
                 .consume(task -> {
                     if (!pixelmonEntity.isAlive() || pixelmonEntity.hasOwner()) {
                         task.cancel();

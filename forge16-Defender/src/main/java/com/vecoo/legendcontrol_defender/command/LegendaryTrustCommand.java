@@ -13,7 +13,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
 
-import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class LegendaryTrustCommand {
@@ -68,7 +68,7 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        HashSet<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
+        Set<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
 
         if (trustedPlayers.contains(targetUUID)) {
             player.sendMessage(UtilChat.formatMessage(localeConfig.getAlreadyTrusted()), Util.NIL_UUID);
@@ -97,7 +97,7 @@ public class LegendaryTrustCommand {
         }
 
         UUID targetUUID = UtilPlayer.getUUID(target);
-        HashSet<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
+        Set<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
 
         if (trustedPlayers.isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(localeConfig.getEmptyTrust()), Util.NIL_UUID);
@@ -131,7 +131,7 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeList(ServerPlayerEntity player) {
-        HashSet<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
+        Set<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
         LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
 
         if (trustedPlayers.isEmpty()) {

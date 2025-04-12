@@ -2,12 +2,12 @@ package com.vecoo.legendcontrol_defender.api.factory;
 
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 
-import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class LegendControlFactory {
     public static class PlayerProvider {
-        public static HashSet<UUID> getPlayersTrust(UUID playerUUID) {
+        public static Set<UUID> getPlayersTrust(UUID playerUUID) {
             return LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).getPlayersTrust();
         }
 

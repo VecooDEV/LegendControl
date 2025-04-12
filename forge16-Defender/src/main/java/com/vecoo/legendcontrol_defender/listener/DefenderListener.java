@@ -12,9 +12,9 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonPart
 import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.legendcontrol_defender.util.TaskUtils;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import com.vecoo.legendcontrol_defender.api.factory.LegendControlFactory;
-import com.vecoo.legendcontrol_defender.utils.TaskUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;

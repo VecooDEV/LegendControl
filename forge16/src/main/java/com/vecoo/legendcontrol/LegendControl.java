@@ -2,7 +2,6 @@ package com.vecoo.legendcontrol;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
-import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.legendcontrol.command.CheckLegendsCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.config.DiscordConfig;
@@ -14,19 +13,17 @@ import com.vecoo.legendcontrol.listener.OtherListener;
 import com.vecoo.legendcontrol.listener.ParticleListener;
 import com.vecoo.legendcontrol.listener.ResultListener;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
+import com.vecoo.legendcontrol.util.TaskUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.concurrent.ScheduledExecutorService;
 
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
@@ -52,6 +49,7 @@ public class LegendControl {
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ParticleListener());
+        MinecraftForge.EVENT_BUS.register(new TaskUtils.EventHandler());
         MinecraftForge.EVENT_BUS.register(new ResultListener());
         Pixelmon.EVENT_BUS.register(new ResultListener());
         Pixelmon.EVENT_BUS.register(new LegendarySpawnListener());
@@ -72,20 +70,7 @@ public class LegendControl {
         PermissionAPI.registerNode("minecraft.command.checkleg", DefaultPermissionLevel.OP, "/checkleg");
         PermissionAPI.registerNode("minecraft.command.checkleg.modify", DefaultPermissionLevel.OP, "Modify version /checkleg");
         PermissionAPI.registerNode("minecraft.command.lc", DefaultPermissionLevel.OP, "/lc");
-    }
-
-    @SubscribeEvent
-    public void onServerStopping(FMLServerStoppingEvent event) {
-        if (config.getDespawnTime() > 0) {
-            for (PixelmonEntity pixelmonEntity : LegendarySpawnListener.getLegends()) {
-                if (pixelmonEntity.isAlive() && !pixelmonEntity.hasOwner()) {
-                    if (pixelmonEntity.battleController != null) {
-                        pixelmonEntity.battleController.endBattle();
-                    }
-                    pixelmonEntity.remove();
-                }
-            }
-        }
+        LOGGER.error(PermissionAPI.getPermissionHandler().getNodeDescription("minecraft.command.checkleg"));
     }
 
     public void loadConfig() {

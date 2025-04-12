@@ -1,13 +1,12 @@
-package com.vecoo.legendcontrol_defender.utils;
+package com.vecoo.legendcontrol_defender.util;
 
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class TaskUtils {
@@ -18,8 +17,7 @@ public class TaskUtils {
     private long ticksRemaining;
     private boolean expired;
 
-    private static final List<TaskUtils> tasks = new CopyOnWriteArrayList<>();
-    private static final EventHandler eventHandler = new EventHandler();
+    private static final Set<TaskUtils> tasks = new HashSet<>();
 
     private TaskUtils(Consumer<TaskUtils> consumer, long delay, long interval, long iterations) {
         this.consumer = consumer;
@@ -74,7 +72,7 @@ public class TaskUtils {
 
         public Builder delay(long delay) {
             if (delay < 0) {
-                LegendControlDefender.getLogger().error("[LegendControl-Defender] Delay must not be below 0");
+                LegendControlDefender.getLogger().error("[LegendControl] Delay must not be below 0");
                 return null;
             }
             this.delay = delay;
@@ -83,7 +81,7 @@ public class TaskUtils {
 
         public Builder interval(long interval) {
             if (interval < 0) {
-                LegendControlDefender.getLogger().error("[LegendControl-Defender] Interval must not be below 0");
+                LegendControlDefender.getLogger().error("[LegendControl] Interval must not be below 0");
                 return null;
             }
             this.interval = interval;
@@ -92,7 +90,7 @@ public class TaskUtils {
 
         public Builder iterations(long iterations) {
             if (iterations < -1) {
-                LegendControlDefender.getLogger().error("[LegendControl-Defender] Iterations must not be below -1");
+                LegendControlDefender.getLogger().error("[LegendControl] Iterations must not be below -1");
                 return null;
             }
             this.iterations = iterations;
@@ -105,7 +103,7 @@ public class TaskUtils {
 
         public TaskUtils build() {
             if (consumer == null) {
-                LegendControlDefender.getLogger().error("[LegendControl-Defender Consumer must be set");
+                LegendControlDefender.getLogger().error("[LegendControl] Consumer must be set");
                 return null;
             }
             TaskUtils task = new TaskUtils(consumer, delay, interval, iterations);
@@ -115,13 +113,10 @@ public class TaskUtils {
     }
 
     private static synchronized void addTask(@Nonnull TaskUtils task) {
-        if (tasks.isEmpty()) {
-            MinecraftForge.EVENT_BUS.register(eventHandler);
-        }
         tasks.add(task);
     }
 
-    private static class EventHandler {
+    public static class EventHandler {
         @SubscribeEvent
         public void onServerTick(TickEvent.ServerTickEvent event) {
             if (event.phase == TickEvent.Phase.END) {
@@ -130,9 +125,6 @@ public class TaskUtils {
                     if (task.isExpired()) {
                         tasks.remove(task);
                     }
-                }
-                if (tasks.isEmpty()) {
-                    MinecraftForge.EVENT_BUS.unregister(this);
                 }
             }
         }
