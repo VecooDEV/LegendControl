@@ -18,9 +18,5 @@
 ![](https://i.imgur.com/x9gXu0j.png)   
 [<img height="150" src="https://i.imgur.com/pscNsPQ.png" width="150"/>](https://www.curseforge.com/minecraft/mc-mods/pixelmon)[<img height="150" src="https://i.imgur.com/suGlOwq.png" width="150"/>](https://www.curseforge.com/minecraft/mc-mods/extralib)
 
-
-![](https://i.imgur.com/bvrAEoC.png)   
-[![](https://i.imgur.com/eaHjYUQ.png)](https://www.patreon.com/Vecoo) [![](https://i.imgur.com/yPBPV5c.png)](https://ko-fi.com/vecoo)
-
 ![](https://i.imgur.com/BEBULHc.png)   
 [![](https://i.imgur.com/x3JMFRv.png)](https://www.curseforge.com/minecraft/mc-mods/legendcontrol) [![](https://i.imgur.com/Q6tm4Fv.png)](https://modrinth.com/mod/legendcontrol)
