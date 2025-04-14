@@ -5,8 +5,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class TaskUtils {
@@ -36,9 +35,13 @@ public class TaskUtils {
     }
 
     private void tick() {
-        if (expired) return;
+        if (expired) {
+            return;
+        }
 
-        if (--ticksRemaining > 0) return;
+        if (--ticksRemaining > 0) {
+            return;
+        }
 
         consumer.accept(this);
         currentIteration++;
@@ -120,7 +123,13 @@ public class TaskUtils {
         @SubscribeEvent
         public void onServerTick(TickEvent.ServerTickEvent event) {
             if (event.phase == TickEvent.Phase.END) {
-                for (TaskUtils task : tasks) {
+                List<TaskUtils> tasksCopy;
+
+                synchronized (tasks) {
+                    tasksCopy = new ArrayList<>(tasks);
+                }
+
+                for (TaskUtils task : tasksCopy) {
                     task.tick();
                     if (task.isExpired()) {
                         tasks.remove(task);

@@ -19,7 +19,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.34'
 
     compileOnly fg.deobf('pixelmon:Pixelmon-1.16.5-9.1.13-server:9.1.13')
-    compileOnly fg.deobf('maven.modrinth:extralib:1.5.1-forge,1.16.5')
+    compileOnly fg.deobf('maven.modrinth:extralib:1.5.2-forge,1.16.5')
 }
 
 jar.finalizedBy('reobfJar')

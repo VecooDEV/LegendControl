@@ -2,12 +2,12 @@ package com.vecoo.legendcontrol_defender;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
-import com.vecoo.legendcontrol.util.TaskUtils;
 import com.vecoo.legendcontrol_defender.command.LegendaryTrustCommand;
 import com.vecoo.legendcontrol_defender.config.LocaleConfig;
 import com.vecoo.legendcontrol_defender.config.ServerConfig;
 import com.vecoo.legendcontrol_defender.listener.DefenderListener;
 import com.vecoo.legendcontrol_defender.storage.player.PlayerProvider;
+import com.vecoo.legendcontrol_defender.util.TaskUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;

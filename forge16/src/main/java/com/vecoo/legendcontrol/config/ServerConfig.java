@@ -16,12 +16,12 @@ public class ServerConfig extends AbstractYamlConfig {
     private float stepSpawnChance = 5.0F;
     private int randomTimeSpawnMin = 0;
     private int randomTimeSpawnMax = 300;
+    private boolean legendaryParticle = true;
     private String particleName = "dragon_breath";
     private boolean notifyPersonalLegendarySpawn = true;
     private boolean notifyLegendaryCatch = true;
     private boolean notifyLegendaryDefeat = true;
     private boolean notifyLegendaryDespawn = true;
-    private boolean legendaryParticle = true;
     private boolean blacklistDimensions = false;
     private List<String> blacklistDimensionList = Lists.newArrayList("the_nether", "the_end");
 

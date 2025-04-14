@@ -4,7 +4,7 @@ license = "All Rights Reserved"
 
 [[mods]]
 modId = "legendcontrol_defender"
-version = "3.0.0"
+version = "3.0.1"
 displayName = "LegendControl-Defender"
 logoFile = "logo.png"
 authors = "Vecoo"
