@@ -1,5 +1,5 @@
 ![](https://i.imgur.com/8tpbRvC.png)   
-ㅤㅤㅤ‏‎‏‎‏‎‎‎ᅠᅠ ᅠ[![](https://i.imgur.com/B4evs2K.png)](https://discord.gg/VSGEVagRPq) [![](https://i.imgur.com/uquQMuU.png)](https://github.com/VecooDEV/ExtraLib/wiki) [![](https://i.imgur.com/eaHjYUQ.png)](https://www.patreon.com/Vecoo) [![](https://i.imgur.com/yPBPV5c.png)](https://ko-fi.com/vecoo)
+[![](https://i.imgur.com/B4evs2K.png)](https://discord.gg/VSGEVagRPq) [![](https://i.imgur.com/uquQMuU.png)](https://github.com/VecooDEV/ExtraLib/wiki) [![](https://i.imgur.com/eaHjYUQ.png)](https://www.patreon.com/Vecoo) [![](https://i.imgur.com/yPBPV5c.png)](https://ko-fi.com/vecoo)
 
 ![](https://i.imgur.com/ncGDLHx.png)
 * Cumulative chance for legendary pokemon to appear.
