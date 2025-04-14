@@ -70,7 +70,6 @@ public class LegendControl {
         PermissionAPI.registerNode("minecraft.command.checkleg", DefaultPermissionLevel.OP, "/checkleg");
         PermissionAPI.registerNode("minecraft.command.checkleg.modify", DefaultPermissionLevel.OP, "Modify version /checkleg");
         PermissionAPI.registerNode("minecraft.command.lc", DefaultPermissionLevel.OP, "/lc");
-        LOGGER.error(PermissionAPI.getPermissionHandler().getNodeDescription("minecraft.command.checkleg"));
     }
 
     public void loadConfig() {
