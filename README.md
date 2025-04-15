@@ -8,7 +8,7 @@
 * Various notifications to the entire server about legendary pokemon being caught, lost, and defeat
 * Ability to connect discord webhook for notifications.
 * There are many other additions, including full mod customization.
-* [LegendControl-Defender] Protecting legendary pokemon from theft.
+* [[LegendControl-Defender](https://www.curseforge.com/minecraft/mc-mods/legendcontrol-defender)] Protecting legendary pokemon from theft.
 
 ![](https://i.imgur.com/MZ3KBqO.png)
 * Now legendary pokemon appear with a standard chance of 10% and with each unsuccessful attempt to appear, another 5% is added to the chance and so on until the legendary pokemon appears. After the legendary pokemon appears, the chance will be returned to standard.
