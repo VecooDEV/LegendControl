@@ -7,6 +7,7 @@ import com.pixelmonmod.pixelmon.api.spawning.archetypes.spawners.TickingSpawner;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.spawning.LegendarySpawner;
 import com.vecoo.legendcontrol.LegendControl;
+import com.vecoo.legendcontrol.api.LegendSourceName;
 import com.vecoo.legendcontrol.api.factory.LegendControlFactory;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.util.Utils;
@@ -78,7 +79,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
 
         if (!RandomHelper.getRandomChance(chance)) {
             if (this.firesChooseEvent && numPlayers > 0) {
-                LegendControlFactory.ServerProvider.addLegendaryChance(LegendControl.getInstance().getConfig().getStepSpawnChance());
+                LegendControlFactory.ServerProvider.addLegendaryChance(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getStepSpawnChance());
             }
             return null;
         }
@@ -114,7 +115,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
                 possibleSpawns.forEach(SpawnAction::applyLocationMutations);
                 return possibleSpawns;
             } else {
-                LegendControlFactory.ServerProvider.addLegendaryChance(LegendControl.getInstance().getConfig().getStepSpawnChance());
+                LegendControlFactory.ServerProvider.addLegendaryChance(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getStepSpawnChance());
                 return Collections.emptyList();
             }
         });

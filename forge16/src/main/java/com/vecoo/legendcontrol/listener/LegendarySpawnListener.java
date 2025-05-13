@@ -4,6 +4,7 @@ import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
+import com.vecoo.legendcontrol.api.LegendSourceName;
 import com.vecoo.legendcontrol.api.factory.LegendControlFactory;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.util.TaskUtils;
@@ -41,7 +42,7 @@ public class LegendarySpawnListener {
                         player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getSpawnPlayerLegendary()), Util.NIL_UUID);
                     }
 
-                    LegendControlFactory.ServerProvider.setLegendaryChance(config.getBaseChance());
+                    LegendControlFactory.ServerProvider.setLegendaryChance(LegendSourceName.PIXELMON, config.getBaseChance());
                     legends.add(pixelmonEntity);
                     setTimers(pixelmonEntity);
                     WebhookUtils.spawnWebhook(pixelmonEntity);

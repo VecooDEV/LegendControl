@@ -1,0 +1,39 @@
+modLoader = "javafml"
+loaderVersion = "[36,)"
+license = "All Rights Reserved"
+
+[[mods]]
+modId = "legendcontrol_defender"
+version = "${project_version}"
+displayName = "${project_name}-Defender"
+logoFile = "logo.png"
+authors = "Vecoo"
+description = "Sidemod for Pixelmon. It is a module of the main LegendControl for the protection of legends."
+
+[[dependencies.legendcontrol_defender]]
+modId = "forge"
+mandatory = true
+versionRange = "[36,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.legendcontrol_defender]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.legendcontrol_defender]]
+modId = "pixelmon"
+mandatory = true
+versionRange = "[9.1,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.legendcontrol_defender]]
+modId = "extralib"
+mandatory = true
+versionRange = "[1.6,)"
+ordering = "NONE"
+side = "SERVER"

@@ -33,7 +33,7 @@ public class ParticleListener {
 
             ServerWorld world = (ServerWorld) entity.level;
 
-            world.sendParticles(particle, entity.getX(), entity.getY(), entity.getZ(), 1, world.random.nextDouble() - 0.5, world.random.nextDouble() - 0.5, world.random.nextDouble() - 0.5, 1.0);
+            world.sendParticles(particle, entity.getX(), entity.getY(), entity.getZ(), 3, world.random.nextDouble() - 0.5, world.random.nextDouble() - 0.5, world.random.nextDouble() - 0.5, 0.1);
         }
     }
 }

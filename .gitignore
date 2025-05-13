@@ -3,3 +3,10 @@
 /.gradle/
 /forge16/build/
 /forge16-Defender/build/
+/neoforge21/.gradle/
+/neoforge21/build/
+/neoforge21/runs/
+
+/neoforge21-defender/runs/
+/neoforge21-defender/build/
+/neoforge21-defender/.gradle/

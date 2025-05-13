@@ -3,10 +3,10 @@ subprojects {
     apply plugin: 'idea'
 
     group = 'com.vecoo.legendcontrol'
-    version = '3.0.1'
+    version = project_version
 
     ext {
-        forgeVersion = "none"
+        minecraftVersion  = "none"
     }
 
     jar {
@@ -15,8 +15,8 @@ subprojects {
 
     repositories {
         mavenCentral()
-        maven { url = "https://repo.spongepowered.org/maven" }
         maven { url = "https://api.modrinth.com/maven" }
+        maven { url = "https://repo.spongepowered.org/maven" }
         ivy {
             setUrl('https://download.nodecdn.net/containers/reforged/server/release')
             metadataSources {
@@ -41,7 +41,7 @@ subprojects {
         into('../release/')
         include '*.jar'
         rename {
-            filename -> "${rootProject.name}-${project.version}-${forgeVersion}.jar"
+            filename -> "${rootProject.name}-${project.version}-${minecraftVersion}.jar"
         }
     }
 }
