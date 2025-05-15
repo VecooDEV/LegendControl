@@ -32,6 +32,7 @@ public class DiscordWebhook {
         if (input == null) {
             return "";
         }
+
         return input.replace("\"", "\\\"")
                 .replace("\n", "\\n")
                 .replace("\r", "\\r")

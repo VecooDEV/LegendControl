@@ -5,8 +5,10 @@ import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
+import com.vecoo.legendcontrol.api.events.LegendControlEvent;
 import com.vecoo.legendcontrol.util.WebhookUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -89,6 +91,8 @@ public class ResultListener {
         if (!pixelmonEntity.isLegendary() || !LegendarySpawnListener.legends.remove(pixelmonEntity) || !LegendControl.getInstance().getConfig().isNotifyLegendaryDespawn()) {
             return;
         }
+
+        MinecraftForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
 
         UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
                 .replace("%pokemon%", pixelmonEntity.getPokemonName()), LegendControl.getInstance().getServer());

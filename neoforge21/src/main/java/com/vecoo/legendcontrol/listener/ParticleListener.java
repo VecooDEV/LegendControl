@@ -14,7 +14,7 @@ public class ParticleListener {
 
     @SubscribeEvent
     public void onServerTick(ServerTickEvent.Pre event) {
-        if (!LegendControl.getInstance().getConfig().isLegendaryParticle() || ++this.currentTick % 20 != 0) {
+        if (!LegendControl.getInstance().getConfig().isLegendaryParticle() || ++this.currentTick % 40 != 0) {
             return;
         }
 
@@ -31,7 +31,7 @@ public class ParticleListener {
                 continue;
             }
 
-            level.sendParticles(particle, entity.getX(), entity.getY(), entity.getZ(), 3, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, 0.1);
+            level.sendParticles(particle, entity.getX(), entity.getYCentre(), entity.getZ(), 3, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, 0.1);
         }
     }
 }

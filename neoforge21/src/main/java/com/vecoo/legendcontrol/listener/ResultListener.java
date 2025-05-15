@@ -5,9 +5,11 @@ import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
+import com.vecoo.legendcontrol.api.events.LegendControlEvent;
 import com.vecoo.legendcontrol.util.WebhookUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 
 import java.util.HashSet;
@@ -75,7 +77,7 @@ public class ResultListener {
     }
 
     @SubscribeEvent
-    public void onDespawn(EntityLeaveLevelEvent event) {
+    public void onEntityLeave(EntityLeaveLevelEvent event) {
         if (event.getLevel().isClientSide()) {
             return;
         }
@@ -87,6 +89,8 @@ public class ResultListener {
         if (!pixelmonEntity.isLegendary() || !LegendarySpawnListener.legends.remove(pixelmonEntity) || !LegendControl.getInstance().getConfig().isNotifyLegendaryDespawn()) {
             return;
         }
+
+        NeoForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
 
         UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
                 .replace("%pokemon%", pixelmonEntity.getPokemonName()), LegendControl.getInstance().getServer());

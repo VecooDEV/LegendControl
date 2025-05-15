@@ -1,10 +1,11 @@
 package com.vecoo.legendcontrol_defender.api.events;
 
 import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 
 import java.util.UUID;
 
-public class PlayerTrustEvent extends Event {
+public class PlayerTrustEvent extends Event implements ICancellableEvent {
     private final UUID playerUUID;
 
     public PlayerTrustEvent(UUID uuid) {
@@ -15,7 +16,7 @@ public class PlayerTrustEvent extends Event {
         return this.playerUUID;
     }
 
-    public static class Add extends PlayerTrustEvent {
+    public static class Add extends PlayerTrustEvent implements ICancellableEvent {
         private final UUID targetUUID;
 
         public Add(UUID playerUUID, UUID targetUUID) {
@@ -28,7 +29,7 @@ public class PlayerTrustEvent extends Event {
         }
     }
 
-    public static class Remove extends PlayerTrustEvent {
+    public static class Remove extends PlayerTrustEvent implements ICancellableEvent {
         private final UUID targetUUID;
 
         public Remove(UUID playerUUID, UUID targetUUID) {
@@ -41,7 +42,7 @@ public class PlayerTrustEvent extends Event {
         }
     }
 
-    public static class Clear extends PlayerTrustEvent {
+    public static class Clear extends PlayerTrustEvent implements ICancellableEvent {
         public Clear(UUID playerUUID) {
             super(playerUUID);
         }

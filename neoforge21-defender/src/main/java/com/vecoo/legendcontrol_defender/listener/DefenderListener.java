@@ -14,12 +14,14 @@ import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
+import com.vecoo.legendcontrol_defender.api.events.LegendControlDefenderEvent;
 import com.vecoo.legendcontrol_defender.api.factory.LegendControlFactory;
 import com.vecoo.legendcontrol_defender.util.TaskUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.List;
 import java.util.Map;
@@ -95,6 +97,8 @@ public class DefenderListener {
                     }
 
                     removeLegendaryDefender(pixelmonEntity.getUUID());
+
+                    NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.ExpiredDefender(pixelmonEntity));
                 }).build();
     }
 
@@ -110,14 +114,26 @@ public class DefenderListener {
             return;
         }
 
+        ServerPlayer player = event.player;
+
         for (Pokemon pokemon : party.getTeam()) {
-            pokemon.ifEntityExists(entityPixelmon -> {
-                Entity target = entityPixelmon.getTarget();
-                if (target instanceof PixelmonEntity) {
-                    if (hasLegendaryPlayerOwner(target.getUUID(), event.player)) {
-                        event.setCanceled(true);
-                    }
+            pokemon.ifEntityExists(pixelmonEntity -> {
+                Entity target = pixelmonEntity.getTarget();
+
+                if (!(target instanceof PixelmonEntity)) {
+                    return;
                 }
+
+                if (!hasLegendaryPlayerOwner(target.getUUID(), player)) {
+                    return;
+                }
+
+                if (NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(pixelmonEntity, player)).isCanceled()) {
+                    return;
+                }
+
+                player.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()));
+                event.setCanceled(true);
             });
         }
     }
@@ -150,10 +166,16 @@ public class DefenderListener {
             return;
         }
 
-        if (hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), player.getPlayer())) {
-            player.getPlayer().sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()));
-            event.setCanceled(true);
+        if (!hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), player.getPlayer())) {
+            return;
         }
+
+        if (NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender((PixelmonEntity) wildPixelmon.getEntity(), player.getPlayer())).isCanceled()) {
+            return;
+        }
+
+        player.getPlayer().sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()));
+        event.setCanceled(true);
     }
 
     @SubscribeEvent
@@ -161,6 +183,10 @@ public class DefenderListener {
         ServerPlayer player = event.getPlayer();
 
         if (hasLegendaryPlayerOwner(event.getPokemon().getUUID(), player)) {
+            if (NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(event.getPokemon().getPixelmonEntity().orElse(null), player)).isCanceled()) {
+                return;
+            }
+
             if (!player.isCreative()) {
                 player.getInventory().add(event.getPokeBall().getBallItem());
             }

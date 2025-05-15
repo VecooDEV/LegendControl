@@ -1,11 +1,13 @@
 package com.vecoo.legendcontrol.api.events;
 
 import com.vecoo.legendcontrol.api.LegendSourceName;
+import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
+@Cancelable
 public class ChanceChangeEvent extends Event {
     private final LegendSourceName sourceName;
-    private final float chance;
+    private float chance;
 
     public ChanceChangeEvent(LegendSourceName sourceName, float chance) {
         this.sourceName = sourceName;
@@ -18,5 +20,9 @@ public class ChanceChangeEvent extends Event {
 
     public float getChance() {
         return this.chance;
+    }
+
+    public void setChance(float chance) {
+        this.chance = chance;
     }
 }

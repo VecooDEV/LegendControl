@@ -39,6 +39,7 @@ public class CheckLegendsCommand {
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getCheckLegendary()
                 .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))
                 .replace("%time%", time + timeUnit)), false);
+
         if (UtilPermission.hasPermission(source, "minecraft.command.checkleg.modify")) {
             PixelmonSpawning.legendarySpawner.checkSpawns.checkSpawns(PixelmonSpawning.legendarySpawner, source, new ArrayList<>());
         }

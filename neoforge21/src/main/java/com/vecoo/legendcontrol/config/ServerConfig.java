@@ -22,6 +22,7 @@ public class ServerConfig extends AbstractYamlConfig {
     private boolean notifyLegendaryCatch = true;
     private boolean notifyLegendaryDefeat = true;
     private boolean notifyLegendaryDespawn = true;
+    private boolean legendaryRepeat = true;
     private boolean blacklistDimensions = false;
     private List<String> blacklistDimensionList = Lists.newArrayList("the_nether", "the_end");
 
@@ -71,6 +72,10 @@ public class ServerConfig extends AbstractYamlConfig {
 
     public boolean isNotifyLegendaryDespawn() {
         return this.notifyLegendaryDespawn;
+    }
+
+    public boolean isLegendaryRepeat() {
+        return this.legendaryRepeat;
     }
 
     public boolean isBlacklistDimensions() {

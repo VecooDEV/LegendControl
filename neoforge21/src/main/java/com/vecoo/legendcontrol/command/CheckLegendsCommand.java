@@ -40,6 +40,7 @@ public class CheckLegendsCommand {
         source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getCheckLegendary()
                 .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))
                 .replace("%time%", time + timeUnit)));
+
         if (UtilPermission.hasPermission(source, PermissionNodes.CHECKLEGENDARY_MODIFY_COMMAND)) {
             PixelmonSpawning.legendarySpawner.checkSpawns.checkSpawns(PixelmonSpawning.legendarySpawner, source, new ArrayList<>());
         }

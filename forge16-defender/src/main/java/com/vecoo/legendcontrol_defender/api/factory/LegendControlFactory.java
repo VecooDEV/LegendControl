@@ -18,19 +18,31 @@ public class LegendControlFactory {
         }
 
         public static void addPlayerTrust(UUID playerUUID, UUID targetUUID) {
-            MinecraftForge.EVENT_BUS.post(new PlayerTrustEvent.Add(playerUUID, targetUUID));
+            PlayerTrustEvent.Add event = new PlayerTrustEvent.Add(playerUUID, targetUUID);
+
+            if (MinecraftForge.EVENT_BUS.post(event)) {
+                return;
+            }
 
             LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).addPlayerTrust(targetUUID);
         }
 
         public static void removePlayerTrust(UUID playerUUID, UUID targetUUID) {
-            MinecraftForge.EVENT_BUS.post(new PlayerTrustEvent.Remove(playerUUID, targetUUID));
+            PlayerTrustEvent.Remove event = new PlayerTrustEvent.Remove(playerUUID, targetUUID);
+
+            if (MinecraftForge.EVENT_BUS.post(event)) {
+                return;
+            }
 
             LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayerTrust(targetUUID);
         }
 
         public static void removePlayersTrust(UUID playerUUID) {
-            MinecraftForge.EVENT_BUS.post(new PlayerTrustEvent.Clear(playerUUID));
+            PlayerTrustEvent.Clear event = new PlayerTrustEvent.Clear(playerUUID);
+
+            if (MinecraftForge.EVENT_BUS.post(event)) {
+                return;
+            }
 
             LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).clearPlayersTrust();
         }

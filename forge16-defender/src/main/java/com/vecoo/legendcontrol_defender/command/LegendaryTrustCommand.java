@@ -141,9 +141,9 @@ public class LegendaryTrustCommand {
 
         player.sendMessage(UtilChat.formatMessage(localeConfig.getListTrust()), Util.NIL_UUID);
 
-        for (UUID uuid : trustedPlayers) {
+        for (UUID playerUUID : trustedPlayers) {
             player.sendMessage(UtilChat.formatMessage(localeConfig.getTrustedPlayers()
-                    .replace("%player%", UtilPlayer.getPlayerName(uuid))), Util.NIL_UUID);
+                    .replace("%player%", UtilPlayer.getPlayerName(playerUUID))), Util.NIL_UUID);
         }
         return 1;
     }

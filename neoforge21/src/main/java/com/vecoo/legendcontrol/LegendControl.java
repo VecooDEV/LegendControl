@@ -8,7 +8,10 @@ import com.vecoo.legendcontrol.config.DiscordConfig;
 import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.discord.DiscordWebhook;
-import com.vecoo.legendcontrol.listener.*;
+import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
+import com.vecoo.legendcontrol.listener.OtherListener;
+import com.vecoo.legendcontrol.listener.ParticleListener;
+import com.vecoo.legendcontrol.listener.ResultListener;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
 import com.vecoo.legendcontrol.util.PermissionNodes;
 import com.vecoo.legendcontrol.util.TaskUtils;
@@ -19,10 +22,9 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
+import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
 
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
@@ -61,7 +63,11 @@ public class LegendControl {
         PermissionNodes.permissionList.add(PermissionNodes.CHECKLEGENDARY_MODIFY_COMMAND);
         PermissionNodes.permissionList.add(PermissionNodes.LEGENDCONTROL_COMMAND);
 
-        event.addNodes(new ArrayList<>(PermissionNodes.permissionList));
+        for (PermissionNode<?> node : PermissionNodes.permissionList) {
+            if (!event.getNodes().contains(node)) {
+                event.addNodes(node);
+            }
+        }
     }
 
     @SubscribeEvent

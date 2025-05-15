@@ -18,19 +18,31 @@ public class LegendControlFactory {
         }
 
         public static void addPlayerTrust(UUID playerUUID, UUID targetUUID) {
-            NeoForge.EVENT_BUS.post(new PlayerTrustEvent.Add(playerUUID, targetUUID));
+            PlayerTrustEvent.Add event = new PlayerTrustEvent.Add(playerUUID, targetUUID);
+
+            if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+                return;
+            }
 
             LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).addPlayerTrust(targetUUID);
         }
 
         public static void removePlayerTrust(UUID playerUUID, UUID targetUUID) {
-            NeoForge.EVENT_BUS.post(new PlayerTrustEvent.Remove(playerUUID, targetUUID));
+            PlayerTrustEvent.Remove event = new PlayerTrustEvent.Remove(playerUUID, targetUUID);
+
+            if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+                return;
+            }
 
             LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayerTrust(targetUUID);
         }
 
         public static void removePlayersTrust(UUID playerUUID) {
-            NeoForge.EVENT_BUS.post(new PlayerTrustEvent.Clear(playerUUID));
+            PlayerTrustEvent.Clear event = new PlayerTrustEvent.Clear(playerUUID);
+
+            if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+                return;
+            }
 
             LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).clearPlayersTrust();
         }
