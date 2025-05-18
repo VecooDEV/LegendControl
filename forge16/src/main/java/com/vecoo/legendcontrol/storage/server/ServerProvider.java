@@ -6,7 +6,7 @@ import com.vecoo.legendcontrol.LegendControl;
 import net.minecraft.server.MinecraftServer;
 
 public class ServerProvider {
-    private final String filePath;
+    private transient final String filePath;
     private ServerStorage serverStorage;
 
     public ServerProvider(String filePath, MinecraftServer server) {

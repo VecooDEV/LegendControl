@@ -54,7 +54,11 @@ public class LegendControlCommand {
             return 0;
         }
 
-        LegendControlFactory.ServerProvider.addLegendaryChance(LegendSourceName.PLAYER_AND_CONSOLE, chance);
+        Float newAmount = LegendControlFactory.ServerProvider.addLegendaryChance(LegendSourceName.PLAYER_AND_CONSOLE, chance).orElse(null);
+
+        if (newAmount == null) {
+            return 0;
+        }
 
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
                 .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))), false);
@@ -67,7 +71,11 @@ public class LegendControlCommand {
             return 0;
         }
 
-        LegendControlFactory.ServerProvider.removeLegendaryChance(LegendSourceName.PLAYER_AND_CONSOLE, chance);
+        Float newAmount = LegendControlFactory.ServerProvider.removeLegendaryChance(LegendSourceName.PLAYER_AND_CONSOLE, chance).orElse(null);
+
+        if (newAmount == null) {
+            return 0;
+        }
 
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
                 .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))), false);
@@ -75,7 +83,11 @@ public class LegendControlCommand {
     }
 
     private static int executeSet(CommandSource source, float chance) {
-        LegendControlFactory.ServerProvider.setLegendaryChance(LegendSourceName.PLAYER_AND_CONSOLE, chance);
+        Float newAmount = LegendControlFactory.ServerProvider.setLegendaryChance(LegendSourceName.PLAYER_AND_CONSOLE, chance).orElse(null);
+
+        if (newAmount == null) {
+            return 0;
+        }
 
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
                 .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))), false);

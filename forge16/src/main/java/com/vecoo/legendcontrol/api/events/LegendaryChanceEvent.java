@@ -5,11 +5,11 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 @Cancelable
-public class ChanceChangeEvent extends Event {
+public class LegendaryChanceEvent extends Event {
     private final LegendSourceName sourceName;
     private float chance;
 
-    public ChanceChangeEvent(LegendSourceName sourceName, float chance) {
+    public LegendaryChanceEvent(LegendSourceName sourceName, float chance) {
         this.sourceName = sourceName;
         this.chance = chance;
     }

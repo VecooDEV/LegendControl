@@ -18,33 +18,21 @@ public class LegendControlFactory {
         }
 
         public static void addPlayerTrust(UUID playerUUID, UUID targetUUID) {
-            PlayerTrustEvent.Add event = new PlayerTrustEvent.Add(playerUUID, targetUUID);
-
-            if (MinecraftForge.EVENT_BUS.post(event)) {
-                return;
+            if (!MinecraftForge.EVENT_BUS.post(new PlayerTrustEvent.Add(playerUUID, targetUUID))) {
+                LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).addPlayerTrust(targetUUID);
             }
-
-            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).addPlayerTrust(targetUUID);
         }
 
         public static void removePlayerTrust(UUID playerUUID, UUID targetUUID) {
-            PlayerTrustEvent.Remove event = new PlayerTrustEvent.Remove(playerUUID, targetUUID);
-
-            if (MinecraftForge.EVENT_BUS.post(event)) {
-                return;
+            if (!MinecraftForge.EVENT_BUS.post(new PlayerTrustEvent.Remove(playerUUID, targetUUID))) {
+                LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayerTrust(targetUUID);
             }
-
-            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayerTrust(targetUUID);
         }
 
         public static void removePlayersTrust(UUID playerUUID) {
-            PlayerTrustEvent.Clear event = new PlayerTrustEvent.Clear(playerUUID);
-
-            if (MinecraftForge.EVENT_BUS.post(event)) {
-                return;
+            if (!MinecraftForge.EVENT_BUS.post(new PlayerTrustEvent.Clear(playerUUID))) {
+                LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).clearPlayersTrust();
             }
-
-            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).clearPlayersTrust();
         }
     }
 }

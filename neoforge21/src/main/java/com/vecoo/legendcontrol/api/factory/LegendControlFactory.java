@@ -2,8 +2,10 @@ package com.vecoo.legendcontrol.api.factory;
 
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.LegendSourceName;
-import com.vecoo.legendcontrol.api.events.ChanceChangeEvent;
+import com.vecoo.legendcontrol.api.events.LegendaryChanceEvent;
 import net.neoforged.neoforge.common.NeoForge;
+
+import java.util.Optional;
 
 public class LegendControlFactory {
     public static class ServerProvider {
@@ -15,20 +17,26 @@ public class LegendControlFactory {
             return LegendControl.getInstance().getServerProvider().getServerStorage().getLastLegend();
         }
 
-        public static void addLegendaryChance(LegendSourceName sourceName, float legendaryChance) {
-            setLegendaryChance(sourceName, Math.min(getLegendaryChance() + legendaryChance, 100F));
+        public static Optional<Float> addLegendaryChance(LegendSourceName sourceName, float legendaryChance) {
+            return setLegendaryChance(sourceName, Math.min(getLegendaryChance() + legendaryChance, 100F));
         }
 
-        public static void removeLegendaryChance(LegendSourceName sourceName, float legendaryChance) {
-            setLegendaryChance(sourceName, Math.max(getLegendaryChance() - legendaryChance, 0F));
+        public static Optional<Float> removeLegendaryChance(LegendSourceName sourceName, float legendaryChance) {
+            return setLegendaryChance(sourceName, Math.max(getLegendaryChance() - legendaryChance, 0F));
         }
 
-        public static void setLegendaryChance(LegendSourceName sourceName, float legendaryChance) {
-            ChanceChangeEvent event = new ChanceChangeEvent(sourceName, legendaryChance);
+        public static Optional<Float> setLegendaryChance(LegendSourceName sourceName, float legendaryChance) {
+            LegendaryChanceEvent event = new LegendaryChanceEvent(sourceName, legendaryChance);
 
-            if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
-                LegendControl.getInstance().getServerProvider().getServerStorage().setLegendaryChance(event.getChance());
+            if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+                return Optional.empty();
             }
+
+            float eventAmount = event.getChance();
+
+            LegendControl.getInstance().getServerProvider().getServerStorage().setLegendaryChance(event.getChance());
+
+            return Optional.of(eventAmount);
         }
 
         public static void setLastLegend(String pokemonName) {

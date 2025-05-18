@@ -73,16 +73,18 @@ public class LegendarySpawnListener {
                             return;
                         }
 
-                        if (NeoForge.EVENT_BUS.post(new LegendControlEvent.Location(pixelmonEntity)).isCanceled()) {
+                        LegendControlEvent.Location event = new LegendControlEvent.Location(pixelmonEntity, pixelmonEntity.getX(), pixelmonEntity.getY(), pixelmonEntity.getZ());
+
+                        if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
                             task.cancel();
                             return;
                         }
 
                         UtilChat.broadcast(LegendControl.getInstance().getLocale().getLocation()
                                 .replace("%pokemon%", pixelmonEntity.getSpecies().getName())
-                                .replace("%x%", String.valueOf((int) pixelmonEntity.getX()))
-                                .replace("%y%", String.valueOf((int) pixelmonEntity.getY()))
-                                .replace("%z%", String.valueOf((int) pixelmonEntity.getZ())), LegendControl.getInstance().getServer());
+                                .replace("%x%", String.valueOf((int) event.getX()))
+                                .replace("%y%", String.valueOf((int) event.getY()))
+                                .replace("%z%", String.valueOf((int) event.getZ())), LegendControl.getInstance().getServer());
 
                         WebhookUtils.locationWebhook(pixelmonEntity);
                     }).build();
