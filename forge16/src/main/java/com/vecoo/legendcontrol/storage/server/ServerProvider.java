@@ -17,6 +17,7 @@ public class ServerProvider {
         if (this.serverStorage == null) {
             new ServerStorage(LegendControl.getInstance().getConfig().getBaseChance(), "None");
         }
+
         return this.serverStorage;
     }
 

@@ -20,6 +20,7 @@ public class PlayerProvider {
         if (this.map.get(playerUUID) == null) {
             new PlayerStorage(playerUUID);
         }
+
         return this.map.get(playerUUID);
     }
 
