@@ -17,10 +17,10 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {}
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.16.5-${forge_version_16}"
+    minecraft "net.minecraftforge:forge:1.16.5-${forge_16}"
 
-    compileOnly fg.deobf("pixelmon:Pixelmon-1.16.5-${pixelmon_version_16}-server:${pixelmon_version_16}")
-    compileOnly fg.deobf("maven.modrinth:extralib:${extralib_version}-forge,1.16.5")
+    compileOnly fg.deobf("pixelmon:Pixelmon-1.16.5-${pixelmon_16}-server:${pixelmon_16}")
+    compileOnly fg.deobf("maven.modrinth:extralib:${extralib}-forge,1.16.5")
 }
 
 processResources {

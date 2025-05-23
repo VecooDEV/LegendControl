@@ -12,10 +12,10 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {}
 
 dependencies {
-    implementation "net.neoforged:neoforge:${neoforge_version_21}"
+    implementation "net.neoforged:neoforge:${neoforge_21}"
 
-    compileOnly "pixelmon:Pixelmon-1.21.1-${pixelmon_version_21}-server:${pixelmon_version_21}"
-    compileOnly "maven.modrinth:extralib:${extralib_version}-neoforge,1.21.1"
+    compileOnly "pixelmon:Pixelmon-1.21.1-${pixelmon_21}-server:${pixelmon_21}"
+    compileOnly "maven.modrinth:extralib:${extralib}-neoforge,1.21.1"
 }
 
 processResources {
