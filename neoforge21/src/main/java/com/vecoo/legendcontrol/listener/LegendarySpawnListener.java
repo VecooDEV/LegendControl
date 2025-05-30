@@ -3,23 +3,23 @@ package com.vecoo.legendcontrol.listener;
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.task.TaskTimer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.LegendSourceName;
 import com.vecoo.legendcontrol.api.events.LegendControlEvent;
 import com.vecoo.legendcontrol.api.factory.LegendControlFactory;
 import com.vecoo.legendcontrol.config.ServerConfig;
-import com.vecoo.legendcontrol.util.TaskUtils;
 import com.vecoo.legendcontrol.util.WebhookUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class LegendarySpawnListener {
-    public static final Set<PixelmonEntity> legends = ConcurrentHashMap.newKeySet();
+    public static final Set<PixelmonEntity> legends = new HashSet<>();
 
     public static Set<PixelmonEntity> getLegends() {
         return legends;
@@ -37,7 +37,7 @@ public class LegendarySpawnListener {
             return;
         }
 
-        TaskUtils.builder()
+        TaskTimer.builder()
                 .delay(1L)
                 .consume(task -> {
                     if (!pixelmonEntity.isAlive() || pixelmonEntity.hasOwner()) {
@@ -57,7 +57,7 @@ public class LegendarySpawnListener {
                     LegendControlFactory.ServerProvider.setLastLegend(pixelmonEntity.getPokemonName());
                     legends.add(pixelmonEntity);
                     setTimers(pixelmonEntity);
-                    WebhookUtils.spawnWebhook(pixelmonEntity);
+                    WebhookUtils.spawnWebhook(pixelmonEntity, event.action.spawnLocation.biome);
                 }).build();
     }
 
@@ -65,7 +65,7 @@ public class LegendarySpawnListener {
         ServerConfig config = LegendControl.getInstance().getConfig();
 
         if (config.getLocationTime() > 0) {
-            TaskUtils.builder()
+            TaskTimer.builder()
                     .delay(config.getLocationTime() * 20L)
                     .consume(task -> {
                         if (!legends.contains(pixelmonEntity) || !pixelmonEntity.isAlive() || pixelmonEntity.hasOwner()) {
@@ -84,14 +84,14 @@ public class LegendarySpawnListener {
                                 .replace("%pokemon%", pixelmonEntity.getSpecies().getName())
                                 .replace("%x%", String.valueOf((int) event.getX()))
                                 .replace("%y%", String.valueOf((int) event.getY()))
-                                .replace("%z%", String.valueOf((int) event.getZ())), LegendControl.getInstance().getServer());
+                                .replace("%z%", String.valueOf((int) event.getZ())));
 
                         WebhookUtils.locationWebhook(pixelmonEntity);
                     }).build();
         }
 
         if (config.getDespawnTime() > 0) {
-            TaskUtils.builder()
+            TaskTimer.builder()
                     .delay(config.getDespawnTime() * 20L)
                     .consume(task -> {
                         if (!legends.contains(pixelmonEntity) || !pixelmonEntity.isAlive() || pixelmonEntity.hasOwner()) {

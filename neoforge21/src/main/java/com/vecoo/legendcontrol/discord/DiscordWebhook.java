@@ -16,8 +16,15 @@ public class DiscordWebhook {
         this.url = url;
     }
 
-    public void sendEmbed(String title, String description, String thumbnailUrl, String color) throws IOException {
-        String json = String.format("{\"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}", escapeJson(title), escapeJson(description), escapeJson(thumbnailUrl), color);
+    public void sendEmbed(String title, String description, String thumbnailUrl, String color, boolean pingRole) throws IOException {
+        String role = "";
+
+        if (pingRole) {
+            long roleId = LegendControl.getInstance().getDiscord().getWebhookRole();
+            role = roleId != 0 ? "<@&" + roleId + ">" : "";
+        }
+
+        String json = String.format("{\"content\": \"%s\", \"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}", escapeJson(role), escapeJson(title), escapeJson(description), escapeJson(thumbnailUrl), color);
 
         CompletableFuture.runAsync(() -> {
             try {

@@ -31,8 +31,7 @@ public class ResultListener {
 
         UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDefeat()
                 .replace("%player%", player.getName().getString())
-                .replace("%pokemon%", pixelmonEntity.getPokemonName()), LegendControl.getInstance().getServer());
-
+                .replace("%pokemon%", pixelmonEntity.getPokemonName()));
         WebhookUtils.defeatWebhook(pixelmonEntity, player);
     }
 
@@ -71,8 +70,7 @@ public class ResultListener {
 
         UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyCatch()
                 .replace("%player%", player.getName().getString())
-                .replace("%pokemon%", pixelmonEntity.getPokemonName()), LegendControl.getInstance().getServer());
-
+                .replace("%pokemon%", pixelmonEntity.getPokemonName()));
         WebhookUtils.captureWebhook(pixelmonEntity, player);
     }
 
@@ -95,8 +93,7 @@ public class ResultListener {
         MinecraftForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
 
         UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
-                .replace("%pokemon%", pixelmonEntity.getPokemonName()), LegendControl.getInstance().getServer());
-
+                .replace("%pokemon%", pixelmonEntity.getPokemonName()));
         WebhookUtils.despawnWebhook(pixelmonEntity);
     }
 }

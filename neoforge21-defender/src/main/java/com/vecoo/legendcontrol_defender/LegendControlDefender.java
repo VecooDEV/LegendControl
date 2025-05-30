@@ -8,7 +8,6 @@ import com.vecoo.legendcontrol_defender.config.ServerConfig;
 import com.vecoo.legendcontrol_defender.listener.DefenderListener;
 import com.vecoo.legendcontrol_defender.storage.player.PlayerProvider;
 import com.vecoo.legendcontrol_defender.util.PermissionNodes;
-import com.vecoo.legendcontrol_defender.util.TaskUtils;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -16,10 +15,9 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
+import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
 
 @Mod(LegendControlDefender.MOD_ID)
 public class LegendControlDefender {
@@ -41,7 +39,6 @@ public class LegendControlDefender {
         this.loadConfig();
 
         NeoForge.EVENT_BUS.register(this);
-        NeoForge.EVENT_BUS.register(new TaskUtils.EventHandler());
         Pixelmon.EVENT_BUS.register(new DefenderListener());
     }
 
@@ -50,7 +47,11 @@ public class LegendControlDefender {
         PermissionNodes.permissionList.add(PermissionNodes.LEGENDARYTRUST_COMMAND);
         PermissionNodes.permissionList.add(PermissionNodes.LEGENDARYTRUST_RELOAD_COMMAND);
 
-        event.addNodes(new ArrayList<>(PermissionNodes.permissionList));
+        for (PermissionNode<?> node : PermissionNodes.permissionList) {
+            if (!event.getNodes().contains(node)) {
+                event.addNodes(node);
+            }
+        }
     }
 
     @SubscribeEvent

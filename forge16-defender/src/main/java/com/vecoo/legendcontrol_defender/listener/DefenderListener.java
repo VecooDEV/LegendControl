@@ -12,10 +12,10 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonPart
 import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.task.TaskTimer;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import com.vecoo.legendcontrol_defender.api.events.LegendControlDefenderEvent;
 import com.vecoo.legendcontrol_defender.api.factory.LegendControlFactory;
-import com.vecoo.legendcontrol_defender.util.TaskUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
@@ -23,13 +23,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DefenderListener {
-    private final Map<UUID, UUID> legendaryDefender = new ConcurrentHashMap<>();
+    private final Map<UUID, UUID> legendaryDefender = new HashMap<>();
 
     public boolean hasLegendaryDefender(UUID pokemonUUID) {
         return legendaryDefender.containsKey(pokemonUUID);
@@ -73,7 +73,7 @@ public class DefenderListener {
 
         addLegendaryDefender(pixelmonEntity.getUUID(), event.action.spawnLocation.cause.getUUID());
 
-        TaskUtils.builder()
+        TaskTimer.builder()
                 .delay(1L)
                 .consume(task -> {
                     if (!pixelmonEntity.isAlive() || pixelmonEntity.hasOwner()) {
@@ -88,12 +88,12 @@ public class DefenderListener {
     }
 
     private void startDefender(PixelmonEntity pixelmonEntity) {
-        TaskUtils.builder()
+        TaskTimer.builder()
                 .delay(LegendControlDefender.getInstance().getConfig().getProtectedTime() * 20L)
                 .consume(task -> {
                     if (hasLegendaryDefender(pixelmonEntity.getUUID()) && pixelmonEntity.isAlive() && !pixelmonEntity.hasOwner()) {
                         UtilChat.broadcast(LegendControlDefender.getInstance().getLocale().getProtection()
-                                .replace("%pokemon%", pixelmonEntity.getPokemonName()), LegendControlDefender.getInstance().getServer());
+                                .replace("%pokemon%", pixelmonEntity.getPokemonName()));
                     }
 
                     removeLegendaryDefender(pixelmonEntity.getUUID());

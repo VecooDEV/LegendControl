@@ -13,7 +13,6 @@ import com.vecoo.legendcontrol.listener.OtherListener;
 import com.vecoo.legendcontrol.listener.ParticleListener;
 import com.vecoo.legendcontrol.listener.ResultListener;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
-import com.vecoo.legendcontrol.util.TaskUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -49,7 +48,6 @@ public class LegendControl {
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ParticleListener());
-        MinecraftForge.EVENT_BUS.register(new TaskUtils.EventHandler());
         MinecraftForge.EVENT_BUS.register(new ResultListener());
         Pixelmon.EVENT_BUS.register(new ResultListener());
         Pixelmon.EVENT_BUS.register(new LegendarySpawnListener());
@@ -77,10 +75,10 @@ public class LegendControl {
             this.config = YamlConfigFactory.getInstance(ServerConfig.class);
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
+            this.webhook = new DiscordWebhook(discord.getWebhookUrl());
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load config.", e);
         }
-        this.webhook = new DiscordWebhook(discord.getWebhookUrl());
     }
 
     public void loadStorage() {

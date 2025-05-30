@@ -48,7 +48,7 @@ if (gradlePropertiesFile.exists()) {
 }
 
 modrinth {
-    token = gradleProperties.getProperty("modrinth_api_key")
+    token = gradleProperties.getProperty("MODRINTH_API_KEY")
     projectId = "legendcontrol"
     versionName = "${project_name}-${version}"
     versionNumber = project_version

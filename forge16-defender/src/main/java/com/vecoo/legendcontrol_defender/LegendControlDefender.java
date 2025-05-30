@@ -7,7 +7,6 @@ import com.vecoo.legendcontrol_defender.config.LocaleConfig;
 import com.vecoo.legendcontrol_defender.config.ServerConfig;
 import com.vecoo.legendcontrol_defender.listener.DefenderListener;
 import com.vecoo.legendcontrol_defender.storage.player.PlayerProvider;
-import com.vecoo.legendcontrol_defender.util.TaskUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -39,7 +38,6 @@ public class LegendControlDefender {
         this.loadConfig();
 
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(new TaskUtils.EventHandler());
         Pixelmon.EVENT_BUS.register(new DefenderListener());
     }
 

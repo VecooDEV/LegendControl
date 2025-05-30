@@ -14,7 +14,6 @@ import com.vecoo.legendcontrol.listener.ParticleListener;
 import com.vecoo.legendcontrol.listener.ResultListener;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
 import com.vecoo.legendcontrol.util.PermissionNodes;
-import com.vecoo.legendcontrol.util.TaskUtils;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -25,6 +24,8 @@ import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
 import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
 
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
@@ -50,7 +51,6 @@ public class LegendControl {
 
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(new ParticleListener());
-        NeoForge.EVENT_BUS.register(new TaskUtils.EventHandler());
         NeoForge.EVENT_BUS.register(new ResultListener());
         Pixelmon.EVENT_BUS.register(new ResultListener());
         Pixelmon.EVENT_BUS.register(new LegendarySpawnListener());
@@ -87,10 +87,10 @@ public class LegendControl {
             this.config = YamlConfigFactory.getInstance(ServerConfig.class);
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
+            this.webhook = new DiscordWebhook(discord.getWebhookUrl());
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load config.", e);
         }
-        this.webhook = new DiscordWebhook(discord.getWebhookUrl());
     }
 
     public void loadStorage() {

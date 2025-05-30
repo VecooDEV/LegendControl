@@ -6,8 +6,10 @@ public class LegendSourceName {
     }
 
     private final String id;
-    public static final LegendSourceName PIXELMON = new LegendSourceName("pixelmon");
-    public static final LegendSourceName PLAYER_AND_CONSOLE = new LegendSourceName("player_and_console");
+
+    public static final LegendSourceName
+            PIXELMON = new LegendSourceName("pixelmon"),
+            PLAYER_AND_CONSOLE = new LegendSourceName("player_and_console");
 
     public String getId() {
         return this.id;

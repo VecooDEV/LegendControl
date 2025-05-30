@@ -23,9 +23,9 @@ public class LegendaryTrustCommand {
                 .then(Commands.literal("add")
                         .then(Commands.argument("player", StringArgumentType.string())
                                 .suggests((s, builder) -> {
-                                    for (String nick : s.getSource().getOnlinePlayerNames()) {
-                                        if (nick.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
-                                            builder.suggest(nick);
+                                    for (String playerName : s.getSource().getOnlinePlayerNames()) {
+                                        if (playerName.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
+                                            builder.suggest(playerName);
                                         }
                                     }
                                     return builder.buildFuture();
@@ -34,8 +34,8 @@ public class LegendaryTrustCommand {
                 .then(Commands.literal("remove")
                         .then(Commands.argument("player", StringArgumentType.string())
                                 .suggests((s, builder) -> {
-                                    for (UUID uuid : LegendControlFactory.PlayerProvider.getPlayersTrust(s.getSource().getPlayerOrException().getUUID())) {
-                                        String name = UtilPlayer.getPlayerName(uuid);
+                                    for (UUID playerUUID : LegendControlFactory.PlayerProvider.getPlayersTrust(s.getSource().getPlayerOrException().getUUID())) {
+                                        String name = UtilPlayer.getPlayerName(playerUUID);
                                         if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
                                             builder.suggest(name);
                                         }

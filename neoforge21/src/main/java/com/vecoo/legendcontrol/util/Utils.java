@@ -3,13 +3,13 @@ package com.vecoo.legendcontrol.util;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.legendcontrol.LegendControl;
+import com.vecoo.legendcontrol.config.DiscordConfig;
 
 public class Utils {
     public static int timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
 
     public static String pokemonImage(PixelmonEntity pixelmonEntity) {
-        String url = pixelmonEntity.getPokemon().isShiny() ? "https://img.pokemondb.net/sprites/home/shiny/%pokemon%.png" : "https://img.pokemondb.net/sprites/home/normal/%pokemon%.png";
-
+        DiscordConfig discordConfig = LegendControl.getInstance().getDiscord();
         String pokemonName = pixelmonEntity.getPokemonName().toLowerCase();
 
         switch (pokemonName) {
@@ -39,6 +39,6 @@ public class Utils {
             }
         }
 
-        return url.replace("%pokemon%", pokemonName);
+        return pixelmonEntity.getPokemon().isShiny() ? discordConfig.getPokedexShinyUrl().replace("%pokemon%", pokemonName) : discordConfig.getPokedexNormalUrl().replace("%pokemon%", pokemonName);
     }
 }
