@@ -37,7 +37,7 @@ public class CheckLegendsCommand {
 
     private static void sendMessage(CommandSource source, int time, String timeUnit) {
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getCheckLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))
+                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))
                 .replace("%time%", time + timeUnit)), false);
 
         if (UtilPermission.hasPermission(source, "minecraft.command.checkleg.modify")) {

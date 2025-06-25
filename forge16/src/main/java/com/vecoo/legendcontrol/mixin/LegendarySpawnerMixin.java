@@ -75,11 +75,11 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
             Utils.timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
         }
 
-        float chance = this.firesChooseEvent ? LegendControlFactory.ServerProvider.getLegendaryChance() / 100.0F : PixelmonConfigProxy.getSpawning().getBossSpawning().getBossSpawnChance();
+        float chance = this.firesChooseEvent ? LegendControlFactory.ServerProvider.getChanceLegend() / 100.0F : PixelmonConfigProxy.getSpawning().getBossSpawning().getBossSpawnChance();
 
         if (!RandomHelper.getRandomChance(chance)) {
             if (this.firesChooseEvent && numPlayers > 0) {
-                LegendControlFactory.ServerProvider.addLegendaryChance(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getStepSpawnChance());
+                LegendControlFactory.ServerProvider.addChanceLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getStepSpawnChance(), true);
             }
             return null;
         }
@@ -115,7 +115,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
                 possibleSpawns.forEach(SpawnAction::applyLocationMutations);
                 return possibleSpawns;
             } else {
-                LegendControlFactory.ServerProvider.addLegendaryChance(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getStepSpawnChance());
+                LegendControlFactory.ServerProvider.addChanceLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getStepSpawnChance(), true);
                 return Collections.emptyList();
             }
         });

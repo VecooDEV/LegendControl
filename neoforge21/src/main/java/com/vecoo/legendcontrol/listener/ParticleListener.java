@@ -27,11 +27,9 @@ public class ParticleListener {
         LegendarySpawnListener.getLegends().removeIf(entity -> entity == null || !entity.isAlive() || entity.hasOwner());
 
         for (PixelmonEntity entity : LegendarySpawnListener.getLegends()) {
-            if (!(entity.level() instanceof ServerLevel level)) {
-                continue;
+            if (entity.level() instanceof ServerLevel level) {
+                level.sendParticles(particle, entity.getX(), entity.getYCentre(), entity.getZ(), 3, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, 0.1);
             }
-
-            level.sendParticles(particle, entity.getX(), entity.getYCentre(), entity.getZ(), 3, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, 0.1);
         }
     }
 }

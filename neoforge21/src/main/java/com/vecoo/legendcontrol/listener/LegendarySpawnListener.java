@@ -9,6 +9,7 @@ import com.vecoo.legendcontrol.api.LegendSourceName;
 import com.vecoo.legendcontrol.api.events.LegendControlEvent;
 import com.vecoo.legendcontrol.api.factory.LegendControlFactory;
 import com.vecoo.legendcontrol.config.ServerConfig;
+import com.vecoo.legendcontrol.storage.server.ServerStorage;
 import com.vecoo.legendcontrol.util.WebhookUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -19,10 +20,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class LegendarySpawnListener {
-    public static final Set<PixelmonEntity> legends = new HashSet<>();
+    public static final Set<PixelmonEntity> LEGENDS = new HashSet<>();
 
     public static Set<PixelmonEntity> getLegends() {
-        return legends;
+        return LEGENDS;
     }
 
     @SubscribeEvent
@@ -32,7 +33,7 @@ public class LegendarySpawnListener {
         ServerConfig config = LegendControl.getInstance().getConfig();
 
         if (!config.isLegendaryRepeat() && LegendControlFactory.ServerProvider.getLastLegend().equals(pixelmonEntity.getPokemonName())) {
-            LegendControlFactory.ServerProvider.addLegendaryChance(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getStepSpawnChance());
+            LegendControlFactory.ServerProvider.addChanceLegend(LegendSourceName.PIXELMON, config.getStepSpawnChance(), true);
             event.setCanceled(true);
             return;
         }
@@ -53,12 +54,21 @@ public class LegendarySpawnListener {
                                 .replace("%z%", String.valueOf((int) pixelmonEntity.getZ()))));
                     }
 
-                    LegendControlFactory.ServerProvider.setLegendaryChance(LegendSourceName.PIXELMON, config.getBaseChance());
-                    LegendControlFactory.ServerProvider.setLastLegend(pixelmonEntity.getPokemonName());
-                    legends.add(pixelmonEntity);
-                    setTimers(pixelmonEntity);
-                    WebhookUtils.spawnWebhook(pixelmonEntity, event.action.spawnLocation.biome);
+                    update(pixelmonEntity);
+                    WebhookUtils.spawnWebhook(pixelmonEntity.getPokemon(), event.action.spawnLocation.biome);
                 }).build();
+    }
+
+    private void update(PixelmonEntity pixelmonEntity) {
+        ServerStorage storage = LegendControl.getInstance().getServerProvider().getServerStorage();
+
+        storage.setChanceLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getBaseChance(), false);
+        storage.setLastLegend(pixelmonEntity.getPokemonName(), false);
+
+        LegendControl.getInstance().getServerProvider().updateServerStorage(storage);
+
+        LEGENDS.add(pixelmonEntity);
+        setTimers(pixelmonEntity);
     }
 
     private void setTimers(PixelmonEntity pixelmonEntity) {
@@ -68,7 +78,7 @@ public class LegendarySpawnListener {
             TaskTimer.builder()
                     .delay(config.getLocationTime() * 20L)
                     .consume(task -> {
-                        if (!legends.contains(pixelmonEntity) || !pixelmonEntity.isAlive() || pixelmonEntity.hasOwner()) {
+                        if (!LEGENDS.contains(pixelmonEntity) || !pixelmonEntity.isAlive() || pixelmonEntity.hasOwner()) {
                             task.cancel();
                             return;
                         }
@@ -94,12 +104,7 @@ public class LegendarySpawnListener {
             TaskTimer.builder()
                     .delay(config.getDespawnTime() * 20L)
                     .consume(task -> {
-                        if (!legends.contains(pixelmonEntity) || !pixelmonEntity.isAlive() || pixelmonEntity.hasOwner()) {
-                            task.cancel();
-                            return;
-                        }
-
-                        if (NeoForge.EVENT_BUS.post(new LegendControlEvent.ForceDespawn(pixelmonEntity)).isCanceled()) {
+                        if (!LEGENDS.contains(pixelmonEntity) || !pixelmonEntity.isAlive() || pixelmonEntity.hasOwner() || NeoForge.EVENT_BUS.post(new LegendControlEvent.ForceDespawn(pixelmonEntity)).isCanceled()) {
                             task.cancel();
                             return;
                         }

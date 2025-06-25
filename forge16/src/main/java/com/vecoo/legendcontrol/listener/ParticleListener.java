@@ -14,7 +14,7 @@ public class ParticleListener {
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
-        if (!LegendControl.getInstance().getConfig().isLegendaryParticle() || ++this.currentTick % 40 != 0) {
+        if (event.phase == TickEvent.Phase.START || !LegendControl.getInstance().getConfig().isLegendaryParticle() || ++this.currentTick % 20 != 0) {
             return;
         }
 
@@ -27,13 +27,11 @@ public class ParticleListener {
         LegendarySpawnListener.getLegends().removeIf(entity -> entity == null || !entity.isAlive() || entity.hasOwner());
 
         for (PixelmonEntity entity : LegendarySpawnListener.getLegends()) {
-            if (!(entity.level instanceof ServerWorld)) {
-                continue;
+            if (entity.level instanceof ServerWorld) {
+                ServerWorld world = (ServerWorld) entity.level;
+
+                world.sendParticles(particle, entity.getX(), entity.getYCentre(), entity.getZ(), 3, world.random.nextDouble() - 0.5, world.random.nextDouble() - 0.5, world.random.nextDouble() - 0.5, 0.1);
             }
-
-            ServerWorld world = (ServerWorld) entity.level;
-
-            world.sendParticles(particle, entity.getX(), entity.getYCentre(), entity.getZ(), 3, world.random.nextDouble() - 0.5, world.random.nextDouble() - 0.5, world.random.nextDouble() - 0.5, 0.1);
         }
     }
 }

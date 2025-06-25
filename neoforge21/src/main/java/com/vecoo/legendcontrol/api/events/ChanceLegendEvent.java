@@ -1,15 +1,14 @@
 package com.vecoo.legendcontrol.api.events;
 
 import com.vecoo.legendcontrol.api.LegendSourceName;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 
-@Cancelable
-public class LegendaryChanceEvent extends Event {
+public class ChanceLegendEvent extends Event implements ICancellableEvent {
     private final LegendSourceName sourceName;
-    private float chance;
+    private final float chance;
 
-    public LegendaryChanceEvent(LegendSourceName sourceName, float chance) {
+    public ChanceLegendEvent(LegendSourceName sourceName, float chance) {
         this.sourceName = sourceName;
         this.chance = chance;
     }
@@ -20,9 +19,5 @@ public class LegendaryChanceEvent extends Event {
 
     public float getChance() {
         return this.chance;
-    }
-
-    public void setChance(float chance) {
-        this.chance = chance;
     }
 }

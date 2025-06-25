@@ -1,32 +1,45 @@
 package com.vecoo.legendcontrol.storage.server;
 
 import com.vecoo.legendcontrol.LegendControl;
+import com.vecoo.legendcontrol.api.LegendSourceName;
+import com.vecoo.legendcontrol.api.events.ChanceLegendEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 public class ServerStorage {
-    private float legendaryChance;
+    private float chanceLegend;
     private String lastLegend;
 
-    public ServerStorage(float legendaryChance, String lastLegend) {
-        this.legendaryChance = legendaryChance;
+    public ServerStorage(float chanceLegend, String lastLegend) {
+        this.chanceLegend = chanceLegend;
         this.lastLegend = lastLegend;
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
-    public float getLegendaryChance() {
-        return this.legendaryChance;
+    public float getChanceLegend() {
+        return this.chanceLegend;
     }
 
     public String getLastLegend() {
         return this.lastLegend;
     }
 
-    public void setLegendaryChance(float legendaryChance) {
-        this.legendaryChance = legendaryChance;
-        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+    public void setChanceLegend(LegendSourceName sourceName, float amount, boolean update) {
+        if (NeoForge.EVENT_BUS.post(new ChanceLegendEvent(sourceName, amount)).isCanceled()) {
+            return;
+        }
+
+        this.chanceLegend = amount;
+
+        if (update) {
+            LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+        }
     }
 
-    public void setLastLegend(String lastLegend) {
-        this.lastLegend = lastLegend;
-        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+    public void setLastLegend(String pokemonName, boolean update) {
+        this.lastLegend = pokemonName;
+
+        if (update) {
+            LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+        }
     }
 }

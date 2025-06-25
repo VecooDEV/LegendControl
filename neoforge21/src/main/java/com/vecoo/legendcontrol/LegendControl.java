@@ -7,12 +7,15 @@ import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.config.DiscordConfig;
 import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
+import com.vecoo.legendcontrol.config.StorageConfig;
 import com.vecoo.legendcontrol.discord.DiscordWebhook;
 import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
 import com.vecoo.legendcontrol.listener.OtherListener;
 import com.vecoo.legendcontrol.listener.ParticleListener;
 import com.vecoo.legendcontrol.listener.ResultListener;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
+import com.vecoo.legendcontrol.storage.server.impl.ServerDatabaseProvider;
+import com.vecoo.legendcontrol.storage.server.impl.ServerJsonProvider;
 import com.vecoo.legendcontrol.util.PermissionNodes;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -25,8 +28,6 @@ import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
     public static final String MOD_ID = "legendcontrol";
@@ -36,6 +37,7 @@ public class LegendControl {
 
     private ServerConfig config;
     private LocaleConfig locale;
+    private StorageConfig storageConfig;
     private DiscordConfig discord;
 
     private ServerProvider serverProvider;
@@ -86,8 +88,9 @@ public class LegendControl {
         try {
             this.config = YamlConfigFactory.getInstance(ServerConfig.class);
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
+            this.storageConfig = YamlConfigFactory.getInstance(StorageConfig.class);
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
-            this.webhook = new DiscordWebhook(discord.getWebhookUrl());
+            this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load config.", e);
         }
@@ -95,8 +98,13 @@ public class LegendControl {
 
     public void loadStorage() {
         try {
-            this.serverProvider = new ServerProvider("/%directory%/storage/LegendControl/", this.server);
-            this.serverProvider.init();
+            if (this.storageConfig.getStorageType().equalsIgnoreCase("JSON")) {
+                this.serverProvider = new ServerJsonProvider(this.storageConfig.getStoragePathJson(), this.server);
+                this.serverProvider.init();
+            } else {
+                this.serverProvider = new ServerDatabaseProvider(this.storageConfig);
+                this.serverProvider.init();
+            }
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load storage.", e);
         }
@@ -116,6 +124,10 @@ public class LegendControl {
 
     public LocaleConfig getLocale() {
         return instance.locale;
+    }
+
+    public StorageConfig getStorageConfig() {
+        return instance.storageConfig;
     }
 
     public DiscordConfig getDiscord() {

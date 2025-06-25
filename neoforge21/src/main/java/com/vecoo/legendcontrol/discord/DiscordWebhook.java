@@ -65,6 +65,7 @@ public class DiscordWebhook {
         }
 
         int responseCode = connection.getResponseCode();
+
         if (responseCode != 204) {
             LegendControl.getLogger().error("[LegendControl] Discord webhook failed: " + responseCode);
         }

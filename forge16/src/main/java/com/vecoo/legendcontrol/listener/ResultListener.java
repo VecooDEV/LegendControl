@@ -17,44 +17,38 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ResultListener {
-    public static Set<UUID> cachedLegends = new HashSet<>();
+    public static Set<UUID> LEGENDS = new HashSet<>();
 
     @SubscribeEvent
     public void onBeatWild(BeatWildPixelmonEvent event) {
         PixelmonEntity pixelmonEntity = event.wpp.getFaintedPokemon().entity;
 
-        if (!pixelmonEntity.isLegendary() || !LegendarySpawnListener.legends.remove(pixelmonEntity) || !LegendControl.getInstance().getConfig().isNotifyLegendaryDefeat()) {
-            return;
+        if (pixelmonEntity.isLegendary() && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDefeat()) {
+            ServerPlayerEntity player = event.player;
+
+            UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDefeat()
+                    .replace("%player%", player.getName().getString())
+                    .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+            WebhookUtils.defeatWebhook(pixelmonEntity, player);
         }
-
-        ServerPlayerEntity player = event.player;
-
-        UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDefeat()
-                .replace("%player%", player.getName().getString())
-                .replace("%pokemon%", pixelmonEntity.getPokemonName()));
-        WebhookUtils.defeatWebhook(pixelmonEntity, player);
     }
 
     @SubscribeEvent
     public void onStartCapture(CaptureEvent.StartCapture event) {
         PixelmonEntity pixelmonEntity = event.getPokemon();
 
-        if (!pixelmonEntity.isLegendary() || !LegendarySpawnListener.legends.remove(pixelmonEntity)) {
-            return;
+        if (pixelmonEntity.isLegendary() && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity)) {
+            LEGENDS.add(pixelmonEntity.getUUID());
         }
-
-        cachedLegends.add(pixelmonEntity.getUUID());
     }
 
     @SubscribeEvent
     public void onFailureCapture(CaptureEvent.FailedCapture event) {
         PixelmonEntity pixelmonEntity = event.getPokemon();
 
-        if (!pixelmonEntity.isLegendary() || !cachedLegends.remove(pixelmonEntity.getUUID())) {
-            return;
+        if (pixelmonEntity.isLegendary() && LEGENDS.remove(pixelmonEntity.getUUID())) {
+            LegendarySpawnListener.LEGENDS.add(pixelmonEntity);
         }
-
-        LegendarySpawnListener.legends.add(pixelmonEntity);
     }
 
 
@@ -62,38 +56,30 @@ public class ResultListener {
     public void onCapture(CaptureEvent.SuccessfulCapture event) {
         PixelmonEntity pixelmonEntity = event.getPokemon();
 
-        if (!pixelmonEntity.isLegendary() || !cachedLegends.remove(pixelmonEntity.getUUID()) || !LegendControl.getInstance().getConfig().isNotifyLegendaryCatch()) {
-            return;
+        if (pixelmonEntity.isLegendary() && LEGENDS.remove(pixelmonEntity.getUUID()) && LegendControl.getInstance().getConfig().isNotifyLegendaryCatch()) {
+            ServerPlayerEntity player = event.getPlayer();
+
+            UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyCatch()
+                    .replace("%player%", player.getName().getString())
+                    .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+            WebhookUtils.captureWebhook(pixelmonEntity, player);
         }
-
-        ServerPlayerEntity player = event.getPlayer();
-
-        UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyCatch()
-                .replace("%player%", player.getName().getString())
-                .replace("%pokemon%", pixelmonEntity.getPokemonName()));
-        WebhookUtils.captureWebhook(pixelmonEntity, player);
     }
 
     @SubscribeEvent
     public void onDespawn(EntityLeaveWorldEvent event) {
-        if (event.getWorld().isClientSide()) {
-            return;
-        }
-
-        if (!(event.getEntity() instanceof PixelmonEntity)) {
+        if (event.getWorld().isClientSide() || !(event.getEntity() instanceof PixelmonEntity)) {
             return;
         }
 
         PixelmonEntity pixelmonEntity = (PixelmonEntity) event.getEntity();
 
-        if (!pixelmonEntity.isLegendary() || !LegendarySpawnListener.legends.remove(pixelmonEntity) || !LegendControl.getInstance().getConfig().isNotifyLegendaryDespawn()) {
-            return;
+        if (pixelmonEntity.isLegendary() && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDespawn()) {
+            MinecraftForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
+
+            UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
+                    .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+            WebhookUtils.despawnWebhook(pixelmonEntity);
         }
-
-        MinecraftForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
-
-        UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
-                .replace("%pokemon%", pixelmonEntity.getPokemonName()));
-        WebhookUtils.despawnWebhook(pixelmonEntity);
     }
 }

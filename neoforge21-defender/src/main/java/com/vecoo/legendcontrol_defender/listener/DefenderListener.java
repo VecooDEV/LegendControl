@@ -29,10 +29,10 @@ import java.util.Map;
 import java.util.UUID;
 
 public class DefenderListener {
-    private final Map<UUID, UUID> legendaryDefender = new HashMap<>();
+    private final Map<UUID, UUID> LEGENDARY_DEFENDER = new HashMap<>();
 
     public boolean hasLegendaryDefender(UUID pokemonUUID) {
-        return legendaryDefender.containsKey(pokemonUUID);
+        return LEGENDARY_DEFENDER.containsKey(pokemonUUID);
     }
 
     public boolean addLegendaryDefender(UUID pokemonUUID, UUID playerUUID) {
@@ -40,7 +40,7 @@ public class DefenderListener {
             return false;
         }
 
-        legendaryDefender.put(pokemonUUID, playerUUID);
+        LEGENDARY_DEFENDER.put(pokemonUUID, playerUUID);
         return true;
     }
 
@@ -49,7 +49,7 @@ public class DefenderListener {
             return false;
         }
 
-        legendaryDefender.remove(pokemonUUID);
+        LEGENDARY_DEFENDER.remove(pokemonUUID);
         return true;
     }
 
@@ -58,7 +58,7 @@ public class DefenderListener {
             return false;
         }
 
-        UUID ownerUUID = legendaryDefender.get(pokemonUUID);
+        UUID ownerUUID = LEGENDARY_DEFENDER.get(pokemonUUID);
 
         if (ownerUUID.equals(player.getUUID())) {
             return false;
@@ -96,9 +96,9 @@ public class DefenderListener {
                                 .replace("%pokemon%", pixelmonEntity.getPokemonName()));
                     }
 
-                    removeLegendaryDefender(pixelmonEntity.getUUID());
-
                     NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.ExpiredDefender(pixelmonEntity));
+
+                    removeLegendaryDefender(pixelmonEntity.getUUID());
                 }).build();
     }
 
@@ -120,20 +120,10 @@ public class DefenderListener {
             pokemon.ifEntityExists(pixelmonEntity -> {
                 Entity target = pixelmonEntity.getTarget();
 
-                if (!(target instanceof PixelmonEntity)) {
-                    return;
+                if (target instanceof PixelmonEntity && hasLegendaryPlayerOwner(target.getUUID(), player) && !NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(pixelmonEntity, player)).isCanceled()) {
+                    player.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()));
+                    event.setCanceled(true);
                 }
-
-                if (!hasLegendaryPlayerOwner(target.getUUID(), player)) {
-                    return;
-                }
-
-                if (NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(pixelmonEntity, player)).isCanceled()) {
-                    return;
-                }
-
-                player.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()));
-                event.setCanceled(true);
             });
         }
     }
@@ -158,15 +148,7 @@ public class DefenderListener {
                 .findFirst()
                 .orElse(null);
 
-        if (participants.size() != 2 || player == null || wildPixelmon == null) {
-            return;
-        }
-
-        if (player.getPlayer() == null || wildPixelmon.getEntity() == null) {
-            return;
-        }
-
-        if (!hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), player.getPlayer())) {
+        if (participants.size() != 2 || player == null || wildPixelmon == null || player.getPlayer() == null || wildPixelmon.getEntity() == null || !hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), player.getPlayer())) {
             return;
         }
 

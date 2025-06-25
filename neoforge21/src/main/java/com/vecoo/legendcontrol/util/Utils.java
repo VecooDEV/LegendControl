@@ -1,16 +1,16 @@
 package com.vecoo.legendcontrol.util;
 
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
-import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.DiscordConfig;
 
 public class Utils {
     public static int timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
 
-    public static String pokemonImage(PixelmonEntity pixelmonEntity) {
+    public static String pokemonImage(Pokemon pokemon) {
         DiscordConfig discordConfig = LegendControl.getInstance().getDiscord();
-        String pokemonName = pixelmonEntity.getPokemonName().toLowerCase();
+        String pokemonName = pokemon.getTranslatedName().getString().toLowerCase();
 
         switch (pokemonName) {
             case "typenull": {
@@ -39,6 +39,6 @@ public class Utils {
             }
         }
 
-        return pixelmonEntity.getPokemon().isShiny() ? discordConfig.getPokedexShinyUrl().replace("%pokemon%", pokemonName) : discordConfig.getPokedexNormalUrl().replace("%pokemon%", pokemonName);
+        return pokemon.isShiny() ? discordConfig.getPokedexShinyUrl().replace("%pokemon%", pokemonName) : discordConfig.getPokedexNormalUrl().replace("%pokemon%", pokemonName);
     }
 }

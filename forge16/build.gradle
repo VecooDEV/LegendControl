@@ -58,8 +58,8 @@ modrinth {
     gameVersions = ["1.16.5"]
     loaders = ["forge"]
     dependencies {
-        required.project "extralib"
         required.project "pixelmon"
+        required.project "extralib"
     }
 }
 

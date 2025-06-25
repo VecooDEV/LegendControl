@@ -49,48 +49,36 @@ public class LegendControlCommand {
     }
 
     private static int executeAdd(CommandSource source, float chance) {
-        if (LegendControlFactory.ServerProvider.getLegendaryChance() + chance > 100F) {
+        if (LegendControlFactory.ServerProvider.getChanceLegend() + chance > 100F) {
             source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()), false);
             return 0;
         }
 
-        Float newAmount = LegendControlFactory.ServerProvider.addLegendaryChance(LegendSourceName.PLAYER_AND_CONSOLE, chance).orElse(null);
-
-        if (newAmount == null) {
-            return 0;
-        }
+        LegendControlFactory.ServerProvider.addChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance, true);
 
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))), false);
+                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))), false);
         return 1;
     }
 
     private static int executeRemove(CommandSource source, float chance) {
-        if (LegendControlFactory.ServerProvider.getLegendaryChance() - chance < 0F) {
+        if (LegendControlFactory.ServerProvider.getChanceLegend() - chance < 0F) {
             source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()), false);
             return 0;
         }
 
-        Float newAmount = LegendControlFactory.ServerProvider.removeLegendaryChance(LegendSourceName.PLAYER_AND_CONSOLE, chance).orElse(null);
-
-        if (newAmount == null) {
-            return 0;
-        }
+        LegendControlFactory.ServerProvider.removeChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance, true);
 
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))), false);
+                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))), false);
         return 1;
     }
 
     private static int executeSet(CommandSource source, float chance) {
-        Float newAmount = LegendControlFactory.ServerProvider.setLegendaryChance(LegendSourceName.PLAYER_AND_CONSOLE, chance).orElse(null);
-
-        if (newAmount == null) {
-            return 0;
-        }
+        LegendControlFactory.ServerProvider.setChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance, true);
 
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getLegendaryChance()))), false);
+                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))), false);
         return 1;
     }
 
