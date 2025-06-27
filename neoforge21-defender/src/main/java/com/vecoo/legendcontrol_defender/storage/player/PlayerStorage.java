@@ -24,18 +24,27 @@ public class PlayerStorage {
         return this.playersTrust;
     }
 
-    public void addPlayerTrust(UUID playeruUID) {
+    public void addPlayerTrust(UUID playeruUID, boolean update) {
         this.playersTrust.add(playeruUID);
-        LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+
+        if (update) {
+            LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+        }
     }
 
-    public void removePlayerTrust(UUID playerUUID) {
+    public void removePlayerTrust(UUID playerUUID, boolean update) {
         this.playersTrust.remove(playerUUID);
-        LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+
+        if (update) {
+            LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+        }
     }
 
-    public void clearPlayersTrust() {
+    public void clearPlayersTrust(boolean update) {
         this.playersTrust.clear();
-        LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+
+        if (update) {
+            LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+        }
     }
 }

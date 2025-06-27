@@ -8,7 +8,7 @@ version = "${project_version}"
 displayName = "${project_name}-Defender"
 logoFile = "logo.png"
 authors = "Vecoo"
-description = "Sidemod for Pixelmon. It is a module of the main LegendControl for the protection of legends."
+description = "Sidemod for Pixelmon. Adds an anti-theft system for legendary pokemon."
 
 [[dependencies.legendcontrol_defender]]
 modId = "neoforge"

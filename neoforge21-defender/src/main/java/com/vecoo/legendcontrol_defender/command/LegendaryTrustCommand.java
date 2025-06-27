@@ -80,7 +80,7 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        LegendControlFactory.PlayerProvider.addPlayerTrust(player.getUUID(), targetUUID);
+        LegendControlFactory.PlayerProvider.addPlayerTrust(player.getUUID(), targetUUID, true);
 
         player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getAddTrust()
                 .replace("%player%", target)));
@@ -109,7 +109,7 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        LegendControlFactory.PlayerProvider.removePlayerTrust(player.getUUID(), targetUUID);
+        LegendControlFactory.PlayerProvider.removePlayerTrust(player.getUUID(), targetUUID, true);
 
         player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getRemoveTrust()
                 .replace("%player%", target)));
@@ -124,7 +124,7 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        LegendControlFactory.PlayerProvider.removePlayersTrust(player.getUUID());
+        LegendControlFactory.PlayerProvider.removePlayersTrust(player.getUUID(), true);
 
         player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getRemoveAllTrust()));
         return 1;

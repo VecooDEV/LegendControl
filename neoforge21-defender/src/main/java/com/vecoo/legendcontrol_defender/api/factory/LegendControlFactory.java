@@ -17,21 +17,21 @@ public class LegendControlFactory {
             return LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).getPlayersTrust().contains(targetUUID);
         }
 
-        public static void addPlayerTrust(UUID playerUUID, UUID targetUUID) {
+        public static void addPlayerTrust(UUID playerUUID, UUID targetUUID, boolean update) {
             if (!NeoForge.EVENT_BUS.post(new PlayerTrustEvent.Add(playerUUID, targetUUID)).isCanceled()) {
-                LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).addPlayerTrust(targetUUID);
+                LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).addPlayerTrust(targetUUID, update);
             }
         }
 
-        public static void removePlayerTrust(UUID playerUUID, UUID targetUUID) {
+        public static void removePlayerTrust(UUID playerUUID, UUID targetUUID, boolean update) {
             if (!NeoForge.EVENT_BUS.post(new PlayerTrustEvent.Remove(playerUUID, targetUUID)).isCanceled()) {
-                LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayerTrust(targetUUID);
+                LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayerTrust(targetUUID, update);
             }
         }
 
-        public static void removePlayersTrust(UUID playerUUID) {
+        public static void removePlayersTrust(UUID playerUUID, boolean update) {
             if (!NeoForge.EVENT_BUS.post(new PlayerTrustEvent.Clear(playerUUID)).isCanceled()) {
-                LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).clearPlayersTrust();
+                LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).clearPlayersTrust(update);
             }
         }
     }

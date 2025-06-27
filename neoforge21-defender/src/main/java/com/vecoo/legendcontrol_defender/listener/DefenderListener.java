@@ -160,7 +160,7 @@ public class DefenderListener {
         event.setCanceled(true);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onStartCapture(CaptureEvent.StartCapture event) {
         ServerPlayer player = event.getPlayer();
 

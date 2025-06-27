@@ -2,11 +2,13 @@ package com.vecoo.legendcontrol_defender.storage.player;
 
 import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.extralib.world.UtilWorld;
+import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class PlayerProvider {
     private transient final String filePath;
@@ -24,15 +26,18 @@ public class PlayerProvider {
         return this.map.get(playerUUID);
     }
 
-    public void updatePlayerStorage(PlayerStorage player) {
-        this.map.put(player.getUuid(), player);
-        if (!write(player)) {
-            getPlayerStorage(player.getUuid());
-        }
+    public void updatePlayerStorage(PlayerStorage storage) {
+        this.map.put(storage.getUuid(), storage);
+
+        write(storage).thenAccept(success -> {
+            if (!success) {
+                LegendControlDefender.getLogger().error("[LegendControl-Defender] Failed to write PlayerStorage, attempting reload...");
+            }
+        });
     }
 
-    private boolean write(PlayerStorage player) {
-        return UtilGson.writeFileAsync(filePath, player.getUuid() + ".json", UtilGson.newGson().toJson(player)).join();
+    private CompletableFuture<Boolean> write(PlayerStorage storage) {
+        return UtilGson.writeFileAsync(filePath, storage.getUuid() + ".json", UtilGson.newGson().toJson(storage));
     }
 
     public void init() {
