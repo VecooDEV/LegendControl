@@ -90,11 +90,11 @@ public class LegendControl {
         try {
             if (this.storageConfig.getStorageType().equalsIgnoreCase("JSON")) {
                 this.serverProvider = new ServerJsonProvider(this.storageConfig.getStoragePathJson(), this.server);
-                this.serverProvider.init();
             } else {
                 this.serverProvider = new ServerDatabaseProvider(this.storageConfig);
-                this.serverProvider.init();
             }
+
+            this.serverProvider.init();
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load storage.", e);
         }

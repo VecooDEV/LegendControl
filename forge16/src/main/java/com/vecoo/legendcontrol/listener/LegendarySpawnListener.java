@@ -78,7 +78,7 @@ public class LegendarySpawnListener {
             TaskTimer.builder()
                     .delay(config.getLocationTime() * 20L)
                     .consume(task -> {
-                        if (!LEGENDS.contains(pixelmonEntity) || !pixelmonEntity.isAlive() || pixelmonEntity.hasOwner() || pixelmonEntity.level == null) {
+                        if (!LEGENDS.contains(pixelmonEntity) || !pixelmonEntity.isAlive() || pixelmonEntity.hasOwner()) {
                             task.cancel();
                             return;
                         }

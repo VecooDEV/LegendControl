@@ -32,7 +32,7 @@ public class ServerJsonProvider implements ServerProvider {
 
         write(storage).thenAccept(success -> {
             if (!success) {
-                LegendControl.getLogger().error("[LegendControl] Failed to write ServerStorage, attempting reload...");
+                LegendControl.getLogger().error("[LegendControl] Failed to write ServerStorage.");
             }
         });
     }

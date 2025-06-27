@@ -36,7 +36,7 @@ public class PlayerProvider {
 
         write(storage).thenAccept(success -> {
             if (!success) {
-                LegendControlDefender.getLogger().error("[LegendControl-Defender] Failed to write PlayerStorage, attempting reload...");
+                LegendControlDefender.getLogger().error("[LegendControl-Defender] Failed to write PlayerStorage.");
             }
         });
     }

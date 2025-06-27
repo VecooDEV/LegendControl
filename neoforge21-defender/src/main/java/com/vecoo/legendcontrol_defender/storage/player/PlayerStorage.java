@@ -24,8 +24,8 @@ public class PlayerStorage {
         return this.playersTrust;
     }
 
-    public void addPlayerTrust(UUID playeruUID, boolean update) {
-        this.playersTrust.add(playeruUID);
+    public void addPlayerTrust(UUID playerUUID, boolean update) {
+        this.playersTrust.add(playerUUID);
 
         if (update) {
             LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);

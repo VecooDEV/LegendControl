@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ResultListener {
-    public static Set<UUID> LEGENDS = new HashSet<>();
+    public static Set<UUID> SUB_LEGENDS = new HashSet<>();
 
     @SubscribeEvent
     public void onBeatWild(BeatWildPixelmonEvent event) {
@@ -41,7 +41,7 @@ public class ResultListener {
 
         if (pixelmonEntity.isLegendary() && pixelmonEntity.getUUID().equals(event.getPokemon().getUUID())) {
             LegendarySpawnListener.LEGENDS.remove(pixelmonEntity);
-            LEGENDS.add(event.getPokemon().getUUID());
+            SUB_LEGENDS.add(event.getPokemon().getUUID());
         }
     }
 
@@ -49,7 +49,7 @@ public class ResultListener {
     public void onCapture(CaptureEvent.SuccessfulCapture event) {
         Pokemon pokemon = event.getPokemon();
 
-        if (pokemon.isLegendary() && LEGENDS.remove(pokemon.getUUID()) && LegendControl.getInstance().getConfig().isNotifyLegendaryCatch()) {
+        if (pokemon.isLegendary() && SUB_LEGENDS.remove(pokemon.getUUID()) && LegendControl.getInstance().getConfig().isNotifyLegendaryCatch()) {
             ServerPlayer player = event.getPlayer();
 
             UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyCatch()
@@ -65,7 +65,7 @@ public class ResultListener {
             return;
         }
 
-        if (LEGENDS.contains(pixelmonEntity.getUUID())) {
+        if (SUB_LEGENDS.contains(pixelmonEntity.getUUID())) {
             LegendarySpawnListener.LEGENDS.add(pixelmonEntity);
         }
     }
