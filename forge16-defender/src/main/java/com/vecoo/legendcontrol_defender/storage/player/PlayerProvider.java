@@ -5,13 +5,14 @@ import com.vecoo.extralib.world.UtilWorld;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import net.minecraft.server.MinecraftServer;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerProvider {
     private transient final String filePath;
-    private final ConcurrentHashMap<UUID, PlayerStorage> map;
+    private final Map<UUID, PlayerStorage> map;
 
     public PlayerProvider(String filePath, MinecraftServer server) {
         this.filePath = UtilWorld.worldDirectory(filePath, server);
@@ -19,7 +20,7 @@ public class PlayerProvider {
         this.map = new ConcurrentHashMap<>();
     }
 
-    public ConcurrentHashMap<UUID, PlayerStorage> getMap() {
+    public Map<UUID, PlayerStorage> getMap() {
         return this.map;
     }
 
