@@ -16,7 +16,7 @@ public class PlayerStorage {
         LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
     }
 
-    public UUID getUuid() {
+    public UUID getUUID() {
         return this.uuid;
     }
 

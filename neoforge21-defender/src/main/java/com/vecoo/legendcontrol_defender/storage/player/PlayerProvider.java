@@ -5,17 +5,22 @@ import com.vecoo.extralib.world.UtilWorld;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerProvider {
     private transient final String filePath;
-    private final Map<UUID, PlayerStorage> map = new HashMap<>();
+    private final ConcurrentHashMap<UUID, PlayerStorage> map;
 
     public PlayerProvider(String filePath, MinecraftServer server) {
         this.filePath = UtilWorld.worldDirectory(filePath, server);
+
+        this.map = new ConcurrentHashMap<>();
+    }
+
+    public ConcurrentHashMap<UUID, PlayerStorage> getMap() {
+        return this.map;
     }
 
     public PlayerStorage getPlayerStorage(UUID playerUUID) {
@@ -27,7 +32,7 @@ public class PlayerProvider {
     }
 
     public void updatePlayerStorage(PlayerStorage storage) {
-        this.map.put(storage.getUuid(), storage);
+        this.map.put(storage.getUUID(), storage);
 
         write(storage).thenAccept(success -> {
             if (!success) {
@@ -37,7 +42,7 @@ public class PlayerProvider {
     }
 
     private CompletableFuture<Boolean> write(PlayerStorage storage) {
-        return UtilGson.writeFileAsync(filePath, storage.getUuid() + ".json", UtilGson.newGson().toJson(storage));
+        return UtilGson.writeFileAsync(filePath, storage.getUUID() + ".json", UtilGson.newGson().toJson(storage));
     }
 
     public void init() {
@@ -50,7 +55,7 @@ public class PlayerProvider {
         for (String file : list) {
             UtilGson.readFileAsync(filePath, file, el -> {
                 PlayerStorage player = UtilGson.newGson().fromJson(el, PlayerStorage.class);
-                this.map.put(player.getUuid(), player);
+                this.map.put(player.getUUID(), player);
             });
         }
     }
