@@ -2,13 +2,19 @@ package com.vecoo.legendcontrol_defender.api.factory;
 
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import com.vecoo.legendcontrol_defender.api.events.PlayerTrustEvent;
+import com.vecoo.legendcontrol_defender.storage.player.PlayerStorage;
 import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LegendControlFactory {
     public static class PlayerProvider {
+        public static ConcurrentHashMap<UUID, PlayerStorage> getMap() {
+            return LegendControlDefender.getInstance().getPlayerProvider().getMap();
+        }
+
         public static Set<UUID> getPlayersTrust(UUID playerUUID) {
             return LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).getPlayersTrust();
         }

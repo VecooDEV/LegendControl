@@ -13,20 +13,20 @@ public class LegendControlFactory {
             return LegendControl.getInstance().getServerProvider().getServerStorage().getLastLegend();
         }
 
-        public static void addChanceLegend(LegendSourceName sourceName, float amount, boolean update) {
-            setChanceLegend(sourceName, Math.min(getChanceLegend() + amount, 100F), update);
-        }
-
-        public static void removeChanceLegend(LegendSourceName sourceName, float amount, boolean update) {
-            setChanceLegend(sourceName, Math.max(getChanceLegend() - amount, 0F), update);
-        }
-
         public static void setChanceLegend(LegendSourceName sourceName, float amount, boolean update) {
             LegendControl.getInstance().getServerProvider().getServerStorage().setChanceLegend(sourceName, amount, update);
         }
 
         public static void setLastLegend(String pokemonName, boolean update) {
             LegendControl.getInstance().getServerProvider().getServerStorage().setLastLegend(pokemonName, update);
+        }
+
+        public static void addChanceLegend(LegendSourceName sourceName, float amount, boolean update) {
+            setChanceLegend(sourceName, Math.min(getChanceLegend() + amount, 100F), update);
+        }
+
+        public static void removeChanceLegend(LegendSourceName sourceName, float amount, boolean update) {
+            setChanceLegend(sourceName, Math.max(getChanceLegend() - amount, 0F), update);
         }
     }
 }
