@@ -54,8 +54,8 @@ public class PlayerProvider {
 
         for (String file : list) {
             UtilGson.readFileAsync(filePath, file, el -> {
-                PlayerStorage player = UtilGson.newGson().fromJson(el, PlayerStorage.class);
-                this.map.put(player.getUUID(), player);
+                PlayerStorage storage = UtilGson.newGson().fromJson(el, PlayerStorage.class);
+                this.map.put(storage.getUUID(), storage);
             });
         }
     }
