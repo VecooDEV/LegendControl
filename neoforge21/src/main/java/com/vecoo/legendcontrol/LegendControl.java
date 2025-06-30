@@ -2,6 +2,7 @@ package com.vecoo.legendcontrol;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
+import com.vecoo.extralib.database.UtilDatabase;
 import com.vecoo.legendcontrol.command.CheckLegendsCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.config.DiscordConfig;
@@ -23,6 +24,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
 import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 import org.apache.logging.log4j.LogManager;
@@ -37,13 +39,14 @@ public class LegendControl {
 
     private ServerConfig config;
     private LocaleConfig locale;
-    private StorageConfig storageConfig;
+    private StorageConfig storage;
     private DiscordConfig discord;
 
     private ServerProvider serverProvider;
 
     private MinecraftServer server;
 
+    private UtilDatabase database;
     private DiscordWebhook webhook;
 
     public LegendControl() {
@@ -84,11 +87,18 @@ public class LegendControl {
         this.loadStorage();
     }
 
+    @SubscribeEvent
+    public void onServerStopping(ServerStoppingEvent event) {
+        if (database != null) {
+            database.close();
+        }
+    }
+
     public void loadConfig() {
         try {
             this.config = YamlConfigFactory.getInstance(ServerConfig.class);
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
-            this.storageConfig = YamlConfigFactory.getInstance(StorageConfig.class);
+            this.storage = YamlConfigFactory.getInstance(StorageConfig.class);
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
             this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
         } catch (Exception e) {
@@ -98,10 +108,13 @@ public class LegendControl {
 
     public void loadStorage() {
         try {
-            if (this.storageConfig.getStorageType().equalsIgnoreCase("JSON")) {
-                this.serverProvider = new ServerJsonProvider(this.storageConfig.getStoragePathJson(), this.server);
-            } else {
-                this.serverProvider = new ServerDatabaseProvider(this.storageConfig);
+            if (this.storage.getStorageType().equalsIgnoreCase("JSON")) {
+                this.serverProvider = new ServerJsonProvider(this.storage.getStoragePathJson(), this.server);
+            } else if (this.database == null) {
+                this.database = new UtilDatabase(this.storage.getStorageType(), this.storage.getAddress(), this.storage.getDatabase(), this.storage.getUsername(), this.storage.getPassword(),
+                        this.storage.getPrefix(), this.storage.getMaxPoolSize(), this.storage.getMinimumIdle(), this.storage.getMaxLifeTime(), this.storage.getKeepAliveTime(), this.storage.getConnectionTimeout(), this.storage.isUseSSL(), this.storage.getThreadPool());
+
+                this.serverProvider = new ServerDatabaseProvider();
             }
 
             this.serverProvider.init();
@@ -127,7 +140,11 @@ public class LegendControl {
     }
 
     public StorageConfig getStorageConfig() {
-        return instance.storageConfig;
+        return instance.storage;
+    }
+
+    public UtilDatabase getDatabase() {
+        return instance.database;
     }
 
     public DiscordConfig getDiscord() {

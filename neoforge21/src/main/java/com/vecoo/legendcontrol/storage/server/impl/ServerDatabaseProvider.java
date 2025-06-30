@@ -2,7 +2,6 @@ package com.vecoo.legendcontrol.storage.server.impl;
 
 import com.vecoo.extralib.database.UtilDatabase;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.config.StorageConfig;
 import com.vecoo.legendcontrol.storage.server.ServerProvider;
 import com.vecoo.legendcontrol.storage.server.ServerStorage;
 
@@ -12,11 +11,7 @@ import java.util.concurrent.CompletableFuture;
 public class ServerDatabaseProvider implements ServerProvider {
     private ServerStorage serverStorage;
 
-    public ServerDatabaseProvider(StorageConfig config) {
-        if (!UtilDatabase.isDataSourceInitialized()) {
-            UtilDatabase.init(config.getStorageType(), config.getAddress(), config.getDatabase(), config.getUsername(), config.getPassword(),
-                    config.getPrefix(), config.getMaxPoolSize(), config.getMinimumIdle(), config.getMaxLifeTime(), config.getKeepAliveTime(), config.getConnectionTimeout(), config.isUseSSL());
-        }
+    public ServerDatabaseProvider() {
     }
 
     @Override
@@ -42,9 +37,10 @@ public class ServerDatabaseProvider implements ServerProvider {
 
     @Override
     public CompletableFuture<Boolean> write(ServerStorage storage) {
-        return UtilDatabase.supplyAsync(() -> {
-            try (Connection connection = UtilDatabase.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO legendcontrol_server (id, chance_legend, last_legend) VALUES (1, ?, ?)")) {
+        UtilDatabase database = LegendControl.getInstance().getDatabase();
+
+        return database.supplyAsync(() -> {
+            try (Connection connection = database.getDataSource().getConnection(); PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO legendcontrol (id, chance_legend, last_legend) VALUES (1, ?, ?)")) {
 
                 preparedStatement.setFloat(1, storage.getChanceLegend());
                 preparedStatement.setString(2, storage.getLastLegend());
@@ -59,12 +55,11 @@ public class ServerDatabaseProvider implements ServerProvider {
 
     @Override
     public void init() {
-        try (Connection connection = UtilDatabase.getDataSource().getConnection();
-             Statement statement = connection.createStatement()) {
+        try (Connection connection = LegendControl.getInstance().getDatabase().getDataSource().getConnection(); Statement statement = connection.createStatement()) {
 
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS legendcontrol_server (id INT PRIMARY KEY, chance_legend FLOAT, last_legend VARCHAR(36))");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS legendcontrol (id INT PRIMARY KEY, chance_legend FLOAT NOT NULL, last_legend VARCHAR(36) NOT NULL)");
 
-            try (ResultSet resultSet = statement.executeQuery("SELECT chance_legend, last_legend FROM legendcontrol_server WHERE id = 1")) {
+            try (ResultSet resultSet = statement.executeQuery("SELECT chance_legend, last_legend FROM legendcontrol WHERE id = 1")) {
                 while (resultSet.next()) {
                     this.serverStorage = new ServerStorage(resultSet.getFloat("chance_legend"), resultSet.getString("last_legend"));
                 }

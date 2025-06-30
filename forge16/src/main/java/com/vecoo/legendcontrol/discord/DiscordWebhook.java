@@ -47,13 +47,13 @@ public class DiscordWebhook {
     }
 
     private void sendRequest(String json) throws IOException {
-        if (url.isEmpty()) {
+        if (this.url.isEmpty()) {
             return;
         }
 
         HttpURLConnection connection = (HttpURLConnection) new URL(this.url).openConnection();
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+        connection.setConnectTimeout(10000);
+        connection.setReadTimeout(10000);
 
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");

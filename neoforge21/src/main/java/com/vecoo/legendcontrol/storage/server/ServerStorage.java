@@ -24,14 +24,12 @@ public class ServerStorage {
     }
 
     public void setChanceLegend(LegendSourceName sourceName, float amount, boolean update) {
-        if (NeoForge.EVENT_BUS.post(new ChanceLegendEvent(sourceName, amount)).isCanceled()) {
-            return;
-        }
+        if (!NeoForge.EVENT_BUS.post(new ChanceLegendEvent(sourceName, amount)).isCanceled()) {
+            this.chanceLegend = amount;
 
-        this.chanceLegend = amount;
-
-        if (update) {
-            LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+            if (update) {
+                LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+            }
         }
     }
 

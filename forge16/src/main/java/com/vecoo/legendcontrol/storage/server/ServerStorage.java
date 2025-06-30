@@ -24,14 +24,12 @@ public class ServerStorage {
     }
 
     public void setChanceLegend(LegendSourceName sourceName, float amount, boolean update) {
-        if (MinecraftForge.EVENT_BUS.post(new ChanceLegendEvent(sourceName, amount))) {
-            return;
-        }
+        if (!MinecraftForge.EVENT_BUS.post(new ChanceLegendEvent(sourceName, amount))) {
+            this.chanceLegend = amount;
 
-        this.chanceLegend = amount;
-
-        if (update) {
-            LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+            if (update) {
+                LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+            }
         }
     }
 
