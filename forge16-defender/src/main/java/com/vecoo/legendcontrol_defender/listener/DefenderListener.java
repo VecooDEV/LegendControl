@@ -16,11 +16,11 @@ import com.vecoo.extralib.task.TaskTimer;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import com.vecoo.legendcontrol_defender.api.events.LegendControlDefenderEvent;
 import com.vecoo.legendcontrol_defender.api.factory.LegendControlFactory;
+import com.vecoo.legendcontrol_defender.util.WebhookUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public class DefenderListener {
         return !LegendControlFactory.PlayerProvider.hasPlayerTrust(ownerUUID, player.getUUID());
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent
     public void onDoSpawn(LegendarySpawnEvent.DoSpawn event) {
         PixelmonEntity pixelmonEntity = event.action.getOrCreateEntity();
 
@@ -81,7 +81,7 @@ public class DefenderListener {
                         return;
                     }
 
-                    if (LegendControlDefender.getInstance().getConfig().getProtectedTime() != 0) {
+                    if (LegendControlDefender.getInstance().getConfig().getProtectedTime() > 0) {
                         startDefender(pixelmonEntity);
                     }
                 }).build();
@@ -99,6 +99,7 @@ public class DefenderListener {
                     MinecraftForge.EVENT_BUS.post(new LegendControlDefenderEvent.ExpiredDefender(pixelmonEntity));
 
                     removeLegendaryDefender(pixelmonEntity.getUUID());
+                    WebhookUtils.defenderExpiredWebhook(pixelmonEntity);
                 }).build();
     }
 
@@ -154,7 +155,7 @@ public class DefenderListener {
         event.setCanceled(true);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent
     public void onStartCapture(CaptureEvent.StartCapture event) {
         ServerPlayerEntity player = event.getPlayer();
 

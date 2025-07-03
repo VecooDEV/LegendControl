@@ -13,20 +13,21 @@ import com.vecoo.legendcontrol.storage.server.ServerStorage;
 import com.vecoo.legendcontrol.util.WebhookUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LegendarySpawnListener {
-    public static final Set<PixelmonEntity> LEGENDS = new HashSet<>();
+    public static final List<PixelmonEntity> LEGENDS = new ArrayList<>();
 
-    public static Set<PixelmonEntity> getLegends() {
+    public static List<PixelmonEntity> getLegends() {
         return LEGENDS;
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onDoSpawn(LegendarySpawnEvent.DoSpawn event) {
         PixelmonEntity pixelmonEntity = event.action.getOrCreateEntity();
         ServerPlayer player = (ServerPlayer) event.action.spawnLocation.cause;

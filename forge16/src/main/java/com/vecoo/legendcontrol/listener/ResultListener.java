@@ -10,6 +10,7 @@ import com.vecoo.legendcontrol.util.WebhookUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashSet;
@@ -29,11 +30,12 @@ public class ResultListener {
             UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDefeat()
                     .replace("%player%", player.getName().getString())
                     .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+
             WebhookUtils.defeatWebhook(pixelmonEntity, player);
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onStartCapture(CaptureEvent.StartCapture event) {
         PixelmonEntity pixelmonEntity = event.getPokemon();
 
@@ -62,6 +64,7 @@ public class ResultListener {
             UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyCatch()
                     .replace("%player%", player.getName().getString())
                     .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+
             WebhookUtils.captureWebhook(pixelmonEntity, player);
         }
     }
@@ -79,6 +82,7 @@ public class ResultListener {
 
             UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
                     .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+
             WebhookUtils.despawnWebhook(pixelmonEntity);
         }
     }

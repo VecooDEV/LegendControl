@@ -1,15 +1,12 @@
-package com.vecoo.legendcontrol.util;
+package com.vecoo.legendcontrol_defender.util;
 
-import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.config.DiscordConfig;
+import com.vecoo.legendcontrol_defender.LegendControlDefender;
+import com.vecoo.legendcontrol_defender.config.DiscordConfig;
 
 public class Utils {
-    public static int TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
-
     public static String pokemonImage(PixelmonEntity pixelmonEntity) {
-        DiscordConfig discordConfig = LegendControl.getInstance().getDiscordConfig();
+        DiscordConfig discordConfig = LegendControlDefender.getInstance().getDiscordConfig();
         String pokemonName = pixelmonEntity.getPokemonName().toLowerCase();
 
         switch (pokemonName) {

@@ -9,6 +9,7 @@ import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.events.LegendControlEvent;
 import com.vecoo.legendcontrol.util.WebhookUtils;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -31,11 +32,12 @@ public class ResultListener {
             UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDefeat()
                     .replace("%player%", player.getName().getString())
                     .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+
             WebhookUtils.defeatWebhook(pixelmonEntity.getPokemon(), player);
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onStartCapture(CaptureEvent.StartCapture event) {
         PixelmonEntity pixelmonEntity = event.getPokemon().getEntity();
 
@@ -55,6 +57,7 @@ public class ResultListener {
             UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyCatch()
                     .replace("%player%", player.getName().getString())
                     .replace("%pokemon%", pokemon.getTranslatedName().getString()));
+
             WebhookUtils.captureWebhook(pokemon, player);
         }
     }
@@ -81,6 +84,7 @@ public class ResultListener {
 
             UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
                     .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+
             WebhookUtils.despawnWebhook(pixelmonEntity.getPokemon());
         }
     }

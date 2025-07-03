@@ -1,19 +1,19 @@
-package com.vecoo.legendcontrol.config;
+package com.vecoo.legendcontrol_defender.config;
 
 import com.pixelmonmod.pixelmon.api.config.api.data.ConfigPath;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.AbstractYamlConfig;
 import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
 
-@ConfigPath("config/LegendControl/storage.yml")
+@ConfigPath("config/LegendControl/Defender/storage.yml")
 @ConfigSerializable
 public class StorageConfig extends AbstractYamlConfig {
     private String storageType = "JSON";
-    private String storagePathJson = "/%directory%/storage/LegendControl/";
+    private String storagePathJson = "/%directory%/storage/LegendControl/Defender/players/";
     private String address = "127.0.0.1:3306";
     private String database = "minecraft";
     private String username = "root";
     private String password = "password";
-    private String prefix = "legendcontrol_";
+    private String prefix = "legendcontrol_defender_";
     private int maxPoolSize = 10;
     private int minimumIdle = 10;
     private long maxLifeTime = 1800000L;

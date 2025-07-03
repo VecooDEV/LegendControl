@@ -21,7 +21,7 @@ public class CheckLegendsCommand {
     }
 
     private static int execute(CommandSource source) {
-        int seconds = (int) ((PixelmonSpawning.legendarySpawner.nextSpawnTime - System.currentTimeMillis()) / 1000 + Utils.timeDoLegend);
+        int seconds = (int) ((PixelmonSpawning.legendarySpawner.nextSpawnTime - System.currentTimeMillis()) / 1000 + Utils.TIME_DO_LEGEND);
         int minutes = seconds / 60;
         int hours = minutes / 60;
 

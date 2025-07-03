@@ -20,7 +20,7 @@ public class StorageConfig extends AbstractYamlConfig {
     private long keepAliveTime = 60000L;
     private long connectionTimeout = 5000L;
     private boolean useSsl = true;
-    private int threadPool = 5;
+    private int threadPool = 3;
 
     public String getStorageType() {
         return this.storageType;

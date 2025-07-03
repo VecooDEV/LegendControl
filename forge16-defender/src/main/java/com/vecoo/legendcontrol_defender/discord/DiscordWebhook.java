@@ -1,6 +1,6 @@
-package com.vecoo.legendcontrol.discord;
+package com.vecoo.legendcontrol_defender.discord;
 
-import com.vecoo.legendcontrol.LegendControl;
+import com.vecoo.legendcontrol_defender.LegendControlDefender;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,21 +16,14 @@ public class DiscordWebhook {
         this.url = url;
     }
 
-    public void sendEmbed(String title, String description, String thumbnailUrl, String color, boolean pingRole) throws IOException {
-        String role = "";
-
-        if (pingRole) {
-            long roleId = LegendControl.getInstance().getDiscordConfig().getWebhookRole();
-            role = roleId != 0 ? "<@&" + roleId + ">" : "";
-        }
-
-        String json = String.format("{\"content\": \"%s\", \"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}", escapeJson(role), escapeJson(title), escapeJson(description), escapeJson(thumbnailUrl), color);
+    public void sendEmbed(String title, String description, String thumbnailUrl, String color) throws IOException {
+        String json = String.format("{\"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}", escapeJson(title), escapeJson(description), escapeJson(thumbnailUrl), color);
 
         CompletableFuture.runAsync(() -> {
             try {
                 sendRequest(json);
             } catch (IOException e) {
-                LegendControl.getLogger().error("[LegendControl] Error sending embed: " + e.getMessage());
+                LegendControlDefender.getLogger().error("[LegendControl-Defender] Error sending embed: " + e.getMessage());
             }
         });
     }
@@ -67,7 +60,7 @@ public class DiscordWebhook {
         int responseCode = connection.getResponseCode();
 
         if (responseCode != 204) {
-            LegendControl.getLogger().error("[LegendControl] Discord webhook failed: " + responseCode);
+            LegendControlDefender.getLogger().error("[LegendControl-Defender] Discord webhook failed: " + responseCode);
         }
     }
 }

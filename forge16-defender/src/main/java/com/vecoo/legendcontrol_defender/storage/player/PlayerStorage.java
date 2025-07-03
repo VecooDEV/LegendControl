@@ -2,7 +2,6 @@ package com.vecoo.legendcontrol_defender.storage.player;
 
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -10,9 +9,9 @@ public class PlayerStorage {
     private final UUID uuid;
     private final Set<UUID> playersTrust;
 
-    public PlayerStorage(UUID playerUUID) {
+    public PlayerStorage(UUID playerUUID, Set<UUID> playersTrust) {
         this.uuid = playerUUID;
-        this.playersTrust = new HashSet<>();
+        this.playersTrust = playersTrust;
         LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
     }
 

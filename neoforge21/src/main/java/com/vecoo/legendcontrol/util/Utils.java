@@ -6,10 +6,10 @@ import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.DiscordConfig;
 
 public class Utils {
-    public static int timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
+    public static int TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
 
     public static String pokemonImage(Pokemon pokemon) {
-        DiscordConfig discordConfig = LegendControl.getInstance().getDiscord();
+        DiscordConfig discordConfig = LegendControl.getInstance().getDiscordConfig();
         String pokemonName = pokemon.getTranslatedName().getString().toLowerCase();
 
         switch (pokemonName) {

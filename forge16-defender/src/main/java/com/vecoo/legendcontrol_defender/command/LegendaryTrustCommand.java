@@ -36,6 +36,7 @@ public class LegendaryTrustCommand {
                                 .suggests((s, builder) -> {
                                     for (UUID playerUUID : LegendControlFactory.PlayerProvider.getPlayersTrust(s.getSource().getPlayerOrException().getUUID())) {
                                         String name = UtilPlayer.getPlayerName(playerUUID);
+
                                         if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
                                             builder.suggest(name);
                                         }

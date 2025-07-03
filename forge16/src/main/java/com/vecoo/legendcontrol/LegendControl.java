@@ -79,8 +79,8 @@ public class LegendControl {
 
     @SubscribeEvent
     public void onServerStopping(FMLServerStoppingEvent event) {
-        if (database != null) {
-            database.close();
+        if (this.database != null) {
+            this.database.close();
         }
     }
 
@@ -133,11 +133,7 @@ public class LegendControl {
         return instance.storage;
     }
 
-    public UtilDatabase getDatabase() {
-        return instance.database;
-    }
-
-    public DiscordConfig getDiscord() {
+    public DiscordConfig getDiscordConfig() {
         return instance.discord;
     }
 
@@ -147,6 +143,10 @@ public class LegendControl {
 
     public MinecraftServer getServer() {
         return instance.server;
+    }
+
+    public UtilDatabase getDatabase() {
+        return instance.database;
     }
 
     public DiscordWebhook getWebhook() {

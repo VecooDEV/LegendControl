@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class WebhookUtils {
     public static void spawnWebhook(PixelmonEntity pixelmonEntity, Biome biome) {
-        DiscordConfig discordConfig = LegendControl.getInstance().getDiscord();
+        DiscordConfig discordConfig = LegendControl.getInstance().getDiscordConfig();
 
         if (discordConfig.getWebhookUrl().isEmpty()) {
             return;
@@ -29,7 +29,7 @@ public class WebhookUtils {
     }
 
     public static void defeatWebhook(PixelmonEntity pixelmonEntity, ServerPlayerEntity player) {
-        DiscordConfig discordConfig = LegendControl.getInstance().getDiscord();
+        DiscordConfig discordConfig = LegendControl.getInstance().getDiscordConfig();
 
         if (discordConfig.getWebhookUrl().isEmpty()) {
             return;
@@ -47,7 +47,7 @@ public class WebhookUtils {
     }
 
     public static void captureWebhook(PixelmonEntity pixelmonEntity, ServerPlayerEntity player) {
-        DiscordConfig discordConfig = LegendControl.getInstance().getDiscord();
+        DiscordConfig discordConfig = LegendControl.getInstance().getDiscordConfig();
 
         if (discordConfig.getWebhookUrl().isEmpty()) {
             return;
@@ -65,7 +65,7 @@ public class WebhookUtils {
     }
 
     public static void despawnWebhook(PixelmonEntity pixelmonEntity) {
-        DiscordConfig discordConfig = LegendControl.getInstance().getDiscord();
+        DiscordConfig discordConfig = LegendControl.getInstance().getDiscordConfig();
 
         if (discordConfig.getWebhookUrl().isEmpty()) {
             return;
@@ -82,7 +82,7 @@ public class WebhookUtils {
     }
 
     public static void locationWebhook(PixelmonEntity pixelmonEntity) {
-        DiscordConfig discordConfig = LegendControl.getInstance().getDiscord();
+        DiscordConfig discordConfig = LegendControl.getInstance().getDiscordConfig();
 
         if (discordConfig.getWebhookUrl().isEmpty()) {
             return;

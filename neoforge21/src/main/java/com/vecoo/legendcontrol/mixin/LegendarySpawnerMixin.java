@@ -72,7 +72,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
         this.spawnFrequency = 1200.0F / (RandomHelper.getRandomNumberBetween(0.6F, 1.4F) * baseSpawnTicks / (1.0F + (float) (numPlayers - 1) * PixelmonConfigProxy.getSpawningLegendary().getSpawnTicksPlayerMultiplier()));
 
         if (this.firesChooseEvent) {
-            Utils.timeDoLegend = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
+            Utils.TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
         }
 
         float chance = this.firesChooseEvent ? LegendControlFactory.ServerProvider.getChanceLegend() / 100.0F : PixelmonConfigProxy.getSpawningBoss().getBossSpawnChance();

@@ -64,11 +64,11 @@ public class LegendControl {
 
     @SubscribeEvent
     public void onPermissionGather(PermissionGatherEvent.Nodes event) {
-        PermissionNodes.permissionList.add(PermissionNodes.CHECKLEGENDARY_COMMAND);
-        PermissionNodes.permissionList.add(PermissionNodes.CHECKLEGENDARY_MODIFY_COMMAND);
-        PermissionNodes.permissionList.add(PermissionNodes.LEGENDCONTROL_COMMAND);
+        PermissionNodes.PERMISSION_LIST.add(PermissionNodes.CHECKLEGENDARY_COMMAND);
+        PermissionNodes.PERMISSION_LIST.add(PermissionNodes.CHECKLEGENDARY_MODIFY_COMMAND);
+        PermissionNodes.PERMISSION_LIST.add(PermissionNodes.LEGENDCONTROL_COMMAND);
 
-        for (PermissionNode<?> node : PermissionNodes.permissionList) {
+        for (PermissionNode<?> node : PermissionNodes.PERMISSION_LIST) {
             if (!event.getNodes().contains(node)) {
                 event.addNodes(node);
             }
@@ -89,8 +89,8 @@ public class LegendControl {
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
-        if (database != null) {
-            database.close();
+        if (this.database != null) {
+            this.database.close();
         }
     }
 
@@ -143,11 +143,7 @@ public class LegendControl {
         return instance.storage;
     }
 
-    public UtilDatabase getDatabase() {
-        return instance.database;
-    }
-
-    public DiscordConfig getDiscord() {
+    public DiscordConfig getDiscordConfig() {
         return instance.discord;
     }
 
@@ -157,6 +153,10 @@ public class LegendControl {
 
     public MinecraftServer getServer() {
         return instance.server;
+    }
+
+    public UtilDatabase getDatabase() {
+        return instance.database;
     }
 
     public DiscordWebhook getWebhook() {

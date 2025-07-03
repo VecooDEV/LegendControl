@@ -20,7 +20,7 @@ public class DiscordWebhook {
         String role = "";
 
         if (pingRole) {
-            long roleId = LegendControl.getInstance().getDiscord().getWebhookRole();
+            long roleId = LegendControl.getInstance().getDiscordConfig().getWebhookRole();
             role = roleId != 0 ? "<@&" + roleId + ">" : "";
         }
 
