@@ -24,7 +24,7 @@ public class ParticleListener {
             return;
         }
 
-        for (PixelmonEntity entity : LegendarySpawnListener.getLegends()) {
+        for (PixelmonEntity entity : LegendarySpawnListener.LEGENDS) {
             if (entity.level() instanceof ServerLevel level) {
                 level.sendParticles(particle, entity.getX(), entity.getYCentre(), entity.getZ(), 3, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, 0.1);
             }

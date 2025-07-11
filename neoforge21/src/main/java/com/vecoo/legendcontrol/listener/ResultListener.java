@@ -1,7 +1,7 @@
 package com.vecoo.legendcontrol.listener;
 
-import com.pixelmonmod.pixelmon.api.events.BeatWildPixelmonEvent;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
+import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
@@ -23,17 +23,26 @@ public class ResultListener {
     public static Set<UUID> SUB_LEGENDS = new HashSet<>();
 
     @SubscribeEvent
-    public void onBeatWild(BeatWildPixelmonEvent event) {
-        PixelmonEntity pixelmonEntity = event.wpp.getFaintedPokemon().getEntity();
+    public void onDefeat(AttackEvent.Damage event) { //We use this event because in 1.21.1 the BeatWildPixelmonEvent occurs later than EntityLeaveLevelEvent.
+        if (event.willBeFatal()) {
+            PixelmonEntity pixelmonEntity = event.target.getEntity();
 
-        if (pixelmonEntity.isLegendary() && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDefeat()) {
-            ServerPlayer player = event.player;
+            if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDefeat()) {
+                ServerPlayer player = event.user.getPlayerOwner();
+                String playerName;
 
-            UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDefeat()
-                    .replace("%player%", player.getName().getString())
-                    .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+                if (player == null) {
+                    playerName = "Unknown";
+                } else {
+                    playerName = player.getName().getString();
+                }
 
-            WebhookUtils.defeatWebhook(pixelmonEntity.getPokemon(), player);
+                UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDefeat()
+                        .replace("%player%", playerName)
+                        .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+
+                WebhookUtils.defeatWebhook(pixelmonEntity.getPokemon(), playerName);
+            }
         }
     }
 
@@ -41,8 +50,7 @@ public class ResultListener {
     public void onStartCapture(CaptureEvent.StartCapture event) {
         PixelmonEntity pixelmonEntity = event.getPokemon().getEntity();
 
-        if (pixelmonEntity.isLegendary() && pixelmonEntity.getUUID().equals(event.getPokemon().getUUID())) {
-            LegendarySpawnListener.LEGENDS.remove(pixelmonEntity);
+        if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity)) {
             SUB_LEGENDS.add(event.getPokemon().getUUID());
         }
     }
@@ -51,41 +59,37 @@ public class ResultListener {
     public void onCapture(CaptureEvent.SuccessfulCapture event) {
         Pokemon pokemon = event.getPokemon();
 
-        if (pokemon.isLegendary() && SUB_LEGENDS.remove(pokemon.getUUID()) && LegendControl.getInstance().getConfig().isNotifyLegendaryCatch()) {
-            ServerPlayer player = event.getPlayer();
+        if (SUB_LEGENDS.remove(pokemon.getUUID()) && LegendControl.getInstance().getConfig().isNotifyLegendaryCatch()) {
+            String playerName = event.getPlayer().getName().getString();
 
             UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyCatch()
-                    .replace("%player%", player.getName().getString())
+                    .replace("%player%", playerName)
                     .replace("%pokemon%", pokemon.getTranslatedName().getString()));
 
-            WebhookUtils.captureWebhook(pokemon, player);
+            WebhookUtils.captureWebhook(pokemon, playerName);
         }
     }
 
     @SubscribeEvent
     public void onEntityJoin(EntityJoinLevelEvent event) {
-        if (event.getLevel().isClientSide() || !(event.getEntity() instanceof PixelmonEntity pixelmonEntity)) {
-            return;
-        }
-
-        if (SUB_LEGENDS.contains(pixelmonEntity.getUUID())) {
-            LegendarySpawnListener.LEGENDS.add(pixelmonEntity);
+        if (!event.getLevel().isClientSide() && event.getEntity() instanceof PixelmonEntity pixelmonEntity) {
+            if (SUB_LEGENDS.contains(pixelmonEntity.getUUID())) {
+                LegendarySpawnListener.LEGENDS.add(pixelmonEntity);
+            }
         }
     }
 
     @SubscribeEvent
     public void onEntityLeave(EntityLeaveLevelEvent event) {
-        if (event.getLevel().isClientSide() || !(event.getEntity() instanceof PixelmonEntity pixelmonEntity)) {
-            return;
-        }
+        if (!event.getLevel().isClientSide() && event.getEntity() instanceof PixelmonEntity pixelmonEntity) {
+            if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDespawn()) {
+                NeoForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
 
-        if (pixelmonEntity.isLegendary() && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDespawn()) {
-            NeoForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
+                UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
+                        .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
-            UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
-                    .replace("%pokemon%", pixelmonEntity.getPokemonName()));
-
-            WebhookUtils.despawnWebhook(pixelmonEntity.getPokemon());
+                WebhookUtils.despawnWebhook(pixelmonEntity.getPokemon());
+            }
         }
     }
 }

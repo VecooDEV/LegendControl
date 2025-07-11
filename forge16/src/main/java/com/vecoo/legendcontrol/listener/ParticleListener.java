@@ -24,7 +24,7 @@ public class ParticleListener {
             return;
         }
 
-        for (PixelmonEntity entity : LegendarySpawnListener.getLegends()) {
+        for (PixelmonEntity entity : LegendarySpawnListener.LEGENDS) {
             if (entity.level instanceof ServerWorld) {
                 ServerWorld world = (ServerWorld) entity.level;
 

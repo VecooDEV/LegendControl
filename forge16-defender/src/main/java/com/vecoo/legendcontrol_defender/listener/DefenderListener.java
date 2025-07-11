@@ -76,13 +76,10 @@ public class DefenderListener {
         TaskTimer.builder()
                 .delay(1L)
                 .consume(task -> {
-                    if (!pixelmonEntity.isAlive() || pixelmonEntity.hasOwner()) {
-                        task.cancel();
-                        return;
-                    }
-
-                    if (LegendControlDefender.getInstance().getConfig().getProtectedTime() > 0) {
-                        startDefender(pixelmonEntity);
+                    if (pixelmonEntity.isAlive()) {
+                        if (LegendControlDefender.getInstance().getConfig().getProtectedTime() > 0) {
+                            startDefender(pixelmonEntity);
+                        }
                     }
                 }).build();
     }
@@ -94,12 +91,12 @@ public class DefenderListener {
                     if (hasLegendaryDefender(pixelmonEntity.getUUID()) && pixelmonEntity.isAlive() && !pixelmonEntity.hasOwner()) {
                         UtilChat.broadcast(LegendControlDefender.getInstance().getLocale().getProtection()
                                 .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+
+                        MinecraftForge.EVENT_BUS.post(new LegendControlDefenderEvent.ExpiredDefender(pixelmonEntity));
+
+                        removeLegendaryDefender(pixelmonEntity.getUUID());
+                        WebhookUtils.defenderExpiredWebhook(pixelmonEntity);
                     }
-
-                    MinecraftForge.EVENT_BUS.post(new LegendControlDefenderEvent.ExpiredDefender(pixelmonEntity));
-
-                    removeLegendaryDefender(pixelmonEntity.getUUID());
-                    WebhookUtils.defenderExpiredWebhook(pixelmonEntity);
                 }).build();
     }
 
@@ -143,16 +140,12 @@ public class DefenderListener {
                 .findFirst()
                 .orElse(null);
 
-        if (participants.size() != 2 || player == null || wildPixelmon == null || !hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), (ServerPlayerEntity) player.getEntity())) {
-            return;
+        if (participants.size() == 2 && player != null && wildPixelmon != null && hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), (ServerPlayerEntity) player.getEntity())) {
+            if (!MinecraftForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender((PixelmonEntity) wildPixelmon.getEntity(), (ServerPlayerEntity) player.getEntity()))) {
+                player.getEntity().sendMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()), Util.NIL_UUID);
+                event.setCanceled(true);
+            }
         }
-
-        if (MinecraftForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender((PixelmonEntity) wildPixelmon.getEntity(), (ServerPlayerEntity) player.getEntity()))) {
-            return;
-        }
-
-        player.getEntity().sendMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()), Util.NIL_UUID);
-        event.setCanceled(true);
     }
 
     @SubscribeEvent
@@ -160,16 +153,14 @@ public class DefenderListener {
         ServerPlayerEntity player = event.getPlayer();
 
         if (hasLegendaryPlayerOwner(event.getPokemon().getUUID(), player)) {
-            if (MinecraftForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(event.getPokemon(), player))) {
-                return;
-            }
+            if (!MinecraftForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(event.getPokemon(), player))) {
+                if (!player.isCreative()) {
+                    player.inventory.add(event.getPokeBall().getBallType().getBallItem());
+                }
 
-            if (!player.isCreative()) {
-                player.inventory.add(event.getPokeBall().getBallType().getBallItem());
+                player.sendMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()), Util.NIL_UUID);
+                event.setCanceled(true);
             }
-
-            player.sendMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()), Util.NIL_UUID);
-            event.setCanceled(true);
         }
     }
 }

@@ -7,7 +7,6 @@ import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.events.LegendControlEvent;
 import com.vecoo.legendcontrol.util.WebhookUtils;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -24,14 +23,14 @@ public class ResultListener {
     public void onBeatWild(BeatWildPixelmonEvent event) {
         PixelmonEntity pixelmonEntity = event.wpp.getFaintedPokemon().entity;
 
-        if (pixelmonEntity.isLegendary() && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDefeat()) {
-            ServerPlayerEntity player = event.player;
+        if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDefeat()) {
+            String playerName = event.player.getName().getString();
 
             UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDefeat()
-                    .replace("%player%", player.getName().getString())
+                    .replace("%player%", playerName)
                     .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
-            WebhookUtils.defeatWebhook(pixelmonEntity, player);
+            WebhookUtils.defeatWebhook(pixelmonEntity, playerName);
         }
     }
 
@@ -39,7 +38,7 @@ public class ResultListener {
     public void onStartCapture(CaptureEvent.StartCapture event) {
         PixelmonEntity pixelmonEntity = event.getPokemon();
 
-        if (pixelmonEntity.isLegendary() && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity)) {
+        if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity)) {
             SUB_LEGENDS.add(pixelmonEntity.getUUID());
         }
     }
@@ -48,7 +47,7 @@ public class ResultListener {
     public void onFailureCapture(CaptureEvent.FailedCapture event) {
         PixelmonEntity pixelmonEntity = event.getPokemon();
 
-        if (pixelmonEntity.isLegendary() && SUB_LEGENDS.remove(pixelmonEntity.getUUID())) {
+        if (SUB_LEGENDS.remove(pixelmonEntity.getUUID())) {
             LegendarySpawnListener.LEGENDS.add(pixelmonEntity);
         }
     }
@@ -58,32 +57,30 @@ public class ResultListener {
     public void onCapture(CaptureEvent.SuccessfulCapture event) {
         PixelmonEntity pixelmonEntity = event.getPokemon();
 
-        if (pixelmonEntity.isLegendary() && SUB_LEGENDS.remove(pixelmonEntity.getUUID()) && LegendControl.getInstance().getConfig().isNotifyLegendaryCatch()) {
-            ServerPlayerEntity player = event.getPlayer();
+        if (SUB_LEGENDS.remove(pixelmonEntity.getUUID()) && LegendControl.getInstance().getConfig().isNotifyLegendaryCatch()) {
+            String playerName = event.getPlayer().getName().getString();
 
             UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyCatch()
-                    .replace("%player%", player.getName().getString())
+                    .replace("%player%", playerName)
                     .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
-            WebhookUtils.captureWebhook(pixelmonEntity, player);
+            WebhookUtils.captureWebhook(pixelmonEntity, playerName);
         }
     }
 
     @SubscribeEvent
     public void onDespawn(EntityLeaveWorldEvent event) {
-        if (event.getWorld().isClientSide() || !(event.getEntity() instanceof PixelmonEntity)) {
-            return;
-        }
+        if (!event.getWorld().isClientSide() && event.getEntity() instanceof PixelmonEntity) {
+            PixelmonEntity pixelmonEntity = (PixelmonEntity) event.getEntity();
 
-        PixelmonEntity pixelmonEntity = (PixelmonEntity) event.getEntity();
+            if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDespawn()) {
+                MinecraftForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
 
-        if (pixelmonEntity.isLegendary() && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDespawn()) {
-            MinecraftForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
+                UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
+                        .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
-            UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
-                    .replace("%pokemon%", pixelmonEntity.getPokemonName()));
-
-            WebhookUtils.despawnWebhook(pixelmonEntity);
+                WebhookUtils.despawnWebhook(pixelmonEntity);
+            }
         }
     }
 }
