@@ -15,10 +15,10 @@ public class WebhookUtils {
         if (!discordConfig.getWebhookUrl().isEmpty()) {
             try {
                 LegendControl.getInstance().getWebhook().sendEmbed(discordConfig.getWebhookTitleLegendarySpawn()
-                                .replace("%shiny%", pixelmonEntity.getPokemon().isShiny() ? ":star2: " : ""),
+                                .replace("%shiny%", getShinyText(pixelmonEntity)),
                         discordConfig.getWebhookDescriptionLegendarySpawn()
                                 .replace("%pokemon%", pixelmonEntity.getPokemonName())
-                                .replace("%biome%", biome.getRegistryName() == null ? "Unknown" : UtilBiome.getBiomeName(biome.getRegistryName().toString())), Utils.pokemonImage(pixelmonEntity), discordConfig.getWebhookColor(), true);
+                                .replace("%biome%", getBiomeText(biome)), Utils.pokemonImage(pixelmonEntity), discordConfig.getWebhookColor(), true);
             } catch (IOException e) {
                 LegendControl.getLogger().error("[LegendControl] Error send Discord webhook", e);
             }
@@ -31,7 +31,7 @@ public class WebhookUtils {
         if (!discordConfig.getWebhookUrl().isEmpty()) {
             try {
                 LegendControl.getInstance().getWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryDefeat()
-                                .replace("%shiny%", pixelmonEntity.getPokemon().isShiny() ? ":star2: " : ""),
+                                .replace("%shiny%", getShinyText(pixelmonEntity)),
                         discordConfig.getWebhookDescriptionLegendaryDefeat()
                                 .replace("%pokemon%", pixelmonEntity.getPokemonName())
                                 .replace("%player%", playerName), Utils.pokemonImage(pixelmonEntity), discordConfig.getWebhookColor(), false);
@@ -47,7 +47,7 @@ public class WebhookUtils {
         if (!discordConfig.getWebhookUrl().isEmpty()) {
             try {
                 LegendControl.getInstance().getWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryCatch()
-                                .replace("%shiny%", pixelmonEntity.getPokemon().isShiny() ? ":star2: " : ""),
+                                .replace("%shiny%", getShinyText(pixelmonEntity)),
                         discordConfig.getWebhookDescriptionLegendaryCatch()
                                 .replace("%pokemon%", pixelmonEntity.getPokemonName())
                                 .replace("%player%", playerName), Utils.pokemonImage(pixelmonEntity), discordConfig.getWebhookColor(), false);
@@ -63,7 +63,7 @@ public class WebhookUtils {
         if (!discordConfig.getWebhookUrl().isEmpty()) {
             try {
                 LegendControl.getInstance().getWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryDespawn()
-                                .replace("%shiny%", pixelmonEntity.getPokemon().isShiny() ? ":star2: " : ""),
+                                .replace("%shiny%", getShinyText(pixelmonEntity)),
                         discordConfig.getWebhookDescriptionLegendaryDespawn()
                                 .replace("%pokemon%", pixelmonEntity.getPokemonName()), Utils.pokemonImage(pixelmonEntity), discordConfig.getWebhookColor(), false);
             } catch (IOException e) {
@@ -78,7 +78,7 @@ public class WebhookUtils {
         if (!discordConfig.getWebhookUrl().isEmpty()) {
             try {
                 LegendControl.getInstance().getWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryLocation()
-                                .replace("%shiny%", pixelmonEntity.getPokemon().isShiny() ? ":star2: " : ""),
+                                .replace("%shiny%", getShinyText(pixelmonEntity)),
                         discordConfig.getWebhookDescriptionLegendaryLocation()
                                 .replace("%pokemon%", pixelmonEntity.getPokemonName())
                                 .replace("%x%", String.valueOf((int) pixelmonEntity.getX()))
@@ -88,5 +88,13 @@ public class WebhookUtils {
                 LegendControl.getLogger().error("[LegendControl] Error send Discord webhook", e);
             }
         }
+    }
+
+    private static String getShinyText(PixelmonEntity pixelmonEntity) {
+        return pixelmonEntity.getPokemon().isShiny() ? ":star2: " : "";
+    }
+
+    private static String getBiomeText(Biome biome) {
+        return biome.getRegistryName() == null ? "Unknown" : UtilBiome.getBiomeName(biome.getRegistryName().toString());
     }
 }

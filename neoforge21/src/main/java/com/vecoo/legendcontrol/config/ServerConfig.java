@@ -24,7 +24,9 @@ public class ServerConfig extends AbstractYamlConfig {
     private boolean notifyLegendaryDespawn = true;
     private boolean legendaryRepeat = true;
     private boolean blacklistDimensions = false;
+    private boolean blacklistPlayers = false;
     private List<String> blacklistDimensionList = Lists.newArrayList("the_nether", "the_end");
+    private List<String> blacklistPlayersList = Lists.newArrayList("Vecoo");
 
     public float getBaseChance() {
         return this.baseChance;
@@ -82,7 +84,15 @@ public class ServerConfig extends AbstractYamlConfig {
         return this.blacklistDimensions;
     }
 
+    public boolean isBlacklistPlayers() {
+        return this.blacklistPlayers;
+    }
+
     public List<String> getBlacklistDimensionList() {
         return this.blacklistDimensionList;
+    }
+
+    public List<String> getBlacklistPlayersList() {
+        return this.blacklistPlayersList;
     }
 }

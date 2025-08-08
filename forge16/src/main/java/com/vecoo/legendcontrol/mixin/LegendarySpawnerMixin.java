@@ -87,6 +87,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
         if (numPlayers > 0) {
             this.forcefullySpawn(null);
         }
+
         return null;
     }
 
@@ -94,7 +95,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
     public void forcefullySpawn(ServerPlayerEntity onlyFocus, CallbackInfo ci, ArrayList<ArrayList<ServerPlayerEntity>> clusters, ArrayList<ServerPlayerEntity> players, ArrayList<ServerPlayerEntity> cluster) {
         ServerConfig config = LegendControl.getInstance().getConfig();
 
-        players.removeIf(player -> config.isBlacklistDimensions() && config.getBlacklistDimensionList().contains(player.getLevel().dimension().location().getPath()));
+        players.removeIf(player -> config.isBlacklistDimensions() && config.getBlacklistDimensionList().contains(player.getLevel().dimension().location().getPath()) || config.isBlacklistPlayers() && config.getBlacklistPlayersList().contains(player.getName().getString()));
 
         if (players.isEmpty()) {
             ci.cancel();
@@ -111,6 +112,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
             ArrayList<SpawnLocation> spawnLocations = this.spawnLocationCalculator.calculateSpawnableLocations(blockCollection);
             Collections.shuffle(spawnLocations);
             List<SpawnAction<?>> possibleSpawns = this.selectionAlgorithm.calculateSpawnActions(this, this.spawnSets, spawnLocations);
+
             if (possibleSpawns != null && !possibleSpawns.isEmpty()) {
                 possibleSpawns.forEach(SpawnAction::applyLocationMutations);
                 return possibleSpawns;

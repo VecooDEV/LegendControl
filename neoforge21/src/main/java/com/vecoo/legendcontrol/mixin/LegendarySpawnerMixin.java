@@ -81,6 +81,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
             if (this.firesChooseEvent && numPlayers > 0) {
                 LegendControlFactory.ServerProvider.addChanceLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getStepSpawnChance());
             }
+
             return null;
         }
 
@@ -94,7 +95,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
     public void forcefullySpawn(ServerPlayer onlyFocus, CallbackInfo ci, @Local(ordinal = 1) ArrayList<ServerPlayer> players) {
         ServerConfig config = LegendControl.getInstance().getConfig();
 
-        players.removeIf(player -> config.isBlacklistDimensions() && config.getBlacklistDimensionList().contains(player.level().dimension().location().getPath()));
+        players.removeIf(player -> config.isBlacklistDimensions() && config.getBlacklistDimensionList().contains(player.level().dimension().location().getPath()) || config.isBlacklistPlayers() && config.getBlacklistPlayersList().contains(player.getName().getString()));
 
         if (players.isEmpty()) {
             ci.cancel();
@@ -111,6 +112,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
             ArrayList<SpawnLocation> spawnLocations = this.spawnLocationCalculator.calculateSpawnableLocations(blockCollection);
             Collections.shuffle(spawnLocations);
             List<SpawnAction<?>> possibleSpawns = this.selectionAlgorithm.calculateSpawnActions(this, this.spawnSets, spawnLocations);
+
             if (possibleSpawns != null && !possibleSpawns.isEmpty()) {
                 possibleSpawns.forEach(SpawnAction::applyLocationMutations);
                 return possibleSpawns;

@@ -1,7 +1,7 @@
 package com.vecoo.legendcontrol.storage.server;
 
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.api.events.ChanceLegendEvent;
+import com.vecoo.legendcontrol.api.events.ChangeChanceLegendEvent;
 import net.minecraftforge.common.MinecraftForge;
 
 public class ServerStorage {
@@ -23,8 +23,10 @@ public class ServerStorage {
     }
 
     public void setChanceLegend(String source, float amount, boolean update) {
-        if (!MinecraftForge.EVENT_BUS.post(new ChanceLegendEvent(source, amount))) {
-            this.chanceLegend = amount;
+        ChangeChanceLegendEvent event = new ChangeChanceLegendEvent(source, amount);
+
+        if (!MinecraftForge.EVENT_BUS.post(event)) {
+            this.chanceLegend = event.getChance();
 
             if (update) {
                 LegendControl.getInstance().getServerProvider().updateServerStorage(this);

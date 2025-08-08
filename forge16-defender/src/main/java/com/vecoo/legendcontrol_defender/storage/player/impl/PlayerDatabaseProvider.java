@@ -36,7 +36,6 @@ public class PlayerDatabaseProvider implements PlayerProvider {
         return this.map.get(playerUUID);
     }
 
-
     @Override
     public void updatePlayerStorage(PlayerStorage storage) {
         this.map.put(storage.getUUID(), storage);

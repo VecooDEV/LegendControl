@@ -1,6 +1,8 @@
 package com.vecoo.legendcontrol_defender.storage.player;
 
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
+import com.vecoo.legendcontrol_defender.api.events.PlayerTrustEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Set;
 import java.util.UUID;
@@ -24,26 +26,32 @@ public class PlayerStorage {
     }
 
     public void addPlayerTrust(UUID playerUUID, boolean update) {
-        this.playersTrust.add(playerUUID);
+        if (!MinecraftForge.EVENT_BUS.post(new PlayerTrustEvent.Add(this.uuid, playerUUID))) {
+            this.playersTrust.add(playerUUID);
 
-        if (update) {
-            LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+            if (update) {
+                LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+            }
         }
     }
 
     public void removePlayerTrust(UUID playerUUID, boolean update) {
-        this.playersTrust.remove(playerUUID);
+        if (!MinecraftForge.EVENT_BUS.post(new PlayerTrustEvent.Remove(this.uuid, playerUUID))) {
+            this.playersTrust.remove(playerUUID);
 
-        if (update) {
-            LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+            if (update) {
+                LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+            }
         }
     }
 
     public void clearPlayersTrust(boolean update) {
-        this.playersTrust.clear();
+        if (!MinecraftForge.EVENT_BUS.post(new PlayerTrustEvent.Clear(this.uuid))) {
+            this.playersTrust.clear();
 
-        if (update) {
-            LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+            if (update) {
+                LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+            }
         }
     }
 }

@@ -4,11 +4,11 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 @Cancelable
-public class ChanceLegendEvent extends Event {
+public class ChangeChanceLegendEvent extends Event {
     private final String source;
-    private final float chance;
+    private float chance;
 
-    public ChanceLegendEvent(String source, float chance) {
+    public ChangeChanceLegendEvent(String source, float chance) {
         this.source = source;
         this.chance = chance;
     }
@@ -19,5 +19,9 @@ public class ChanceLegendEvent extends Event {
 
     public float getChance() {
         return this.chance;
+    }
+
+    public void setChance(float chance) {
+        this.chance = chance;
     }
 }

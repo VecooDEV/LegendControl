@@ -30,6 +30,8 @@ import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
     public static final String MOD_ID = "legendcontrol";
@@ -101,7 +103,7 @@ public class LegendControl {
             this.storage = YamlConfigFactory.getInstance(StorageConfig.class);
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
             this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOGGER.error("[LegendControl] Error load config.", e);
         }
     }
