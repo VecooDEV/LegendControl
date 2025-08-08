@@ -24,4 +24,25 @@ public class ChangeChanceLegendEvent extends Event {
     public void setChance(float chance) {
         this.chance = chance;
     }
+
+    @Cancelable
+    public static class setChance extends ChangeChanceLegendEvent {
+        public setChance(String source, float chance) {
+            super(source, chance);
+        }
+    }
+
+    @Cancelable
+    public static class addChance extends ChangeChanceLegendEvent {
+        public addChance(String source, float chance) {
+            super(source, chance);
+        }
+    }
+
+    @Cancelable
+    public static class removeChance extends ChangeChanceLegendEvent {
+        public removeChance(String source, float chance) {
+            super(source, chance);
+        }
+    }
 }

@@ -26,16 +26,16 @@ public class LegendControlFactory {
             LegendControl.getInstance().getServerProvider().getServerStorage().setChanceLegend(source, amount, true);
         }
 
-        public static void setLastLegend(String pokemonName) {
-            LegendControl.getInstance().getServerProvider().getServerStorage().setLastLegend(pokemonName, true);
-        }
-
         public static void addChanceLegend(String source, float amount) {
-            setChanceLegend(source, Math.min(getChanceLegend() + amount, 100F));
+            LegendControl.getInstance().getServerProvider().getServerStorage().addChanceLegend(source, amount, true);
         }
 
         public static void removeChanceLegend(String source, float amount) {
-            setChanceLegend(source, Math.max(getChanceLegend() - amount, 0F));
+            LegendControl.getInstance().getServerProvider().getServerStorage().removeChanceLegend(source, amount, true);
+        }
+
+        public static void setLastLegend(String pokemonName) {
+            LegendControl.getInstance().getServerProvider().getServerStorage().setLastLegend(pokemonName, true);
         }
     }
 }

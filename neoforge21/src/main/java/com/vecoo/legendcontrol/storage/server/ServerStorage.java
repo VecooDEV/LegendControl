@@ -23,9 +23,33 @@ public class ServerStorage {
     }
 
     public void setChanceLegend(String source, float amount, boolean update) {
-        ChangeChanceLegendEvent event = new ChangeChanceLegendEvent(source, amount);
+        ChangeChanceLegendEvent.setChance event = new ChangeChanceLegendEvent.setChance(source, amount);
 
-        if (!NeoForge.EVENT_BUS.post(new ChangeChanceLegendEvent(source, amount)).isCanceled()) {
+        if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
+            this.chanceLegend = event.getChance();
+
+            if (update) {
+                LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+            }
+        }
+    }
+
+    public void addChanceLegend(String source, float amount, boolean update) {
+        ChangeChanceLegendEvent.addChance event = new ChangeChanceLegendEvent.addChance(source, Math.min(getChanceLegend() + amount, 100F));
+
+        if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
+            this.chanceLegend = event.getChance();
+
+            if (update) {
+                LegendControl.getInstance().getServerProvider().updateServerStorage(this);
+            }
+        }
+    }
+
+    public void removeChanceLegend(String source, float amount, boolean update) {
+        ChangeChanceLegendEvent.removeChance event = new ChangeChanceLegendEvent.removeChance(source, Math.min(getChanceLegend() - amount, 0F));
+
+        if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
             this.chanceLegend = event.getChance();
 
             if (update) {
