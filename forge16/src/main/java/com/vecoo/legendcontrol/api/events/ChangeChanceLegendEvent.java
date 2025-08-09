@@ -26,22 +26,22 @@ public class ChangeChanceLegendEvent extends Event {
     }
 
     @Cancelable
-    public static class setChance extends ChangeChanceLegendEvent {
-        public setChance(String source, float chance) {
+    public static class SetChance extends ChangeChanceLegendEvent {
+        public SetChance(String source, float chance) {
             super(source, chance);
         }
     }
 
     @Cancelable
-    public static class addChance extends ChangeChanceLegendEvent {
-        public addChance(String source, float chance) {
+    public static class AddChance extends ChangeChanceLegendEvent {
+        public AddChance(String source, float chance) {
             super(source, chance);
         }
     }
 
     @Cancelable
-    public static class removeChance extends ChangeChanceLegendEvent {
-        public removeChance(String source, float chance) {
+    public static class RemoveChance extends ChangeChanceLegendEvent {
+        public RemoveChance(String source, float chance) {
             super(source, chance);
         }
     }
