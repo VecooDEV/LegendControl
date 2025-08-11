@@ -81,6 +81,7 @@ public class LegendControlDefender {
             this.config = YamlConfigFactory.getInstance(ServerConfig.class);
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
             this.storage = YamlConfigFactory.getInstance(StorageConfig.class);
+            this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
             this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
         } catch (IOException e) {
             LOGGER.error("[LegendControl-Defender] Error load config.", e);

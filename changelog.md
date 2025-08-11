@@ -1,1 +1,1 @@
-* Change API.
+* [Defender] Fix load config.
