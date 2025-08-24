@@ -1,1 +1,1 @@
-* [Defender] Fix load config.
+* Update depends.
