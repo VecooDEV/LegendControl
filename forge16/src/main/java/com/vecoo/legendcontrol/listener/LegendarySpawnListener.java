@@ -46,7 +46,8 @@ public class LegendarySpawnListener {
                                     .replace("%z%", String.valueOf((int) pixelmonEntity.getZ()))), Util.NIL_UUID);
                         }
 
-                        LegendControlFactory.ServerProvider.setChanceAndLastLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getBaseChance(), pixelmonEntity.getPokemonName());
+                        LegendControlFactory.ServerProvider.setChanceLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getBaseChance());
+                        LegendControlFactory.ServerProvider.setLastLegend(pixelmonEntity.getPokemonName());
                         LEGENDS.add(pixelmonEntity);
                         setTimers(pixelmonEntity);
                         WebhookUtils.spawnWebhook(pixelmonEntity, event.action.spawnLocation.biome);

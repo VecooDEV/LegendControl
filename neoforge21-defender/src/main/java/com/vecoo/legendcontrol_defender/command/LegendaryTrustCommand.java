@@ -150,7 +150,6 @@ public class LegendaryTrustCommand {
 
     private static int executeReload(CommandSourceStack source) {
         LegendControlDefender.getInstance().loadConfig();
-        LegendControlDefender.getInstance().loadStorage();
 
         source.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getReload()));
         return 1;

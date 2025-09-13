@@ -84,7 +84,6 @@ public class LegendControlCommand {
 
     private static int executeReload(CommandSource source) {
         LegendControl.getInstance().loadConfig();
-        LegendControl.getInstance().loadStorage();
 
         source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getReload()), false);
         return 1;

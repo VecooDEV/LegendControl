@@ -1,7 +1,7 @@
 package com.vecoo.legendcontrol_defender.api.factory;
 
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
-import com.vecoo.legendcontrol_defender.storage.player.PlayerStorage;
+import com.vecoo.legendcontrol_defender.storage.PlayerStorage;
 
 import java.util.Map;
 import java.util.Set;
@@ -22,15 +22,15 @@ public class LegendControlFactory {
         }
 
         public static void addPlayerTrust(UUID playerUUID, UUID targetUUID) {
-            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).addPlayerTrust(targetUUID, true);
+            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).addPlayerTrust(targetUUID);
         }
 
         public static void removePlayerTrust(UUID playerUUID, UUID targetUUID) {
-            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayerTrust(targetUUID, true);
+            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayerTrust(targetUUID);
         }
 
         public static void removePlayersTrust(UUID playerUUID) {
-            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).clearPlayersTrust(true);
+            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).clearPlayersTrust();
         }
     }
 }

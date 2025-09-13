@@ -2,20 +2,17 @@ package com.vecoo.legendcontrol_defender;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
-import com.vecoo.extralib.database.UtilDatabase;
 import com.vecoo.legendcontrol_defender.command.LegendaryTrustCommand;
 import com.vecoo.legendcontrol_defender.config.DiscordConfig;
 import com.vecoo.legendcontrol_defender.config.LocaleConfig;
 import com.vecoo.legendcontrol_defender.config.ServerConfig;
-import com.vecoo.legendcontrol_defender.config.StorageConfig;
 import com.vecoo.legendcontrol_defender.discord.DiscordWebhook;
 import com.vecoo.legendcontrol_defender.listener.DefenderListener;
-import com.vecoo.legendcontrol_defender.storage.player.PlayerProvider;
-import com.vecoo.legendcontrol_defender.storage.player.impl.PlayerDatabaseProvider;
-import com.vecoo.legendcontrol_defender.storage.player.impl.PlayerJsonProvider;
+import com.vecoo.legendcontrol_defender.storage.PlayerProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -36,20 +33,18 @@ public class LegendControlDefender {
 
     private ServerConfig config;
     private LocaleConfig locale;
-    private StorageConfig storage;
     private DiscordConfig discord;
 
     private PlayerProvider playerProvider;
 
     private MinecraftServer server;
 
-    private UtilDatabase database;
     private DiscordWebhook webhook;
 
     public LegendControlDefender() {
         instance = this;
 
-        this.loadConfig();
+        loadConfig();
 
         MinecraftForge.EVENT_BUS.register(this);
         Pixelmon.EVENT_BUS.register(new DefenderListener());
@@ -63,24 +58,21 @@ public class LegendControlDefender {
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
         this.server = event.getServer();
-        this.loadStorage();
+        loadStorage();
 
-        PermissionAPI.registerNode("minecraft.command.ltrust", DefaultPermissionLevel.OP, "/ltrust");
-        PermissionAPI.registerNode("minecraft.command.ltrust.reload", DefaultPermissionLevel.OP, "/ltrust");
+        PermissionAPI.registerNode("minecraft.command.ltrust", DefaultPermissionLevel.OP, "");
+        PermissionAPI.registerNode("minecraft.command.ltrust.reload", DefaultPermissionLevel.OP, "");
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onServerStopping(FMLServerStoppingEvent event) {
-        if (this.database != null) {
-            this.database.close();
-        }
+        this.playerProvider.write();
     }
 
     public void loadConfig() {
         try {
             this.config = YamlConfigFactory.getInstance(ServerConfig.class);
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
-            this.storage = YamlConfigFactory.getInstance(StorageConfig.class);
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
             this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
         } catch (IOException e) {
@@ -90,15 +82,7 @@ public class LegendControlDefender {
 
     public void loadStorage() {
         try {
-            if (this.storage.getStorageType().equalsIgnoreCase("JSON")) {
-                this.playerProvider = new PlayerJsonProvider(this.storage.getStoragePathJson(), this.server);
-            } else if (this.database == null) {
-                this.database = new UtilDatabase(this.storage.getStorageType(), this.storage.getAddress(), this.storage.getDatabase(), this.storage.getUsername(), this.storage.getPassword(),
-                        this.storage.getPrefix(), this.storage.getMaxPoolSize(), this.storage.getMinimumIdle(), this.storage.getMaxLifeTime(), this.storage.getKeepAliveTime(), this.storage.getConnectionTimeout(), this.storage.isUseSSL(), this.storage.getThreadPool());
-
-                this.playerProvider = new PlayerDatabaseProvider();
-            }
-
+            this.playerProvider = new PlayerProvider("/%directory%/storage/LegendControl/Defender/players/", this.server);
             this.playerProvider.init();
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load storage.", e);
@@ -131,10 +115,6 @@ public class LegendControlDefender {
 
     public MinecraftServer getServer() {
         return instance.server;
-    }
-
-    public UtilDatabase getDatabase() {
-        return instance.database;
     }
 
     public DiscordWebhook getWebhook() {

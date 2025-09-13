@@ -1,11 +1,11 @@
 package com.vecoo.legendcontrol.config;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.pixelmonmod.pixelmon.api.config.api.data.ConfigPath;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.AbstractYamlConfig;
 import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
 
-import java.util.List;
+import java.util.Set;
 
 @ConfigPath("config/LegendControl/config.yml")
 @ConfigSerializable
@@ -25,8 +25,8 @@ public class ServerConfig extends AbstractYamlConfig {
     private boolean legendaryRepeat = true;
     private boolean blacklistDimensions = false;
     private boolean blacklistPlayers = false;
-    private List<String> blacklistDimensionList = Lists.newArrayList("the_nether", "the_end");
-    private List<String> blacklistPlayersList = Lists.newArrayList("Vecoo");
+    private Set<String> blacklistDimensionList = Sets.newHashSet("the_nether", "the_end");
+    private Set<String> blacklistPlayersList = Sets.newHashSet("Player");
 
     public float getBaseChance() {
         return this.baseChance;
@@ -88,11 +88,11 @@ public class ServerConfig extends AbstractYamlConfig {
         return this.blacklistPlayers;
     }
 
-    public List<String> getBlacklistDimensionList() {
+    public Set<String> getBlacklistDimensionList() {
         return this.blacklistDimensionList;
     }
 
-    public List<String> getBlacklistPlayersList() {
+    public Set<String> getBlacklistPlayersList() {
         return this.blacklistPlayersList;
     }
 }

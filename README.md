@@ -7,7 +7,6 @@
 * Personal notifications about legendary pokemon appearance.
 * Various notifications to the entire server about legendary pokemon being caught, lost, and defeat
 * Ability to connect discord webhook for notifications.
-* Database support.
 * There are many other additions, including full mod customization.
 * [[LegendControl-Defender](https://www.curseforge.com/minecraft/mc-mods/legendcontrol-defender)] Protecting legendary pokemon from theft.
 

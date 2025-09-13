@@ -2,24 +2,21 @@ package com.vecoo.legendcontrol;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
-import com.vecoo.extralib.database.UtilDatabase;
 import com.vecoo.legendcontrol.command.CheckLegendsCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.config.DiscordConfig;
 import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
-import com.vecoo.legendcontrol.config.StorageConfig;
 import com.vecoo.legendcontrol.discord.DiscordWebhook;
 import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
 import com.vecoo.legendcontrol.listener.OtherListener;
 import com.vecoo.legendcontrol.listener.ParticleListener;
 import com.vecoo.legendcontrol.listener.ResultListener;
-import com.vecoo.legendcontrol.storage.server.ServerProvider;
-import com.vecoo.legendcontrol.storage.server.impl.ServerDatabaseProvider;
-import com.vecoo.legendcontrol.storage.server.impl.ServerJsonProvider;
+import com.vecoo.legendcontrol.storage.ServerProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -28,8 +25,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
@@ -40,20 +35,18 @@ public class LegendControl {
 
     private ServerConfig config;
     private LocaleConfig locale;
-    private StorageConfig storage;
     private DiscordConfig discord;
 
     private ServerProvider serverProvider;
 
     private MinecraftServer server;
 
-    private UtilDatabase database;
     private DiscordWebhook webhook;
 
     public LegendControl() {
         instance = this;
 
-        this.loadConfig();
+        loadConfig();
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ParticleListener());
@@ -72,43 +65,32 @@ public class LegendControl {
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
         this.server = event.getServer();
-        this.loadStorage();
+        loadStorage();
 
-        PermissionAPI.registerNode("minecraft.command.checkleg", DefaultPermissionLevel.OP, "/checkleg");
-        PermissionAPI.registerNode("minecraft.command.checkleg.modify", DefaultPermissionLevel.OP, "/checkleg");
-        PermissionAPI.registerNode("minecraft.command.lc", DefaultPermissionLevel.OP, "/lc");
+        PermissionAPI.registerNode("minecraft.command.checkleg", DefaultPermissionLevel.OP, "");
+        PermissionAPI.registerNode("minecraft.command.checkleg.modify", DefaultPermissionLevel.OP, "");
+        PermissionAPI.registerNode("minecraft.command.lc", DefaultPermissionLevel.OP, "");
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onServerStopping(FMLServerStoppingEvent event) {
-        if (this.database != null) {
-            this.database.close();
-        }
+        this.serverProvider.write();
     }
 
     public void loadConfig() {
         try {
             this.config = YamlConfigFactory.getInstance(ServerConfig.class);
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
-            this.storage = YamlConfigFactory.getInstance(StorageConfig.class);
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
             this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load config.", e);
         }
     }
 
     public void loadStorage() {
         try {
-            if (this.storage.getStorageType().equalsIgnoreCase("JSON")) {
-                this.serverProvider = new ServerJsonProvider(this.storage.getStoragePathJson(), this.server);
-            } else if (this.database == null) {
-                this.database = new UtilDatabase(this.storage.getStorageType(), this.storage.getAddress(), this.storage.getDatabase(), this.storage.getUsername(), this.storage.getPassword(),
-                        this.storage.getPrefix(), this.storage.getMaxPoolSize(), this.storage.getMinimumIdle(), this.storage.getMaxLifeTime(), this.storage.getKeepAliveTime(), this.storage.getConnectionTimeout(), this.storage.isUseSSL(), this.storage.getThreadPool());
-
-                this.serverProvider = new ServerDatabaseProvider();
-            }
-
+            this.serverProvider = new ServerProvider("/%directory%/storage/LegendControl/", this.server);
             this.serverProvider.init();
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load storage.", e);
@@ -131,10 +113,6 @@ public class LegendControl {
         return instance.locale;
     }
 
-    public StorageConfig getStorageConfig() {
-        return instance.storage;
-    }
-
     public DiscordConfig getDiscordConfig() {
         return instance.discord;
     }
@@ -145,10 +123,6 @@ public class LegendControl {
 
     public MinecraftServer getServer() {
         return instance.server;
-    }
-
-    public UtilDatabase getDatabase() {
-        return instance.database;
     }
 
     public DiscordWebhook getWebhook() {
