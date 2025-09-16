@@ -8,13 +8,15 @@ import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.UUID;
 
 public class PlayerProvider {
     private transient final String filePath;
     private final Map<UUID, PlayerStorage> map;
+
+    private transient boolean intervalStarted = false;
 
     public PlayerProvider(String filePath, MinecraftServer server) {
         this.filePath = UtilWorld.worldDirectory(filePath, server);
@@ -26,9 +28,9 @@ public class PlayerProvider {
         return this.map;
     }
 
-    public PlayerStorage getPlayerStorage(UUID playerUUID) {
+    public PlayerStorage getStorage(UUID playerUUID) {
         if (this.map.get(playerUUID) == null) {
-            new PlayerStorage(playerUUID, new HashSet<>());
+            new PlayerStorage(playerUUID, new LinkedHashSet<>());
         }
 
         return this.map.get(playerUUID);
@@ -43,27 +45,31 @@ public class PlayerProvider {
         Gson gson = UtilGson.newGson();
 
         for (PlayerStorage storage : this.map.values()) {
-            UtilGson.writeFileAsync(this.filePath, storage.getPlayerUUID() + ".json", gson.toJson(getPlayerStorage(storage.getPlayerUUID()))).join();
+            UtilGson.writeFileAsync(this.filePath, storage.getPlayerUUID() + ".json", gson.toJson(storage)).join();
         }
     }
 
     private void writeInterval() {
-        TaskTimer.builder()
-                .withoutDelay()
-                .interval(180 * 20L)
-                .infinite()
-                .consume(task -> {
-                    if (LegendControlDefender.getInstance().getServer().isRunning()) {
-                        Gson gson = UtilGson.newGson();
+        if (!this.intervalStarted) {
+            TaskTimer.builder()
+                    .withoutDelay()
+                    .interval(180 * 20L)
+                    .infinite()
+                    .consume(task -> {
+                        if (LegendControlDefender.getInstance().getServer().isRunning()) {
+                            Gson gson = UtilGson.newGson();
 
-                        for (PlayerStorage storage : this.map.values()) {
-                            if (storage.isDirty()) {
-                                UtilGson.writeFileAsync(this.filePath, storage.getPlayerUUID() + ".json", gson.toJson(storage)).thenRun(() -> storage.setDirty(false));
+                            for (PlayerStorage storage : this.map.values()) {
+                                if (storage.isDirty()) {
+                                    UtilGson.writeFileAsync(this.filePath, storage.getPlayerUUID() + ".json", gson.toJson(storage)).thenRun(() -> storage.setDirty(false));
+                                }
                             }
                         }
-                    }
-                })
-                .build();
+                    })
+                    .build();
+
+            this.intervalStarted = true;
+        }
     }
 
     public void init() {
@@ -76,7 +82,6 @@ public class PlayerProvider {
         for (String file : list) {
             UtilGson.readFileAsync(this.filePath, file, el -> {
                 PlayerStorage storage = UtilGson.newGson().fromJson(el, PlayerStorage.class);
-                storage.setDirty(false);
                 this.map.put(storage.getPlayerUUID(), storage);
             }).join();
         }

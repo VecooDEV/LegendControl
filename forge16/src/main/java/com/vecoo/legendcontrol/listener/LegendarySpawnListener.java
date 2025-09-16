@@ -34,25 +34,19 @@ public class LegendarySpawnListener {
             return;
         }
 
-        TaskTimer.builder()
-                .delay(1L)
-                .consume(task -> {
-                    if (pixelmonEntity.isAlive()) {
-                        if (config.isNotifyPersonalLegendarySpawn() && !player.hasDisconnected()) {
-                            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getSpawnPlayerLegendary()
-                                    .replace("%pokemon%", pixelmonEntity.getSpecies().getName())
-                                    .replace("%x%", String.valueOf((int) pixelmonEntity.getX()))
-                                    .replace("%y%", String.valueOf((int) pixelmonEntity.getY()))
-                                    .replace("%z%", String.valueOf((int) pixelmonEntity.getZ()))), Util.NIL_UUID);
-                        }
+        if (config.isNotifyPersonalLegendarySpawn()) {
+            player.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getSpawnPlayerLegendary()
+                    .replace("%pokemon%", pixelmonEntity.getSpecies().getName())
+                    .replace("%x%", String.valueOf((int) pixelmonEntity.getX()))
+                    .replace("%y%", String.valueOf((int) pixelmonEntity.getY()))
+                    .replace("%z%", String.valueOf((int) pixelmonEntity.getZ()))), Util.NIL_UUID);
+        }
 
-                        LegendControlFactory.ServerProvider.setChanceLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getBaseChance());
-                        LegendControlFactory.ServerProvider.setLastLegend(pixelmonEntity.getPokemonName());
-                        LEGENDS.add(pixelmonEntity);
-                        setTimers(pixelmonEntity);
-                        WebhookUtils.spawnWebhook(pixelmonEntity, event.action.spawnLocation.biome);
-                    }
-                }).build();
+        LegendControlFactory.ServerProvider.setChanceLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getBaseChance());
+        LegendControlFactory.ServerProvider.setLastLegend(pixelmonEntity.getPokemonName());
+        LEGENDS.add(pixelmonEntity);
+        setTimers(pixelmonEntity);
+        WebhookUtils.spawnWebhook(pixelmonEntity, event.action.spawnLocation.biome);
     }
 
     private void setTimers(PixelmonEntity pixelmonEntity) {

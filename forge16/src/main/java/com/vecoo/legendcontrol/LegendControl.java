@@ -90,7 +90,10 @@ public class LegendControl {
 
     public void loadStorage() {
         try {
-            this.serverProvider = new ServerProvider("/%directory%/storage/LegendControl/", this.server);
+            if (this.serverProvider == null) {
+                this.serverProvider = new ServerProvider("/%directory%/storage/LegendControl/", this.server);
+            }
+
             this.serverProvider.init();
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load storage.", e);

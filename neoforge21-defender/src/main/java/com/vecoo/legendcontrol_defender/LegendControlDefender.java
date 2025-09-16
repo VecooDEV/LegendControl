@@ -2,12 +2,10 @@ package com.vecoo.legendcontrol_defender;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
-import com.vecoo.extralib.database.UtilDatabase;
 import com.vecoo.legendcontrol_defender.command.LegendaryTrustCommand;
 import com.vecoo.legendcontrol_defender.config.DiscordConfig;
 import com.vecoo.legendcontrol_defender.config.LocaleConfig;
 import com.vecoo.legendcontrol_defender.config.ServerConfig;
-import com.vecoo.legendcontrol_defender.config.StorageConfig;
 import com.vecoo.legendcontrol_defender.discord.DiscordWebhook;
 import com.vecoo.legendcontrol_defender.listener.DefenderListener;
 import com.vecoo.legendcontrol_defender.storage.PlayerProvider;
@@ -24,8 +22,6 @@ import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
 import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 @Mod(LegendControlDefender.MOD_ID)
 public class LegendControlDefender {
@@ -87,14 +83,17 @@ public class LegendControlDefender {
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
             this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("[LegendControl-Defender] Error load config.", e);
         }
     }
 
     public void loadStorage() {
         try {
-            this.playerProvider = new PlayerProvider("/%directory%/storage/LegendControl/Defender/players/", this.server);
+            if (this.playerProvider == null) {
+                this.playerProvider = new PlayerProvider("/%directory%/storage/LegendControl/Defender/players/", this.server);
+            }
+
             this.playerProvider.init();
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load storage.", e);

@@ -27,8 +27,6 @@ import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
     public static final String MOD_ID = "legendcontrol";
@@ -95,14 +93,17 @@ public class LegendControl {
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
             this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load config.", e);
         }
     }
 
     public void loadStorage() {
         try {
-            this.serverProvider = new ServerProvider("/%directory%/storage/LegendControl/", this.server);
+            if (this.serverProvider == null) {
+                this.serverProvider = new ServerProvider("/%directory%/storage/LegendControl/", this.server);
+            }
+
             this.serverProvider.init();
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load storage.", e);

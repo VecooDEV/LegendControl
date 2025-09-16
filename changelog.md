@@ -1,3 +1,2 @@
-* Removed database support.
-* Removed storage configuration.
-* Data is now saved once in a while.
+* Update depends to ExtraLib 1.8+. 
+* Optimization storage.

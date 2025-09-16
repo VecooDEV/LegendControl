@@ -10,7 +10,7 @@ import java.util.UUID;
 public class PlayerStorage {
     private final UUID playerUUID;
     private final Set<UUID> playersTrust;
-    private transient boolean isDirty;
+    private transient boolean dirty = false;
 
     public PlayerStorage(UUID playerUUID, Set<UUID> playersTrust) {
         this.playerUUID = playerUUID;
@@ -27,18 +27,18 @@ public class PlayerStorage {
     }
 
     public boolean isDirty() {
-        return this.isDirty;
+        return this.dirty;
     }
 
     public void addPlayerTrust(UUID playerUUID) {
-        if (!NeoForge.EVENT_BUS.post(new PlayerTrustEvent.Clear(this.playerUUID)).isCanceled()) {
+        if (!NeoForge.EVENT_BUS.post(new PlayerTrustEvent.Add(this.playerUUID, playerUUID)).isCanceled()) {
             this.playersTrust.add(playerUUID);
             LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
         }
     }
 
     public void removePlayerTrust(UUID playerUUID) {
-        if (!NeoForge.EVENT_BUS.post(new PlayerTrustEvent.Clear(this.playerUUID)).isCanceled()) {
+        if (!NeoForge.EVENT_BUS.post(new PlayerTrustEvent.Remove(this.playerUUID, playerUUID)).isCanceled()) {
             this.playersTrust.remove(playerUUID);
             LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
         }
@@ -52,6 +52,6 @@ public class PlayerStorage {
     }
 
     public void setDirty(boolean dirty) {
-        this.isDirty = dirty;
+        this.dirty = dirty;
     }
 }

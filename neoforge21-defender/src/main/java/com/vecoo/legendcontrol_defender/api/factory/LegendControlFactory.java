@@ -14,23 +14,23 @@ public class LegendControlFactory {
         }
 
         public static Set<UUID> getPlayersTrust(UUID playerUUID) {
-            return LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).getPlayersTrust();
+            return LegendControlDefender.getInstance().getPlayerProvider().getStorage(playerUUID).getPlayersTrust();
         }
 
         public static boolean hasPlayerTrust(UUID playerUUID, UUID targetUUID) {
-            return LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).getPlayersTrust().contains(targetUUID);
+            return LegendControlDefender.getInstance().getPlayerProvider().getStorage(playerUUID).getPlayersTrust().contains(targetUUID);
         }
 
         public static void addPlayerTrust(UUID playerUUID, UUID targetUUID) {
-            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).addPlayerTrust(targetUUID);
+            LegendControlDefender.getInstance().getPlayerProvider().getStorage(playerUUID).addPlayerTrust(targetUUID);
         }
 
         public static void removePlayerTrust(UUID playerUUID, UUID targetUUID) {
-            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayerTrust(targetUUID);
+            LegendControlDefender.getInstance().getPlayerProvider().getStorage(playerUUID).removePlayerTrust(targetUUID);
         }
 
         public static void removePlayersTrust(UUID playerUUID) {
-            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).clearPlayersTrust();
+            LegendControlDefender.getInstance().getPlayerProvider().getStorage(playerUUID).clearPlayersTrust();
         }
     }
 }

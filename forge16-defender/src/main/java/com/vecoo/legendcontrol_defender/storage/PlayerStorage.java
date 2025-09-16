@@ -10,7 +10,7 @@ import java.util.UUID;
 public class PlayerStorage {
     private final UUID playerUUID;
     private final Set<UUID> playersTrust;
-    private transient boolean isDirty;
+    private transient boolean dirty = false;
 
     public PlayerStorage(UUID playerUUID, Set<UUID> playersTrust) {
         this.playerUUID = playerUUID;
@@ -27,7 +27,7 @@ public class PlayerStorage {
     }
 
     public boolean isDirty() {
-        return this.isDirty;
+        return this.dirty;
     }
 
     public void addPlayerTrust(UUID playerUUID) {
@@ -52,6 +52,6 @@ public class PlayerStorage {
     }
 
     public void setDirty(boolean dirty) {
-        this.isDirty = dirty;
+        this.dirty = dirty;
     }
 }

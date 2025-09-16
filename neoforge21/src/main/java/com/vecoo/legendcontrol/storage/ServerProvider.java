@@ -10,11 +10,14 @@ public class ServerProvider {
     private transient final String filePath;
     private ServerStorage serverStorage;
 
+    private transient boolean intervalStarted = false;
+    private transient volatile boolean dirty = false;
+
     public ServerProvider(String filePath, MinecraftServer server) {
         this.filePath = UtilWorld.worldDirectory(filePath, server);
     }
 
-    public ServerStorage getServerStorage() {
+    public ServerStorage getStorage() {
         if (this.serverStorage == null) {
             this.serverStorage = new ServerStorage(LegendControl.getInstance().getConfig().getBaseChance(), "None");
         }
@@ -24,23 +27,28 @@ public class ServerProvider {
 
     public void updateServerStorage(ServerStorage storage) {
         this.serverStorage = storage;
+        this.dirty = true;
     }
 
     public void write() {
-        UtilGson.writeFileAsync(this.filePath, "ServerStorage.json", UtilGson.newGson().toJson(getServerStorage())).join();
+        UtilGson.writeFileAsync(this.filePath, "ServerStorage.json", UtilGson.newGson().toJson(getStorage())).join();
     }
 
     private void writeInterval() {
-        TaskTimer.builder()
-                .withoutDelay()
-                .interval(180 * 20L)
-                .infinite()
-                .consume(task -> {
-                    if (LegendControl.getInstance().getServer().isRunning()) {
-                        UtilGson.writeFileAsync(this.filePath, "ServerStorage.json", UtilGson.newGson().toJson(getServerStorage()));
-                    }
-                })
-                .build();
+        if (!this.intervalStarted) {
+            TaskTimer.builder()
+                    .withoutDelay()
+                    .interval(300 * 20L)
+                    .infinite()
+                    .consume(task -> {
+                        if (LegendControl.getInstance().getServer().isRunning() && this.dirty) {
+                            UtilGson.writeFileAsync(this.filePath, "ServerStorage.json", UtilGson.newGson().toJson(getStorage())).thenRun(() -> this.dirty = false);
+                        }
+                    })
+                    .build();
+
+            this.intervalStarted = true;
+        }
     }
 
     public void init() {

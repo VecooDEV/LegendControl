@@ -73,15 +73,9 @@ public class DefenderListener {
 
         addLegendaryDefender(pixelmonEntity.getUUID(), event.action.spawnLocation.cause.getUUID());
 
-        TaskTimer.builder()
-                .delay(1L)
-                .consume(task -> {
-                    if (pixelmonEntity.isAlive()) {
-                        if (LegendControlDefender.getInstance().getConfig().getProtectedTime() > 0) {
-                            startDefender(pixelmonEntity);
-                        }
-                    }
-                }).build();
+        if (LegendControlDefender.getInstance().getConfig().getProtectedTime() > 0) {
+            startDefender(pixelmonEntity);
+        }
     }
 
     private void startDefender(PixelmonEntity pixelmonEntity) {

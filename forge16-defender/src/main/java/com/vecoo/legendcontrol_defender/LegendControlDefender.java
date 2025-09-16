@@ -22,8 +22,6 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-
 @Mod(LegendControlDefender.MOD_ID)
 public class LegendControlDefender {
     public static final String MOD_ID = "legendcontrol_defender";
@@ -75,14 +73,17 @@ public class LegendControlDefender {
             this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
             this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("[LegendControl-Defender] Error load config.", e);
         }
     }
 
     public void loadStorage() {
         try {
-            this.playerProvider = new PlayerProvider("/%directory%/storage/LegendControl/Defender/players/", this.server);
+            if (this.playerProvider == null) {
+                this.playerProvider = new PlayerProvider("/%directory%/storage/LegendControl/Defender/players/", this.server);
+            }
+
             this.playerProvider.init();
         } catch (Exception e) {
             LOGGER.error("[LegendControl] Error load storage.", e);
