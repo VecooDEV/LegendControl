@@ -1,6 +1,8 @@
 /release/
 /.idea/
 /.gradle/
+/forge12/build/
+/forge12-Defender/build/
 /forge16/build/
 /forge16-Defender/build/
 /neoforge21/.gradle/

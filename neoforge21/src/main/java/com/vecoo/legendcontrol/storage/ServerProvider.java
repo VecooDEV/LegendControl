@@ -5,6 +5,7 @@ import com.vecoo.extralib.task.TaskTimer;
 import com.vecoo.extralib.world.UtilWorld;
 import com.vecoo.legendcontrol.LegendControl;
 import net.minecraft.server.MinecraftServer;
+import org.jetbrains.annotations.NotNull;
 
 public class ServerProvider {
     private transient final String filePath;
@@ -13,10 +14,11 @@ public class ServerProvider {
     private transient boolean intervalStarted = false;
     private transient volatile boolean dirty = false;
 
-    public ServerProvider(String filePath, MinecraftServer server) {
+    public ServerProvider(@NotNull String filePath, @NotNull MinecraftServer server) {
         this.filePath = UtilWorld.worldDirectory(filePath, server);
     }
 
+    @NotNull
     public ServerStorage getStorage() {
         if (this.serverStorage == null) {
             this.serverStorage = new ServerStorage(LegendControl.getInstance().getConfig().getBaseChance(), "None");
@@ -25,7 +27,7 @@ public class ServerProvider {
         return this.serverStorage;
     }
 
-    public void updateServerStorage(ServerStorage storage) {
+    public void updateServerStorage(@NotNull ServerStorage storage) {
         this.serverStorage = storage;
         this.dirty = true;
     }
@@ -38,11 +40,12 @@ public class ServerProvider {
         if (!this.intervalStarted) {
             TaskTimer.builder()
                     .withoutDelay()
-                    .interval(300 * 20L)
+                    .interval(180 * 20L)
                     .infinite()
                     .consume(task -> {
                         if (LegendControl.getInstance().getServer().isRunning() && this.dirty) {
-                            UtilGson.writeFileAsync(this.filePath, "ServerStorage.json", UtilGson.newGson().toJson(getStorage())).thenRun(() -> this.dirty = false);
+                            UtilGson.writeFileAsync(this.filePath, "ServerStorage.json",
+                                    UtilGson.newGson().toJson(getStorage())).thenRun(() -> this.dirty = false);
                         }
                     })
                     .build();
@@ -52,7 +55,8 @@ public class ServerProvider {
     }
 
     public void init() {
-        UtilGson.readFileAsync(this.filePath, "ServerStorage.json", el -> this.serverStorage = UtilGson.newGson().fromJson(el, ServerStorage.class)).join();
+        UtilGson.readFileAsync(this.filePath, "ServerStorage.json",
+                el -> this.serverStorage = UtilGson.newGson().fromJson(el, ServerStorage.class)).join();
         writeInterval();
     }
 }

@@ -1,14 +1,13 @@
 package com.vecoo.legendcontrol.storage;
 
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.api.events.ChangeChanceLegendEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.NotNull;
 
 public class ServerStorage {
     private float chanceLegend;
     private String lastLegend;
 
-    public ServerStorage(float chanceLegend, String lastLegend) {
+    public ServerStorage(float chanceLegend, @NotNull String lastLegend) {
         this.chanceLegend = chanceLegend;
         this.lastLegend = lastLegend;
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
@@ -18,38 +17,27 @@ public class ServerStorage {
         return this.chanceLegend;
     }
 
+    @NotNull
     public String getLastLegend() {
         return this.lastLegend;
     }
 
-    public void setChanceLegend(String source, float amount) {
-        ChangeChanceLegendEvent.SetChance event = new ChangeChanceLegendEvent.SetChance(source, amount);
-
-        if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
-            this.chanceLegend = event.getChance();
-            LegendControl.getInstance().getServerProvider().updateServerStorage(this);
-        }
+    public void setChanceLegend(float amount) {
+        this.chanceLegend = amount;
+        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
-    public void addChanceLegend(String source, float amount) {
-        ChangeChanceLegendEvent.AddChance event = new ChangeChanceLegendEvent.AddChance(source, amount);
-
-        if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
-            this.chanceLegend = Math.min(getChanceLegend() + event.getChance(), 100F);
-            LegendControl.getInstance().getServerProvider().updateServerStorage(this);
-        }
+    public void addChanceLegend(float amount) {
+        this.chanceLegend = Math.min(getChanceLegend() + amount, 100F);
+        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
-    public void removeChanceLegend(String source, float amount) {
-        ChangeChanceLegendEvent.RemoveChance event = new ChangeChanceLegendEvent.RemoveChance(source, amount);
-
-        if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
-            this.chanceLegend = Math.max(getChanceLegend() - event.getChance(), 0F);
-            LegendControl.getInstance().getServerProvider().updateServerStorage(this);
-        }
+    public void removeChanceLegend(float amount) {
+        this.chanceLegend = Math.max(getChanceLegend() - amount, 0F);
+        LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }
 
-    public void setLastLegend(String pokemonName) {
+    public void setLastLegend(@NotNull String pokemonName) {
         this.lastLegend = pokemonName;
         LegendControl.getInstance().getServerProvider().updateServerStorage(this);
     }

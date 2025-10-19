@@ -1,5 +1,6 @@
 package com.vecoo.legendcontrol_defender;
 
+import com.mojang.logging.LogUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
 import com.vecoo.legendcontrol_defender.command.LegendaryTrustCommand;
@@ -11,7 +12,6 @@ import com.vecoo.legendcontrol_defender.listener.DefenderListener;
 import com.vecoo.legendcontrol_defender.storage.PlayerProvider;
 import com.vecoo.legendcontrol_defender.util.PermissionNodes;
 import net.minecraft.server.MinecraftServer;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
@@ -19,14 +19,12 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
-import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 @Mod(LegendControlDefender.MOD_ID)
 public class LegendControlDefender {
     public static final String MOD_ID = "legendcontrol_defender";
-    private static final Logger LOGGER = LogManager.getLogger("LegendControl-Defender");
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private static LegendControlDefender instance;
 
@@ -51,14 +49,7 @@ public class LegendControlDefender {
 
     @SubscribeEvent
     public void onPermissionGather(PermissionGatherEvent.Nodes event) {
-        PermissionNodes.PERMISSION_LIST.add(PermissionNodes.LEGENDARYTRUST_COMMAND);
-        PermissionNodes.PERMISSION_LIST.add(PermissionNodes.LEGENDARYTRUST_RELOAD_COMMAND);
-
-        for (PermissionNode<?> node : PermissionNodes.PERMISSION_LIST) {
-            if (!event.getNodes().contains(node)) {
-                event.addNodes(node);
-            }
-        }
+        PermissionNodes.registerPermission(event);
     }
 
     @SubscribeEvent
@@ -72,7 +63,7 @@ public class LegendControlDefender {
         loadStorage();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
         this.playerProvider.write();
     }
@@ -84,7 +75,7 @@ public class LegendControlDefender {
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
             this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
         } catch (Exception e) {
-            LOGGER.error("[LegendControl-Defender] Error load config.", e);
+            LOGGER.error("Error load config.", e);
         }
     }
 
@@ -96,7 +87,7 @@ public class LegendControlDefender {
 
             this.playerProvider.init();
         } catch (Exception e) {
-            LOGGER.error("[LegendControl] Error load storage.", e);
+            LOGGER.error("Error load storage.", e);
         }
     }
 

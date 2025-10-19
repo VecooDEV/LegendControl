@@ -68,14 +68,20 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
 
         this.possibleSpawns = null;
         int numPlayers = LegendControl.getInstance().getServer().getPlayerList().getPlayerCount();
-        int baseSpawnTicks = this.firesChooseEvent ? PixelmonConfigProxy.getSpawningLegendary().getLegendarySpawnTicks() : PixelmonConfigProxy.getSpawningBoss().getBossSpawnTicks();
-        this.spawnFrequency = 1200.0F / (RandomHelper.getRandomNumberBetween(0.6F, 1.4F) * baseSpawnTicks / (1.0F + (float) (numPlayers - 1) * PixelmonConfigProxy.getSpawningLegendary().getSpawnTicksPlayerMultiplier()));
+        int baseSpawnTicks = this.firesChooseEvent ? PixelmonConfigProxy.getSpawningLegendary().getLegendarySpawnTicks()
+                : PixelmonConfigProxy.getSpawningBoss().getBossSpawnTicks();
+        this.spawnFrequency = 1200.0F / (RandomHelper.getRandomNumberBetween(0.6F, 1.4F) * baseSpawnTicks
+                / (1.0F + (float) (numPlayers - 1) * PixelmonConfigProxy.getSpawningLegendary().getSpawnTicksPlayerMultiplier()));
 
         if (this.firesChooseEvent) {
-            Utils.TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
+            Utils.TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(
+                    LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(),
+                    LegendControl.getInstance().getConfig().getRandomTimeSpawnMax()
+            );
         }
 
-        float chance = this.firesChooseEvent ? LegendControlFactory.ServerProvider.getChanceLegend() / 100.0F : PixelmonConfigProxy.getSpawningBoss().getBossSpawnChance();
+        float chance = this.firesChooseEvent ? LegendControlFactory.ServerProvider.getChanceLegend() / 100.0F
+                : PixelmonConfigProxy.getSpawningBoss().getBossSpawnChance();
 
         if (!RandomHelper.getRandomChance(chance)) {
             if (this.firesChooseEvent && numPlayers > 0) {
@@ -95,7 +101,10 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
     public void forcefullySpawn(ServerPlayer onlyFocus, CallbackInfo ci, @Local(ordinal = 1) ArrayList<ServerPlayer> players) {
         ServerConfig config = LegendControl.getInstance().getConfig();
 
-        players.removeIf(player -> config.isBlacklistDimensions() && config.getBlacklistDimensionList().contains(player.level().dimension().location().getPath()) || config.isBlacklistPlayers() && config.getBlacklistPlayersList().contains(player.getName().getString()));
+        players.removeIf(player -> config.isBlacklistDimensions()
+                && config.getBlacklistDimensionList().contains(player.level().dimension().location().getPath())
+                || config.isBlacklistPlayers() && config.getBlacklistPlayersList().contains(player.getName().getString())
+        );
 
         if (players.isEmpty()) {
             ci.cancel();
@@ -108,7 +117,9 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
      */
     @Overwrite
     public CompletableFuture<List<SpawnAction<?>>> doLegendarySpawn(ServerPlayer target) {
-        return target == null ? CompletableFuture.completedFuture(Collections.emptyList()) : this.getTrackedBlockCollection(target, 0.0F, 0.0F, horizontalSliceRadius, this.verticalSliceRadius, this.minDistFromCentre, this.maxDistFromCentre).thenApply((blockCollection) -> {
+        return target == null ? CompletableFuture.completedFuture(Collections.emptyList()) : this.getTrackedBlockCollection(
+                target, 0.0F, 0.0F, horizontalSliceRadius,
+                this.verticalSliceRadius, this.minDistFromCentre, this.maxDistFromCentre).thenApply((blockCollection) -> {
             ArrayList<SpawnLocation> spawnLocations = this.spawnLocationCalculator.calculateSpawnableLocations(blockCollection);
             Collections.shuffle(spawnLocations);
             List<SpawnAction<?>> possibleSpawns = this.selectionAlgorithm.calculateSpawnActions(this, this.spawnSets, spawnLocations);

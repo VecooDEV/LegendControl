@@ -12,6 +12,7 @@ import com.vecoo.legendcontrol_defender.util.PermissionNodes;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 import java.util.UUID;
@@ -52,16 +53,15 @@ public class LegendaryTrustCommand {
                         .executes(e -> executeReload(e.getSource()))));
     }
 
-    private static int executeAdd(ServerPlayer player, String target) {
+    private static int executeAdd(@NotNull ServerPlayer player, @NotNull String target) {
+        UUID targetUUID = UtilPlayer.getUUID(target);
         LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
 
-        if (!UtilPlayer.hasUUID(target)) {
+        if (targetUUID == null) {
             player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getPlayerNotFound()
                     .replace("%player%", target)));
             return 0;
         }
-
-        UUID targetUUID = UtilPlayer.getUUID(target);
 
         if (player.getUUID().equals(targetUUID)) {
             player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getCantSelfTrust()));
@@ -80,23 +80,25 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        LegendControlFactory.PlayerProvider.addPlayerTrust(player.getUUID(), targetUUID);
+        if (!LegendControlFactory.PlayerProvider.addPlayerTrust(player.getUUID(), targetUUID)) {
+            return 0;
+        }
 
         player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getAddTrust()
                 .replace("%player%", target)));
         return 1;
     }
 
-    private static int executeRemove(ServerPlayer player, String target) {
+    private static int executeRemove(@NotNull ServerPlayer player, @NotNull String target) {
+        UUID targetUUID = UtilPlayer.getUUID(target);
         LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
 
-        if (!UtilPlayer.hasUUID(target)) {
+        if (targetUUID == null) {
             player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getPlayerNotFound()
                     .replace("%player%", target)));
             return 0;
         }
 
-        UUID targetUUID = UtilPlayer.getUUID(target);
         Set<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
 
         if (trustedPlayers.isEmpty()) {
@@ -109,14 +111,16 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        LegendControlFactory.PlayerProvider.removePlayerTrust(player.getUUID(), targetUUID);
+        if (!LegendControlFactory.PlayerProvider.removePlayerTrust(player.getUUID(), targetUUID)) {
+            return 0;
+        }
 
         player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getRemoveTrust()
                 .replace("%player%", target)));
         return 1;
     }
 
-    private static int executeRemoveAll(ServerPlayer player) {
+    private static int executeRemoveAll(@NotNull ServerPlayer player) {
         LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
 
         if (LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID()).isEmpty()) {
@@ -124,13 +128,15 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        LegendControlFactory.PlayerProvider.removePlayersTrust(player.getUUID());
+        if (!LegendControlFactory.PlayerProvider.clearPlayersTrust(player.getUUID())) {
+            return 0;
+        }
 
         player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getRemoveAllTrust()));
         return 1;
     }
 
-    private static int executeList(ServerPlayer player) {
+    private static int executeList(@NotNull ServerPlayer player) {
         Set<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
         LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
 
@@ -148,8 +154,9 @@ public class LegendaryTrustCommand {
         return 1;
     }
 
-    private static int executeReload(CommandSourceStack source) {
+    private static int executeReload(@NotNull CommandSourceStack source) {
         LegendControlDefender.getInstance().loadConfig();
+        LegendControlDefender.getInstance().loadStorage();
 
         source.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getReload()));
         return 1;

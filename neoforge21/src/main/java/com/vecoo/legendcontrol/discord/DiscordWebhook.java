@@ -1,11 +1,13 @@
 package com.vecoo.legendcontrol.discord;
 
 import com.vecoo.legendcontrol.LegendControl;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 
@@ -16,7 +18,8 @@ public class DiscordWebhook {
         this.url = url;
     }
 
-    public void sendEmbed(String title, String description, String thumbnailUrl, String color, boolean pingRole) throws IOException {
+    public void sendEmbed(@NotNull String title, @NotNull String description, @NotNull String thumbnailUrl,
+                          @NotNull String color, boolean pingRole) throws IOException {
         String role = "";
 
         if (pingRole) {
@@ -24,18 +27,20 @@ public class DiscordWebhook {
             role = roleId != 0 ? "<@&" + roleId + ">" : "";
         }
 
-        String json = String.format("{\"content\": \"%s\", \"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}", escapeJson(role), escapeJson(title), escapeJson(description), escapeJson(thumbnailUrl), color);
+        String json = String.format("{\"content\": \"%s\", \"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}",
+                escapeJson(role), escapeJson(title), escapeJson(description), escapeJson(thumbnailUrl), color);
 
         CompletableFuture.runAsync(() -> {
             try {
                 sendRequest(json);
             } catch (IOException e) {
-                LegendControl.getLogger().error("[LegendControl] Error sending embed: " + e.getMessage());
+                LegendControl.getLogger().error("Error sending embed: " + e.getMessage());
             }
         });
     }
 
-    private String escapeJson(String input) {
+    @NotNull
+    private String escapeJson(@Nullable String input) {
         if (input == null) {
             return "";
         }
@@ -46,9 +51,9 @@ public class DiscordWebhook {
                 .replace("\t", "\\t");
     }
 
-    private void sendRequest(String json) throws IOException {
+    private void sendRequest(@NotNull String json) throws IOException {
         if (!this.url.isEmpty()) {
-            HttpURLConnection connection = (HttpURLConnection) new URL(this.url).openConnection();
+            HttpURLConnection connection = (HttpURLConnection) URI.create(this.url).toURL().openConnection();
             connection.setConnectTimeout(10000);
             connection.setReadTimeout(10000);
 
@@ -64,7 +69,7 @@ public class DiscordWebhook {
             int responseCode = connection.getResponseCode();
 
             if (responseCode != 204) {
-                LegendControl.getLogger().error("[LegendControl] Discord webhook failed: " + responseCode);
+                LegendControl.getLogger().error("Discord webhook failed: " + responseCode);
             }
         }
     }

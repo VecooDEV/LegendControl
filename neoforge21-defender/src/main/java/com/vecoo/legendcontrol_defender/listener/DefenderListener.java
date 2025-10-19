@@ -22,6 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,11 +32,11 @@ import java.util.UUID;
 public class DefenderListener {
     private final Map<UUID, UUID> LEGENDARY_DEFENDER = new HashMap<>();
 
-    public boolean hasLegendaryDefender(UUID pokemonUUID) {
+    public boolean hasLegendaryDefender(@NotNull UUID pokemonUUID) {
         return LEGENDARY_DEFENDER.containsKey(pokemonUUID);
     }
 
-    public boolean addLegendaryDefender(UUID pokemonUUID, UUID playerUUID) {
+    public boolean addLegendaryDefender(@NotNull UUID pokemonUUID, @NotNull UUID playerUUID) {
         if (hasLegendaryDefender(pokemonUUID)) {
             return false;
         }
@@ -44,7 +45,7 @@ public class DefenderListener {
         return true;
     }
 
-    public boolean removeLegendaryDefender(UUID pokemonUUID) {
+    public boolean removeLegendaryDefender(@NotNull UUID pokemonUUID) {
         if (!hasLegendaryDefender(pokemonUUID)) {
             return false;
         }
@@ -53,7 +54,7 @@ public class DefenderListener {
         return true;
     }
 
-    public boolean hasLegendaryPlayerOwner(UUID pokemonUUID, ServerPlayer player) {
+    public boolean hasLegendaryPlayerOwner(@NotNull UUID pokemonUUID, @NotNull ServerPlayer player) {
         if (!hasLegendaryDefender(pokemonUUID)) {
             return false;
         }
@@ -78,7 +79,7 @@ public class DefenderListener {
         }
     }
 
-    private void startDefender(PixelmonEntity pixelmonEntity) {
+    private void startDefender(@NotNull PixelmonEntity pixelmonEntity) {
         TaskTimer.builder()
                 .delay(LegendControlDefender.getInstance().getConfig().getProtectedTime() * 20L)
                 .consume(task -> {

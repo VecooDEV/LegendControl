@@ -1,5 +1,6 @@
 package com.vecoo.legendcontrol;
 
+import com.mojang.logging.LogUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
 import com.vecoo.legendcontrol.command.CheckLegendsCommand;
@@ -15,7 +16,6 @@ import com.vecoo.legendcontrol.listener.ResultListener;
 import com.vecoo.legendcontrol.storage.ServerProvider;
 import com.vecoo.legendcontrol.util.PermissionNodes;
 import net.minecraft.server.MinecraftServer;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
@@ -23,14 +23,12 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
-import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
     public static final String MOD_ID = "legendcontrol";
-    private static final Logger LOGGER = LogManager.getLogger("LegendControl");
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private static LegendControl instance;
 
@@ -59,15 +57,7 @@ public class LegendControl {
 
     @SubscribeEvent
     public void onPermissionGather(PermissionGatherEvent.Nodes event) {
-        PermissionNodes.PERMISSION_LIST.add(PermissionNodes.CHECKLEGENDARY_COMMAND);
-        PermissionNodes.PERMISSION_LIST.add(PermissionNodes.CHECKLEGENDARY_MODIFY_COMMAND);
-        PermissionNodes.PERMISSION_LIST.add(PermissionNodes.LEGENDCONTROL_COMMAND);
-
-        for (PermissionNode<?> node : PermissionNodes.PERMISSION_LIST) {
-            if (!event.getNodes().contains(node)) {
-                event.addNodes(node);
-            }
-        }
+        PermissionNodes.registerPermission(event);
     }
 
     @SubscribeEvent
@@ -82,7 +72,7 @@ public class LegendControl {
         loadStorage();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
         this.serverProvider.write();
     }
@@ -94,7 +84,7 @@ public class LegendControl {
             this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
             this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
         } catch (Exception e) {
-            LOGGER.error("[LegendControl] Error load config.", e);
+            LOGGER.error("Error load config.", e);
         }
     }
 
@@ -106,7 +96,7 @@ public class LegendControl {
 
             this.serverProvider.init();
         } catch (Exception e) {
-            LOGGER.error("[LegendControl] Error load storage.", e);
+            LOGGER.error("Error load storage.", e);
         }
     }
 

@@ -14,16 +14,16 @@ description = "Sidemod for Pixelmon. Changing the spawn elements of legendary po
 config = "mixins.legendcontrol.json"
 
 [[dependencies.legendcontrol]]
-modId = "neoforge"
+modId = "minecraft"
 type = "required"
-versionRange = "[21.1,)"
+versionRange = "[1.21,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.legendcontrol]]
-modId = "minecraft"
+modId = "neoforge"
 type = "required"
-versionRange = "[1.21,)"
+versionRange = "[21.1,)"
 ordering = "NONE"
 side = "BOTH"
 

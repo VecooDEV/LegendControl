@@ -11,6 +11,7 @@ import com.vecoo.legendcontrol.util.PermissionNodes;
 import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class CheckLegendsCommand {
                 .executes(e -> execute(e.getSource())));
     }
 
-    private static int execute(CommandSourceStack source) {
+    private static int execute(@NotNull CommandSourceStack source) {
         int seconds = (int) ((PixelmonSpawning.legendarySpawner.nextSpawnTime - System.currentTimeMillis()) / 1000 + Utils.TIME_DO_LEGEND);
         int minutes = seconds / 60;
         int hours = minutes / 60;
@@ -33,10 +34,11 @@ public class CheckLegendsCommand {
         } else {
             sendMessage(source, hours, LegendControl.getInstance().getLocale().getHours());
         }
+
         return 1;
     }
 
-    private static void sendMessage(CommandSourceStack source, int time, String timeUnit) {
+    private static void sendMessage(@NotNull CommandSourceStack source, int time, @NotNull String timeUnit) {
         source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getCheckLegendary()
                 .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))
                 .replace("%time%", time + timeUnit)));

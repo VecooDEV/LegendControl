@@ -18,7 +18,9 @@ public class ParticleListener {
             return;
         }
 
-        SimpleParticleType particle = (SimpleParticleType) BuiltInRegistries.PARTICLE_TYPE.get(ResourceLocation.parse(LegendControl.getInstance().getConfig().getParticleName()));
+        SimpleParticleType particle = (SimpleParticleType) BuiltInRegistries.PARTICLE_TYPE.get(
+                ResourceLocation.parse(LegendControl.getInstance().getConfig().getParticleName())
+        );
 
         if (particle == null) {
             return;
@@ -26,7 +28,10 @@ public class ParticleListener {
 
         for (PixelmonEntity entity : LegendarySpawnListener.LEGENDS) {
             if (entity.level() instanceof ServerLevel level) {
-                level.sendParticles(particle, entity.getX(), entity.getYCentre(), entity.getZ(), 3, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, 0.1);
+                level.sendParticles(
+                        particle, entity.getX(), entity.getYCentre(), entity.getZ(), 3,
+                        level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, level.random.nextDouble() - 0.5, 0.1
+                );
             }
         }
     }

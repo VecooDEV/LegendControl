@@ -4,11 +4,16 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.config.DiscordConfig;
+import org.jetbrains.annotations.NotNull;
 
 public class Utils {
-    public static int TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(), LegendControl.getInstance().getConfig().getRandomTimeSpawnMax());
+    public static int TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(
+            LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(),
+            LegendControl.getInstance().getConfig().getRandomTimeSpawnMax()
+    );
 
-    public static String pokemonImage(Pokemon pokemon) {
+    @NotNull
+    public static String pokemonImage(@NotNull Pokemon pokemon) {
         DiscordConfig discordConfig = LegendControl.getInstance().getDiscordConfig();
         String pokemonName = pokemon.getTranslatedName().getString().toLowerCase();
 
@@ -39,6 +44,7 @@ public class Utils {
             }
         }
 
-        return pokemon.isShiny() ? discordConfig.getPokedexShinyUrl().replace("%pokemon%", pokemonName) : discordConfig.getPokedexNormalUrl().replace("%pokemon%", pokemonName);
+        return pokemon.isShiny() ? discordConfig.getPokedexShinyUrl().replace("%pokemon%", pokemonName)
+                : discordConfig.getPokedexNormalUrl().replace("%pokemon%", pokemonName);
     }
 }

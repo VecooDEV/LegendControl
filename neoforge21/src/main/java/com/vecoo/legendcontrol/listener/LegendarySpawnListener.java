@@ -15,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +43,14 @@ public class LegendarySpawnListener {
                     .replace("%z%", String.valueOf(pixelmonEntity.getBlockZ()))));
         }
 
-        LegendControlFactory.ServerProvider.setChanceLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getBaseChance());
+        LegendControlFactory.ServerProvider.setChanceLegend(LegendSourceName.PIXELMON, config.getBaseChance());
         LegendControlFactory.ServerProvider.setLastLegend(pixelmonEntity.getPokemonName());
         LEGENDS.add(pixelmonEntity);
         setTimers(pixelmonEntity);
         WebhookUtils.spawnWebhook(pixelmonEntity.getPokemon(), event.action.spawnLocation.biome);
     }
 
-    private void setTimers(PixelmonEntity pixelmonEntity) {
+    private void setTimers(@NotNull PixelmonEntity pixelmonEntity) {
         ServerConfig config = LegendControl.getInstance().getConfig();
 
         if (config.getLocationTime() > 0) {
