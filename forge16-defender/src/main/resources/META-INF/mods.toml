@@ -1,0 +1,39 @@
+modLoader = "javafml"
+loaderVersion = "[36,)"
+license = "MIT"
+
+[[mods]]
+modId = "legendcontrol_defender"
+version = "${project_version}"
+displayName = "${project_name}-Defender"
+logoFile = "logo.png"
+authors = "Vecoo"
+description = "Sidemod for Pixelmon. Adds an anti-theft system for legendary pokemon."
+
+[[dependencies.legendcontrol_defender]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.legendcontrol_defender]]
+modId = "forge"
+mandatory = true
+versionRange = "[36,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.legendcontrol_defender]]
+modId = "pixelmon"
+mandatory = true
+versionRange = "[9.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.legendcontrol_defender]]
+modId = "extralib"
+mandatory = true
+versionRange = "[1.8,)"
+ordering = "NONE"
+side = "BOTH"

@@ -1,8 +1,0 @@
-{
-  "required": true,
-  "package": "com.vecoo.legendcontrol.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "LegendarySpawnerMixin"
-  ]
-}

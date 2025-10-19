@@ -35,7 +35,7 @@ subprojects {
         }
 
         from(fileTree("build/libs") {
-            include '*NeoForge.jar'
+            include '*Forge.jar'
         })
 
         into('../release/')
