@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.7.11",
+  "package": "com.vecoo.legendcontrol.mixin",
+  "refmap": "mixins.legendcontrol.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "LegendarySpawnerMixin"
+  ]
+}
