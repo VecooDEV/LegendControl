@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class LegendControlFactory {
     public static class PlayerProvider {
+        @NotNull
         public static Map<UUID, PlayerStorage> getStorage() {
             return LegendControlDefender.getInstance().getPlayerProvider().getStorage();
         }

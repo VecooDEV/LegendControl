@@ -2,6 +2,7 @@ package com.vecoo.legendcontrol.listener;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.legendcontrol.LegendControl;
+import com.vecoo.legendcontrol.config.ServerConfig;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -14,12 +15,14 @@ public class ParticleListener {
 
     @SubscribeEvent
     public void onServerTick(ServerTickEvent.Pre event) {
-        if (!LegendControl.getInstance().getConfig().isLegendaryParticle() || ++this.currentTick % 40 != 0) {
+        ServerConfig config = LegendControl.getInstance().getConfig();
+
+        if (!config.isLegendaryParticle() || ++this.currentTick % 40 != 0) {
             return;
         }
 
         SimpleParticleType particle = (SimpleParticleType) BuiltInRegistries.PARTICLE_TYPE.get(
-                ResourceLocation.parse(LegendControl.getInstance().getConfig().getParticleName())
+                ResourceLocation.parse(config.getParticleName())
         );
 
         if (particle == null) {

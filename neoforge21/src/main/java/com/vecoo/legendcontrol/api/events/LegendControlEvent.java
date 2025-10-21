@@ -3,14 +3,16 @@ package com.vecoo.legendcontrol.api.events;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.ICancellableEvent;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class LegendControlEvent extends Event {
     private final PixelmonEntity pixelmonEntity;
 
-    public LegendControlEvent(PixelmonEntity pixelmonEntity) {
+    public LegendControlEvent(@NotNull PixelmonEntity pixelmonEntity) {
         this.pixelmonEntity = pixelmonEntity;
     }
 
+    @NotNull
     public PixelmonEntity getPixelmonEntity() {
         return this.pixelmonEntity;
     }

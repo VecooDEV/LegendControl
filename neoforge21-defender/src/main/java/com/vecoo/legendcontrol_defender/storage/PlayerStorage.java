@@ -32,12 +32,12 @@ public class PlayerStorage {
         return this.dirty;
     }
 
-    public void addPlayerTrust(UUID playerUUID) {
+    public void addPlayerTrust(@NotNull UUID playerUUID) {
         this.playersTrust.add(playerUUID);
         LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
     }
 
-    public void removePlayerTrust(UUID playerUUID) {
+    public void removePlayerTrust(@NotNull UUID playerUUID) {
         this.playersTrust.remove(playerUUID);
         LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
     }

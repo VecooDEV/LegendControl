@@ -113,7 +113,8 @@ public class DefenderListener {
             pokemon.ifEntityExists(pixelmonEntity -> {
                 Entity target = pixelmonEntity.getTarget();
 
-                if (target instanceof PixelmonEntity && hasLegendaryPlayerOwner(target.getUUID(), player) && !NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(pixelmonEntity, player)).isCanceled()) {
+                if (target instanceof PixelmonEntity && hasLegendaryPlayerOwner(target.getUUID(), player)
+                        && !NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(pixelmonEntity, player)).isCanceled()) {
                     player.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()));
                     event.setCanceled(true);
                 }
@@ -141,7 +142,8 @@ public class DefenderListener {
                 .findFirst()
                 .orElse(null);
 
-        if (participants.size() == 2 && player != null && wildPixelmon != null && player.getPlayer() != null && wildPixelmon.getEntity() != null && hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), player.getPlayer())) {
+        if (participants.size() == 2 && player != null && wildPixelmon != null && player.getPlayer() != null
+                && wildPixelmon.getEntity() != null && hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), player.getPlayer())) {
             if (!NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender((PixelmonEntity) wildPixelmon.getEntity(), player.getPlayer())).isCanceled()) {
                 player.getPlayer().sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()));
                 event.setCanceled(true);

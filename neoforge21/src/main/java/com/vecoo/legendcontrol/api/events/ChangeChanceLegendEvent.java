@@ -2,16 +2,18 @@ package com.vecoo.legendcontrol.api.events;
 
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.ICancellableEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class ChangeChanceLegendEvent extends Event implements ICancellableEvent {
     private final String source;
     private float chance;
 
-    public ChangeChanceLegendEvent(String source, float chance) {
+    public ChangeChanceLegendEvent(@NotNull String source, float chance) {
         this.source = source;
         this.chance = chance;
     }
 
+    @NotNull
     public String getSource() {
         return this.source;
     }

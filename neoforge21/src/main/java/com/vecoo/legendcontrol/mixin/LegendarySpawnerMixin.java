@@ -101,9 +101,10 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
     public void forcefullySpawn(ServerPlayer onlyFocus, CallbackInfo ci, @Local(ordinal = 1) ArrayList<ServerPlayer> players) {
         ServerConfig config = LegendControl.getInstance().getConfig();
 
-        players.removeIf(player -> config.isBlacklistDimensions()
-                && config.getBlacklistDimensionList().contains(player.level().dimension().location().getPath())
-                || config.isBlacklistPlayers() && config.getBlacklistPlayersList().contains(player.getName().getString())
+        players.removeIf(
+                player -> config.isBlacklistDimensions()
+                        && config.getBlacklistDimensionList().contains(player.level().dimension().location().getPath())
+                        || config.isBlacklistPlayers() && config.getBlacklistPlayersList().contains(player.getName().getString())
         );
 
         if (players.isEmpty()) {
