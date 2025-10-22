@@ -57,7 +57,9 @@ public class LegendarySpawnListener {
                     .delay(config.getLocationTime() * 20L)
                     .consume(task -> {
                         if (LEGENDS.contains(entityPixelmon)) {
-                            LegendControlEvent.Location event = new LegendControlEvent.Location(entityPixelmon, entityPixelmon.posX, entityPixelmon.posY, entityPixelmon.posZ);
+                            LegendControlEvent.Location event = new LegendControlEvent.Location(
+                                    entityPixelmon, entityPixelmon.posX, entityPixelmon.posY, entityPixelmon.posZ
+                            );
 
                             if (!MinecraftForge.EVENT_BUS.post(event)) {
                                 UtilChat.broadcast(LegendControl.getInstance().getLocale().getLocation()

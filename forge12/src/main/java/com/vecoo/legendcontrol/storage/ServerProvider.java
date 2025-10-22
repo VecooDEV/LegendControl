@@ -58,6 +58,7 @@ public class ServerProvider {
     public void init() {
         UtilGson.readFileAsync(this.filePath, "ServerStorage.json",
                 el -> this.serverStorage = UtilGson.newGson().fromJson(el, ServerStorage.class)).join();
+
         writeInterval();
     }
 }

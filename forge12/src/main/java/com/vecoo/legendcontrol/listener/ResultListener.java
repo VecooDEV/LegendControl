@@ -47,7 +47,6 @@ public class ResultListener {
         }
     }
 
-
     @SubscribeEvent
     public void onCapture(CaptureEvent.SuccessfulCapture event) {
         EntityPixelmon entityPixelmon = event.getPokemon();

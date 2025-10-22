@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 public class DiscordWebhook {
     private final String url;
 
-    public DiscordWebhook(String url) {
+    public DiscordWebhook(@Nonnull String url) {
         this.url = url;
     }
 
@@ -26,7 +26,7 @@ public class DiscordWebhook {
             try {
                 sendRequest(json);
             } catch (IOException e) {
-                LegendControlDefender.getLogger().error("Error sending embed: " + e.getMessage());
+                LegendControlDefender.getLogger().error("Error sending embed", e);
             }
         });
     }
@@ -48,7 +48,6 @@ public class DiscordWebhook {
             HttpURLConnection connection = (HttpURLConnection) URI.create(this.url).toURL().openConnection();
             connection.setConnectTimeout(10000);
             connection.setReadTimeout(10000);
-
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);

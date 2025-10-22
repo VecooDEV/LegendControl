@@ -28,11 +28,6 @@ public class LegendControlCommand extends CommandBase {
     }
 
     @Override
-    public boolean checkPermission(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender) {
-        return sender.canUseCommand(4, "gamemode");
-    }
-
-    @Override
     @Nonnull
     public List<String> getTabCompletions(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, String[] args, BlockPos targetPos) {
         if (args.length == 1) {
@@ -83,51 +78,47 @@ public class LegendControlCommand extends CommandBase {
         }
     }
 
-    private static int executeAdd(@Nonnull ICommandSender source, float chance) {
+    private static void executeAdd(@Nonnull ICommandSender source, float chance) {
         if (LegendControlFactory.ServerProvider.getChanceLegend() + chance > 100F) {
             source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()));
-            return 0;
+            return;
         }
 
         if (!LegendControlFactory.ServerProvider.addChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance)) {
-            return 0;
+            return;
         }
 
         source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
                 .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
-        return 1;
     }
 
-    private static int executeRemove(@Nonnull ICommandSender source, float chance) {
+    private static void executeRemove(@Nonnull ICommandSender source, float chance) {
         if (LegendControlFactory.ServerProvider.getChanceLegend() - chance < 0F) {
             source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()));
-            return 0;
+            return;
         }
 
         if (!LegendControlFactory.ServerProvider.removeChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance)) {
-            return 0;
+            return;
         }
 
         source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
                 .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
-        return 1;
     }
 
-    private static int executeSet(@Nonnull ICommandSender source, float chance) {
+    private static void executeSet(@Nonnull ICommandSender source, float chance) {
         if (!LegendControlFactory.ServerProvider.setChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance)) {
-            return 0;
+            return;
         }
 
         source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
                 .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
-        return 1;
     }
 
-    private static int executeReload(@Nonnull ICommandSender source) {
+    private static void executeReload(@Nonnull ICommandSender source) {
         LegendControl.getInstance().loadConfig();
         LegendControl.getInstance().loadStorage();
 
         source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getReload()));
-        return 1;
     }
 }

@@ -2,6 +2,7 @@ package com.vecoo.legendcontrol.listener;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.vecoo.legendcontrol.LegendControl;
+import com.vecoo.legendcontrol.config.ServerConfig;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -12,17 +13,21 @@ public class ParticleListener {
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START || !LegendControl.getInstance().getConfig().isLegendaryParticle() || ++this.currentTick % 20 != 0) {
+        ServerConfig config = LegendControl.getInstance().getConfig();
+
+        if (event.phase == TickEvent.Phase.START || !config.isLegendaryParticle() || ++this.currentTick % 20 != 0) {
             return;
         }
 
-        EnumParticleTypes particle = EnumParticleTypes.getByName(LegendControl.getInstance().getConfig().getParticleName());
+        EnumParticleTypes particle = EnumParticleTypes.getByName(config.getParticleName());
 
         if (particle == null) {
             return;
         }
 
-        LegendarySpawnListener.LEGENDS.removeIf(entity -> entity == null || !entity.isEntityAlive() || entity.hasOwner());
+        LegendarySpawnListener.LEGENDS.removeIf(
+                entity -> entity == null || !entity.isEntityAlive() || entity.hasOwner()
+        );
 
         for (EntityPixelmon entity : LegendarySpawnListener.LEGENDS) {
             if (entity.world instanceof WorldServer) {

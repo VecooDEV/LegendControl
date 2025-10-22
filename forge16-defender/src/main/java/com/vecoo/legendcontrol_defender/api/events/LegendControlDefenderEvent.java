@@ -5,36 +5,37 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 public class LegendControlDefenderEvent extends Event {
     private final PixelmonEntity pixelmonEntity;
 
-    public LegendControlDefenderEvent(PixelmonEntity pixelmonEntity) {
+    public LegendControlDefenderEvent(@Nonnull PixelmonEntity pixelmonEntity) {
         this.pixelmonEntity = pixelmonEntity;
     }
 
+    @Nonnull
     public PixelmonEntity getPixelmonEntity() {
         return this.pixelmonEntity;
     }
 
     public static class ExpiredDefender extends LegendControlDefenderEvent {
-        public ExpiredDefender(PixelmonEntity pixelmonEntity) {
+        public ExpiredDefender(@Nonnull PixelmonEntity pixelmonEntity) {
             super(pixelmonEntity);
         }
     }
 
     @Cancelable
     public static class WorkedDefender extends LegendControlDefenderEvent {
-        @Nullable
+        @Nonnull
         public final ServerPlayerEntity player;
 
-        public WorkedDefender(PixelmonEntity pixelmonEntity, @Nullable ServerPlayerEntity player) {
+        public WorkedDefender(@Nonnull PixelmonEntity pixelmonEntity, @Nonnull ServerPlayerEntity player) {
             super(pixelmonEntity);
             this.player = player;
         }
 
-        @Nullable
+        @Nonnull
         public ServerPlayerEntity getPlayer() {
             return this.player;
         }

@@ -25,6 +25,7 @@ public class PlayerProvider {
         this.map = new HashMap<>();
     }
 
+    @Nonnull
     public Map<UUID, PlayerStorage> getStorage() {
         return this.map;
     }

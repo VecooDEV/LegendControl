@@ -136,7 +136,8 @@ public class DefenderListener {
                 .findFirst()
                 .orElse(null);
 
-        if (participants.size() == 2 && player != null && wildPixelmon != null && hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), (ServerPlayerEntity) player.getEntity())) {
+        if (participants.size() == 2 && player != null && wildPixelmon != null
+                && hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), (ServerPlayerEntity) player.getEntity())) {
             if (!MinecraftForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender((PixelmonEntity) wildPixelmon.getEntity(), (ServerPlayerEntity) player.getEntity()))) {
                 player.getEntity().sendMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()), Util.NIL_UUID);
                 event.setCanceled(true);

@@ -14,12 +14,10 @@ public class DiscordConfig {
     private String webhookTitleLegendaryDefeat = "%shiny%Legendary pokemon defeat!";
     private String webhookDescriptionLegendaryDefeat = "The legendary pokemon **%pokemon%** was defeated by a **%player%** player.";
     private String webhookTitleLegendaryDespawn = "%shiny%Legendary pokemon despawned!";
-    private String webhookDescriptionLegendaryDespawn = "The legendary pokemon **%pokemon%** was despawned.";
     private String webhookTitleLegendaryLocation = "%shiny%Legendary pokemon seen location!";
     private String webhookDescriptionLegendaryLocation = "The legendary pokemon **%pokemon%** was location: X: %x%, Y: %y%, Z: %z%.";
     private String pokedexNormalUrl = "https://img.pokemondb.net/sprites/home/normal/%pokemon%.png";
     private String pokedexShinyUrl = "https://img.pokemondb.net/sprites/home/shiny/%pokemon%.png";
-
 
     public String getWebhookUrl() {
         return this.webhookUrl;
@@ -61,10 +59,6 @@ public class DiscordConfig {
         return this.webhookTitleLegendaryDespawn;
     }
 
-    public String getWebhookDescriptionLegendaryDespawn() {
-        return this.webhookDescriptionLegendaryDespawn;
-    }
-
     public String getWebhookTitleLegendaryLocation() {
         return this.webhookTitleLegendaryLocation;
     }
@@ -101,7 +95,6 @@ public class DiscordConfig {
             this.webhookTitleLegendaryLocation = config.getWebhookTitleLegendaryLocation();
             this.webhookDescriptionLegendaryLocation = config.getWebhookDescriptionLegendaryLocation();
             this.webhookTitleLegendaryDespawn = config.getWebhookTitleLegendaryDespawn();
-            this.webhookDescriptionLegendaryDespawn = config.getWebhookDescriptionLegendaryCatch();
             this.pokedexNormalUrl = config.getPokedexNormalUrl();
             this.pokedexShinyUrl = config.getPokedexShinyUrl();
         }).join();

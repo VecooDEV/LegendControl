@@ -19,7 +19,8 @@ public class ParticleListener {
         }
 
         BasicParticleType particle = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(
-                new ResourceLocation(LegendControl.getInstance().getConfig().getParticleName()));
+                new ResourceLocation(LegendControl.getInstance().getConfig().getParticleName())
+        );
 
         if (particle == null) {
             return;

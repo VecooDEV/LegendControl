@@ -26,11 +26,6 @@ public class CheckLegendsCommand extends CommandBase {
     }
 
     @Override
-    public boolean checkPermission(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender) {
-        return true;
-    }
-
-    @Override
     public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) {
         int seconds = (int) ((PixelmonSpawning.legendarySpawner.nextSpawnTime - System.currentTimeMillis()) / 1000 + Utils.TIME_DO_LEGEND);
         int minutes = seconds / 60;
@@ -45,7 +40,7 @@ public class CheckLegendsCommand extends CommandBase {
         }
     }
 
-    private static void sendMessage(ICommandSender source, int time, String timeUnit) {
+    private static void sendMessage(@Nonnull ICommandSender source, int time, @Nonnull String timeUnit) {
         source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getCheckLegendary()
                 .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))
                 .replace("%time%", time + timeUnit)));

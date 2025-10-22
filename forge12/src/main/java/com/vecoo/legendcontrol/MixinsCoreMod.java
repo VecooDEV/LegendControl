@@ -21,7 +21,6 @@ import java.util.zip.ZipInputStream;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
 public class MixinsCoreMod implements IFMLLoadingPlugin {
-
     private static final String[] ALLOWED_TYPES = {
             "jar",
             "zip"

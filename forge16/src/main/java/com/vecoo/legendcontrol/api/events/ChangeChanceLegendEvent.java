@@ -3,16 +3,19 @@ package com.vecoo.legendcontrol.api.events;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
+import javax.annotation.Nonnull;
+
 @Cancelable
 public class ChangeChanceLegendEvent extends Event {
     private final String source;
     private float chance;
 
-    public ChangeChanceLegendEvent(String source, float chance) {
+    public ChangeChanceLegendEvent(@Nonnull String source, float chance) {
         this.source = source;
         this.chance = chance;
     }
 
+    @Nonnull
     public String getSource() {
         return this.source;
     }
@@ -27,21 +30,21 @@ public class ChangeChanceLegendEvent extends Event {
 
     @Cancelable
     public static class Set extends ChangeChanceLegendEvent {
-        public Set(String source, float chance) {
+        public Set(@Nonnull String source, float chance) {
             super(source, chance);
         }
     }
 
     @Cancelable
     public static class Add extends ChangeChanceLegendEvent {
-        public Add(String source, float chance) {
+        public Add(@Nonnull String source, float chance) {
             super(source, chance);
         }
     }
 
     @Cancelable
     public static class Remove extends ChangeChanceLegendEvent {
-        public Remove(String source, float chance) {
+        public Remove(@Nonnull String source, float chance) {
             super(source, chance);
         }
     }

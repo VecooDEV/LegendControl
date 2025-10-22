@@ -31,11 +31,6 @@ public class LegendaryTrustCommand extends CommandBase {
     }
 
     @Override
-    public boolean checkPermission(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender) {
-        return true;
-    }
-
-    @Override
     @Nonnull
     public List<String> getTabCompletions(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, String[] args, BlockPos targetPos) {
         if (args.length == 1) {
@@ -106,7 +101,8 @@ public class LegendaryTrustCommand extends CommandBase {
             return;
         }
 
-        if (LegendControlDefender.getInstance().getConfig().getTrustLimit() > 0 && trustedPlayers.size() >= LegendControlDefender.getInstance().getConfig().getTrustLimit()) {
+        if (LegendControlDefender.getInstance().getConfig().getTrustLimit() > 0
+                && trustedPlayers.size() >= LegendControlDefender.getInstance().getConfig().getTrustLimit()) {
             player.sendMessage(UtilChat.formatMessage(localeConfig.getTrustLimit()));
             return;
         }

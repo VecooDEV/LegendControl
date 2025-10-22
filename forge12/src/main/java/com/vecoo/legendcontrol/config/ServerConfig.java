@@ -14,11 +14,10 @@ public class ServerConfig {
     private int randomTimeSpawnMin = 0;
     private int randomTimeSpawnMax = 300;
     private boolean legendaryParticle = true;
-    private String particleName = "dragon_breath";
+    private String particleName = "dragonbreath";
     private boolean notifyPersonalLegendarySpawn = true;
     private boolean notifyLegendaryCatch = true;
     private boolean notifyLegendaryDefeat = true;
-    private boolean notifyLegendaryDespawn = true;
     private boolean legendaryRepeat = true;
     private boolean blacklistDimensions = false;
     private boolean blacklistPlayers = false;
@@ -69,10 +68,6 @@ public class ServerConfig {
         return this.notifyLegendaryDefeat;
     }
 
-    public boolean isNotifyLegendaryDespawn() {
-        return this.notifyLegendaryDespawn;
-    }
-
     public boolean isLegendaryRepeat() {
         return this.legendaryRepeat;
     }
@@ -112,7 +107,6 @@ public class ServerConfig {
             this.particleName = config.getParticleName();
             this.notifyLegendaryCatch = config.isNotifyLegendaryCatch();
             this.notifyLegendaryDefeat = config.isNotifyLegendaryDefeat();
-            this.notifyLegendaryDespawn = config.isNotifyLegendaryDespawn();
             this.legendaryRepeat = config.isLegendaryRepeat();
             this.blacklistDimensions = config.isBlacklistDimensions();
             this.blacklistPlayers = config.isBlacklistPlayers();

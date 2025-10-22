@@ -4,13 +4,16 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
+import javax.annotation.Nonnull;
+
 public class LegendControlEvent extends Event {
     private final PixelmonEntity pixelmonEntity;
 
-    public LegendControlEvent(PixelmonEntity pixelmonEntity) {
+    public LegendControlEvent(@Nonnull PixelmonEntity pixelmonEntity) {
         this.pixelmonEntity = pixelmonEntity;
     }
 
+    @Nonnull
     public PixelmonEntity getPixelmonEntity() {
         return this.pixelmonEntity;
     }
@@ -21,7 +24,7 @@ public class LegendControlEvent extends Event {
         private double y;
         private double z;
 
-        public Location(PixelmonEntity pixelmonEntity, double x, double y, double z) {
+        public Location(@Nonnull PixelmonEntity pixelmonEntity, double x, double y, double z) {
             super(pixelmonEntity);
             this.x = x;
             this.y = y;
@@ -55,13 +58,13 @@ public class LegendControlEvent extends Event {
 
     @Cancelable
     public static class ForceDespawn extends LegendControlEvent{
-        public ForceDespawn(PixelmonEntity pixelmonEntity) {
+        public ForceDespawn(@Nonnull PixelmonEntity pixelmonEntity) {
             super(pixelmonEntity);
         }
     }
 
     public static class ChunkDespawn extends LegendControlEvent {
-        public ChunkDespawn(PixelmonEntity pixelmonEntity) {
+        public ChunkDespawn(@Nonnull PixelmonEntity pixelmonEntity) {
             super(pixelmonEntity);
         }
     }
