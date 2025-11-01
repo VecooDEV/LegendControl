@@ -22,6 +22,11 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
 }
 
+mixin {
+    add sourceSets.main, 'mixins.legendcontrol.refmap.json'
+    config 'mixins.legendcontrol.json'
+}
+
 processResources {
     filesMatching('META-INF/mods.toml') {
         expand(
