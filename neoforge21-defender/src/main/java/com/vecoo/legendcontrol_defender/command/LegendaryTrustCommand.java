@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.permission.UtilPermission;
 import com.vecoo.extralib.player.UtilPlayer;
+import com.vecoo.extralib.server.UtilCommand;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import com.vecoo.legendcontrol_defender.api.factory.LegendControlFactory;
 import com.vecoo.legendcontrol_defender.config.LocaleConfig;
@@ -23,14 +24,7 @@ public class LegendaryTrustCommand {
                 .requires(p -> UtilPermission.hasPermission(p, PermissionNodes.LEGENDARYTRUST_COMMAND))
                 .then(Commands.literal("add")
                         .then(Commands.argument("player", StringArgumentType.string())
-                                .suggests((s, builder) -> {
-                                    for (String playerName : s.getSource().getOnlinePlayerNames()) {
-                                        if (playerName.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
-                                            builder.suggest(playerName);
-                                        }
-                                    }
-                                    return builder.buildFuture();
-                                })
+                                .suggests(UtilCommand.suggestOnlinePlayers())
                                 .executes(e -> executeAdd(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))))
                 .then(Commands.literal("remove")
                         .then(Commands.argument("player", StringArgumentType.string())

@@ -27,7 +27,7 @@ public class WebhookUtils {
                             .replace("%biome%", UtilBiome.getBiomeName(biome.getRegisteredName())),
                     Utils.pokemonImage(pokemon), discordConfig.getWebhookColor(), true);
         } catch (IOException e) {
-            LegendControl.getLogger().error("Error send Discord webhook", e);
+            LegendControl.getLogger().error("Error send Discord webhook.", e);
         }
     }
 
@@ -46,7 +46,7 @@ public class WebhookUtils {
                             .replace("%player%", playerName),
                     Utils.pokemonImage(pokemon), discordConfig.getWebhookColor(), false);
         } catch (IOException e) {
-            LegendControl.getLogger().error("Error send Discord webhook", e);
+            LegendControl.getLogger().error("Error send Discord webhook.", e);
         }
     }
 
@@ -65,7 +65,7 @@ public class WebhookUtils {
                             .replace("%player%", playerName),
                     Utils.pokemonImage(pokemon), discordConfig.getWebhookColor(), false);
         } catch (IOException e) {
-            LegendControl.getLogger().error("Error send Discord webhook", e);
+            LegendControl.getLogger().error("Error send Discord webhook.", e);
         }
     }
 
@@ -83,7 +83,7 @@ public class WebhookUtils {
                             .replace("%pokemon%", pokemon.getTranslatedName().getString()),
                     Utils.pokemonImage(pokemon), discordConfig.getWebhookColor(), false);
         } catch (IOException e) {
-            LegendControl.getLogger().error("Error send Discord webhook", e);
+            LegendControl.getLogger().error("Error send Discord webhook.", e);
         }
     }
 
@@ -104,7 +104,7 @@ public class WebhookUtils {
                             .replace("%z%", String.valueOf(pixelmonEntity.getBlockZ())),
                     Utils.pokemonImage(pixelmonEntity.getPokemon()), discordConfig.getWebhookColor(), false);
         } catch (IOException e) {
-            LegendControl.getLogger().error("Error send Discord webhook", e);
+            LegendControl.getLogger().error("Error send Discord webhook.", e);
         }
     }
 

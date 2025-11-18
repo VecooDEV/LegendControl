@@ -71,7 +71,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
         int baseSpawnTicks = this.firesChooseEvent ? PixelmonConfigProxy.getSpawningLegendary().getLegendarySpawnTicks()
                 : PixelmonConfigProxy.getSpawningBoss().getBossSpawnTicks();
         this.spawnFrequency = 1200.0F / (RandomHelper.getRandomNumberBetween(0.6F, 1.4F) * baseSpawnTicks
-                / (1.0F + (float) (numPlayers - 1) * PixelmonConfigProxy.getSpawningLegendary().getSpawnTicksPlayerMultiplier()));
+                                         / (1.0F + (float) (numPlayers - 1) * PixelmonConfigProxy.getSpawningLegendary().getSpawnTicksPlayerMultiplier()));
 
         if (this.firesChooseEvent) {
             Utils.TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(
@@ -97,14 +97,21 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
         return null;
     }
 
-    @Inject(method = "forcefullySpawn", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;remove(I)Ljava/lang/Object;"), cancellable = true)
+    @Inject(
+            method = "forcefullySpawn",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/util/ArrayList;remove(I)Ljava/lang/Object;"
+            ),
+            cancellable = true
+    )
     public void forcefullySpawn(ServerPlayer onlyFocus, CallbackInfo ci, @Local(ordinal = 1) ArrayList<ServerPlayer> players) {
         ServerConfig config = LegendControl.getInstance().getConfig();
 
         players.removeIf(
                 player -> config.isBlacklistDimensions()
-                        && config.getBlacklistDimensionList().contains(player.level().dimension().location().getPath())
-                        || config.isBlacklistPlayers() && config.getBlacklistPlayersList().contains(player.getName().getString())
+                          && config.getBlacklistDimensionList().contains(player.level().dimension().location().getPath())
+                          || config.isBlacklistPlayers() && config.getBlacklistPlayersList().contains(player.getName().getString())
         );
 
         if (players.isEmpty()) {

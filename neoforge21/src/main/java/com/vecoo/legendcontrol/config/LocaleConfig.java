@@ -8,12 +8,10 @@ import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
 @ConfigSerializable
 public class LocaleConfig extends AbstractYamlConfig {
     private String reload = "&e(!) Configs have been reloaded.";
-
     private String location = "&e(!) Location of Pokemon %pokemon%: X: %x%, Y: %y%, Z: %z%.";
     private String notifyCatch = "&e(!) Player %player% catch to legendary pokemon %pokemon%!";
     private String notifyDefeat = "&e(!) Player %player% defeat to legendary pokemon %pokemon%!";
     private String notifyDespawn = "&e(!) Legendary pokemon %pokemon% despawned!";
-
     private String spawnPlayerLegendary = "&e(!) A legendary Pokemon has appeared near you.";
     private String checkLegendary = "&e(!) Chance %chance%%, legendary Pokemon will appear in ~%time%.";
     private String changeChanceLegendary = "&e(!) New chance: %chance%%.";

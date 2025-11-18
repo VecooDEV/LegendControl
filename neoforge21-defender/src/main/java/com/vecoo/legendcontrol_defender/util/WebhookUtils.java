@@ -22,7 +22,7 @@ public class WebhookUtils {
                             .replace("%pokemon%", pixelmonEntity.getPokemonName()),
                     Utils.pokemonImage(pixelmonEntity), discordConfig.getWebhookColor());
         } catch (IOException e) {
-            LegendControlDefender.getLogger().error("Error send Discord webhook", e);
+            LegendControlDefender.getLogger().error("Error send Discord webhook.", e);
         }
     }
 

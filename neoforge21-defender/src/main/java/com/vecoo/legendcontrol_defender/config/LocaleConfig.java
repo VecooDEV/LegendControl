@@ -8,7 +8,6 @@ import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
 @ConfigSerializable
 public class LocaleConfig extends AbstractYamlConfig {
     private String reload = "&e(!) Configs have been reloaded.";
-
     private String addTrust = "&e(!) Player %player% has been successfully added to your trust list.";
     private String removeTrust = "&e(!) Player %player% has been removed from your trust list.";
     private String removeAllTrust = "&e(!) All players have been removed from your trust list.";
