@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.permission.UtilPermission;
+import com.vecoo.extralib.server.UtilCommand;
 import com.vecoo.extralib.text.UtilText;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.LegendSourceName;
@@ -20,12 +21,7 @@ public class LegendControlCommand {
                 .requires(p -> UtilPermission.hasPermission(p, PermissionNodes.LEGENDCONTROL_COMMAND))
                 .then(Commands.literal("add")
                         .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
-                                .suggests((s, builder) -> {
-                                    for (int chance : Sets.newHashSet(10, 25, 50)) {
-                                        builder.suggest(chance);
-                                    }
-                                    return builder.buildFuture();
-                                })
+                                .suggests(UtilCommand.suggestAmount(Sets.newHashSet(10, 25, 50)))
                                 .executes(e -> executeAdd(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
                 .then(Commands.literal("remove")
                         .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
@@ -38,12 +34,7 @@ public class LegendControlCommand {
                                 .executes(e -> executeRemove(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
                 .then(Commands.literal("set")
                         .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
-                                .suggests((s, builder) -> {
-                                    for (int chance : Sets.newHashSet(10, 50, 100)) {
-                                        builder.suggest(chance);
-                                    }
-                                    return builder.buildFuture();
-                                })
+                                .suggests(UtilCommand.suggestAmount(Sets.newHashSet(10, 50, 100)))
                                 .executes(e -> executeSet(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
                 .then(Commands.literal("reload")
                         .executes(e -> executeReload(e.getSource()))));

@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 public class DiscordWebhook {
     private final String url;
 
-    public DiscordWebhook(String url) {
+    public DiscordWebhook(@NotNull String url) {
         this.url = url;
     }
 

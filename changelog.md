@@ -1,3 +1,1 @@
-* Update gradle depends.
-* Need ExtraLib 1.8.7+.
-* Improve logger.
+* The version of the dependent mod is now specified specifically.
