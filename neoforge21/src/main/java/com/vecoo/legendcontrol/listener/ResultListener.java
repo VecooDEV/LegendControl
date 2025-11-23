@@ -28,7 +28,7 @@ public class ResultListener {
             PixelmonEntity pixelmonEntity = event.target.getEntity();
 
             if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDefeat()) {
-                ServerPlayer player = event.user.getPlayerOwner();
+                ServerPlayer player = event.user.getOwnerPlayer();
                 String playerName;
 
                 if (player == null) {
