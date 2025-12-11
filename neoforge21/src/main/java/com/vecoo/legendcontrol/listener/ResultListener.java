@@ -27,7 +27,7 @@ public class ResultListener {
         if (event.willBeFatal()) {
             PixelmonEntity pixelmonEntity = event.target.getEntity();
 
-            if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDefeat()) {
+            if (pixelmonEntity != null && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDefeat()) {
                 ServerPlayer player = event.user.getOwnerPlayer();
                 String playerName;
 
@@ -37,7 +37,7 @@ public class ResultListener {
                     playerName = player.getName().getString();
                 }
 
-                UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDefeat()
+                UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyDefeat()
                         .replace("%player%", playerName)
                         .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
@@ -62,7 +62,7 @@ public class ResultListener {
         if (SUB_LEGENDS.remove(pokemon.getUUID()) && LegendControl.getInstance().getConfig().isNotifyLegendaryCatch()) {
             String playerName = event.getPlayer().getName().getString();
 
-            UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyCatch()
+            UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyCatch()
                     .replace("%player%", playerName)
                     .replace("%pokemon%", pokemon.getTranslatedName().getString()));
 
@@ -85,7 +85,7 @@ public class ResultListener {
             if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDespawn()) {
                 NeoForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
 
-                UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
+                UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyDespawn()
                         .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
                 WebhookUtils.despawnWebhook(pixelmonEntity.getPokemon());

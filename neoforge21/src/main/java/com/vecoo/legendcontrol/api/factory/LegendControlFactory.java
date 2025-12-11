@@ -8,12 +8,12 @@ import org.jetbrains.annotations.NotNull;
 public class LegendControlFactory {
     public static class ServerProvider {
         public static float getChanceLegend() {
-            return LegendControl.getInstance().getServerProvider().getStorage().getChanceLegend();
+            return LegendControl.getInstance().getServerProvider().getServerStorage().getChanceLegend();
         }
 
         @NotNull
         public static String getLastLegend() {
-            return LegendControl.getInstance().getServerProvider().getStorage().getLastLegend();
+            return LegendControl.getInstance().getServerProvider().getServerStorage().getLastLegend();
         }
 
         public static boolean setChanceLegend(@NotNull String source, float amount) {
@@ -23,7 +23,7 @@ public class LegendControlFactory {
                 return false;
             }
 
-            LegendControl.getInstance().getServerProvider().getStorage().setChanceLegend(event.getChance());
+            LegendControl.getInstance().getServerProvider().getServerStorage().setChanceLegend(event.getChance());
             return true;
         }
 
@@ -34,7 +34,7 @@ public class LegendControlFactory {
                 return false;
             }
 
-            LegendControl.getInstance().getServerProvider().getStorage().addChanceLegend(event.getChance());
+            LegendControl.getInstance().getServerProvider().getServerStorage().addChanceLegend(event.getChance());
             return true;
         }
 
@@ -45,12 +45,12 @@ public class LegendControlFactory {
                 return false;
             }
 
-            LegendControl.getInstance().getServerProvider().getStorage().removeChanceLegend(event.getChance());
+            LegendControl.getInstance().getServerProvider().getServerStorage().removeChanceLegend(event.getChance());
             return true;
         }
 
         public static void setLastLegend(@NotNull String pokemonName) {
-            LegendControl.getInstance().getServerProvider().getStorage().setLastLegend(pokemonName);
+            LegendControl.getInstance().getServerProvider().getServerStorage().setLastLegend(pokemonName);
         }
     }
 }

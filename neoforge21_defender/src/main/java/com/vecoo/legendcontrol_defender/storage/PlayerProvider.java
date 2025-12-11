@@ -20,18 +20,18 @@ public class PlayerProvider {
     private transient boolean intervalStarted = false;
 
     public PlayerProvider(@NotNull String filePath, @NotNull MinecraftServer server) {
-        this.filePath = UtilWorld.worldDirectory(filePath, server);
+        this.filePath = UtilWorld.resolveWorldDirectory(filePath, server);
 
         this.map = new HashMap<>();
     }
 
     @NotNull
-    public Map<UUID, PlayerStorage> getStorage() {
+    public Map<UUID, PlayerStorage> getPlayerStorage() {
         return this.map;
     }
 
     @NotNull
-    public PlayerStorage getStorage(@NotNull UUID playerUUID) {
+    public PlayerStorage getPlayerStorage(@NotNull UUID playerUUID) {
         if (this.map.get(playerUUID) == null) {
             new PlayerStorage(playerUUID, new LinkedHashSet<>());
         }
@@ -44,15 +44,15 @@ public class PlayerProvider {
         this.map.put(storage.getPlayerUUID(), storage);
     }
 
-    public void write() {
-        Gson gson = UtilGson.newGson();
+    public void save() {
+        Gson gson = UtilGson.getGson();
 
         for (PlayerStorage storage : this.map.values()) {
             UtilGson.writeFileAsync(this.filePath, storage.getPlayerUUID() + ".json", gson.toJson(storage)).join();
         }
     }
 
-    private void writeInterval() {
+    private void saveInterval() {
         if (!this.intervalStarted) {
             TaskTimer.builder()
                     .withoutDelay()
@@ -60,7 +60,7 @@ public class PlayerProvider {
                     .infinite()
                     .consume(task -> {
                         if (LegendControlDefender.getInstance().getServer().isRunning()) {
-                            Gson gson = UtilGson.newGson();
+                            Gson gson = UtilGson.getGson();
 
                             for (PlayerStorage storage : this.map.values()) {
                                 if (storage.isDirty()) {
@@ -85,12 +85,12 @@ public class PlayerProvider {
 
         for (String file : list) {
             UtilGson.readFileAsync(this.filePath, file, el -> {
-                PlayerStorage storage = UtilGson.newGson().fromJson(el, PlayerStorage.class);
+                PlayerStorage storage = UtilGson.getGson().fromJson(el, PlayerStorage.class);
                 storage.setDirty(false);
                 this.map.put(storage.getPlayerUUID(), storage);
             }).join();
         }
 
-        writeInterval();
+        saveInterval();
     }
 }

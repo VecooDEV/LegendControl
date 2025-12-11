@@ -13,17 +13,17 @@ import java.util.UUID;
 public class LegendControlFactory {
     public static class PlayerProvider {
         @NotNull
-        public static Map<UUID, PlayerStorage> getStorage() {
-            return LegendControlDefender.getInstance().getPlayerProvider().getStorage();
+        public static Map<UUID, PlayerStorage> getPlayerStorage() {
+            return LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage();
         }
 
         @NotNull
         public static Set<UUID> getPlayersTrust(@NotNull UUID playerUUID) {
-            return LegendControlDefender.getInstance().getPlayerProvider().getStorage(playerUUID).getPlayersTrust();
+            return LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).getPlayersTrust();
         }
 
         public static boolean hasPlayerTrust(@NotNull UUID playerUUID, @NotNull UUID targetUUID) {
-            return LegendControlDefender.getInstance().getPlayerProvider().getStorage(playerUUID).getPlayersTrust().contains(targetUUID);
+            return LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).getPlayersTrust().contains(targetUUID);
         }
 
         public static boolean addPlayerTrust(@NotNull UUID playerUUID, @NotNull UUID targetUUID) {
@@ -31,7 +31,7 @@ public class LegendControlFactory {
                 return false;
             }
 
-            LegendControlDefender.getInstance().getPlayerProvider().getStorage(playerUUID).addPlayerTrust(targetUUID);
+            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).addPlayerTrust(targetUUID);
             return true;
         }
 
@@ -40,7 +40,7 @@ public class LegendControlFactory {
                 return false;
             }
 
-            LegendControlDefender.getInstance().getPlayerProvider().getStorage(playerUUID).removePlayerTrust(targetUUID);
+            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).removePlayerTrust(targetUUID);
             return true;
         }
 
@@ -49,7 +49,7 @@ public class LegendControlFactory {
                 return false;
             }
 
-            LegendControlDefender.getInstance().getPlayerProvider().getStorage(playerUUID).clearPlayersTrust();
+            LegendControlDefender.getInstance().getPlayerProvider().getPlayerStorage(playerUUID).clearPlayersTrust();
             return true;
         }
     }

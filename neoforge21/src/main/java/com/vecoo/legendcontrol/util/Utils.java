@@ -13,7 +13,7 @@ public class Utils {
     );
 
     @NotNull
-    public static String pokemonImage(@NotNull Pokemon pokemon) {
+    public static String getPokemonImage(@NotNull Pokemon pokemon) {
         DiscordConfig discordConfig = LegendControl.getInstance().getDiscordConfig();
         String pokemonName = pokemon.getTranslatedName().getString().toLowerCase();
 
@@ -46,5 +46,16 @@ public class Utils {
 
         return pokemon.isShiny() ? discordConfig.getPokedexShinyUrl().replace("%pokemon%", pokemonName)
                 : discordConfig.getPokedexNormalUrl().replace("%pokemon%", pokemonName);
+    }
+
+    @NotNull
+    public static String formatFloat(float value) {
+        String format = String.format("%.3f", value).replaceAll("\\.?0+$", "");
+
+        if (format.endsWith(",")) {
+            format = format.replace(",", "");
+        }
+
+        return format;
     }
 }

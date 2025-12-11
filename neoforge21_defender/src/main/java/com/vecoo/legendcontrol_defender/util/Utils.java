@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class Utils {
     @NotNull
-    public static String pokemonImage(@NotNull PixelmonEntity pixelmonEntity) {
+    public static String getPokemonImage(@NotNull PixelmonEntity pixelmonEntity) {
         DiscordConfig discordConfig = LegendControlDefender.getInstance().getDiscordConfig();
         String pokemonName = pixelmonEntity.getPokemonName().toLowerCase();
 

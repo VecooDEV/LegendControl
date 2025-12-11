@@ -36,7 +36,7 @@ public class LegendarySpawnListener {
         }
 
         if (config.isNotifyPersonalLegendarySpawn()) {
-            player.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getSpawnPlayerLegendary()
+            player.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getSpawnPlayerLegendary()
                     .replace("%pokemon%", pixelmonEntity.getSpecies().getName())
                     .replace("%x%", String.valueOf(pixelmonEntity.getBlockX()))
                     .replace("%y%", String.valueOf(pixelmonEntity.getBlockY()))
@@ -61,7 +61,7 @@ public class LegendarySpawnListener {
                             LegendControlEvent.Location event = new LegendControlEvent.Location(pixelmonEntity, pixelmonEntity.getX(), pixelmonEntity.getY(), pixelmonEntity.getZ());
 
                             if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
-                                UtilChat.broadcast(LegendControl.getInstance().getLocale().getLocation()
+                                UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getLocation()
                                         .replace("%pokemon%", pixelmonEntity.getPokemonName())
                                         .replace("%x%", String.valueOf(pixelmonEntity.getBlockX()))
                                         .replace("%y%", String.valueOf(pixelmonEntity.getBlockY()))

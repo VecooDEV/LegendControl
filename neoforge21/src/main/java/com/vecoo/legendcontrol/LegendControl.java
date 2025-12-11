@@ -33,14 +33,14 @@ public class LegendControl {
     private static LegendControl instance;
 
     private ServerConfig config;
-    private LocaleConfig locale;
-    private DiscordConfig discord;
+    private LocaleConfig localeConfig;
+    private DiscordConfig discordConfig;
 
     private ServerProvider serverProvider;
 
     private MinecraftServer server;
 
-    private DiscordWebhook webhook;
+    private DiscordWebhook discordWebhook;
 
     public LegendControl() {
         instance = this;
@@ -74,15 +74,15 @@ public class LegendControl {
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
-        this.serverProvider.write();
+        this.serverProvider.save();
     }
 
     public void loadConfig() {
         try {
             this.config = YamlConfigFactory.getInstance(ServerConfig.class);
-            this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
-            this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
-            this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
+            this.localeConfig = YamlConfigFactory.getInstance(LocaleConfig.class);
+            this.discordConfig = YamlConfigFactory.getInstance(DiscordConfig.class);
+            this.discordWebhook = new DiscordWebhook(this.discordConfig.getWebhookUrl());
         } catch (Exception e) {
             LOGGER.error("Error load config.", e);
         }
@@ -112,12 +112,12 @@ public class LegendControl {
         return instance.config;
     }
 
-    public LocaleConfig getLocale() {
-        return instance.locale;
+    public LocaleConfig getLocaleConfig() {
+        return instance.localeConfig;
     }
 
     public DiscordConfig getDiscordConfig() {
-        return instance.discord;
+        return instance.discordConfig;
     }
 
     public ServerProvider getServerProvider() {
@@ -128,7 +128,7 @@ public class LegendControl {
         return instance.server;
     }
 
-    public DiscordWebhook getWebhook() {
-        return instance.webhook;
+    public DiscordWebhook getDiscordWebhook() {
+        return instance.discordWebhook;
     }
 }

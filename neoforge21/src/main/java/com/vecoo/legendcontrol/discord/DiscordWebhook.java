@@ -54,8 +54,8 @@ public class DiscordWebhook {
     private void sendRequest(@NotNull String json) throws IOException {
         if (!this.url.isEmpty()) {
             HttpURLConnection connection = (HttpURLConnection) URI.create(this.url).toURL().openConnection();
-            connection.setConnectTimeout(10000);
-            connection.setReadTimeout(10000);
+            connection.setConnectTimeout(15000);
+            connection.setReadTimeout(15000);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
@@ -68,7 +68,7 @@ public class DiscordWebhook {
             int responseCode = connection.getResponseCode();
 
             if (responseCode != 204) {
-                LegendControl.getLogger().error("Discord webhook failed: " + responseCode);
+                LegendControl.getLogger().error("Discord webhook failed {}.", responseCode);
             }
         }
     }

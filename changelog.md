@@ -1,1 +1,1 @@
-* The version of the dependent mod is now specified specifically.
+* Update depends.

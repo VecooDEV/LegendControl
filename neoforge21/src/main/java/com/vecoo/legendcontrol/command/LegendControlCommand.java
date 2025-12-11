@@ -6,11 +6,11 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.permission.UtilPermission;
 import com.vecoo.extralib.server.UtilCommand;
-import com.vecoo.extralib.text.UtilText;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.LegendSourceName;
 import com.vecoo.legendcontrol.api.factory.LegendControlFactory;
 import com.vecoo.legendcontrol.util.PermissionNodes;
+import com.vecoo.legendcontrol.util.Utils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import org.jetbrains.annotations.NotNull;
@@ -25,12 +25,7 @@ public class LegendControlCommand {
                                 .executes(e -> executeAdd(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
                 .then(Commands.literal("remove")
                         .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
-                                .suggests((s, builder) -> {
-                                    for (int chance : Sets.newHashSet(10, 25, 50)) {
-                                        builder.suggest(chance);
-                                    }
-                                    return builder.buildFuture();
-                                })
+                                .suggests(UtilCommand.suggestAmount(Sets.newHashSet(10, 25, 50)))
                                 .executes(e -> executeRemove(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
                 .then(Commands.literal("set")
                         .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
@@ -42,7 +37,7 @@ public class LegendControlCommand {
 
     private static int executeAdd(@NotNull CommandSourceStack source, float chance) {
         if (LegendControlFactory.ServerProvider.getChanceLegend() + chance > 100F) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()));
+            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getErrorChance()));
             return 0;
         }
 
@@ -50,14 +45,14 @@ public class LegendControlCommand {
             return 0;
         }
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
+        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getChangeChanceLegendary()
+                .replace("%chance%", Utils.formatFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
         return 1;
     }
 
     private static int executeRemove(@NotNull CommandSourceStack source, float chance) {
         if (LegendControlFactory.ServerProvider.getChanceLegend() - chance < 0F) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()));
+            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getErrorChance()));
             return 0;
         }
 
@@ -65,8 +60,8 @@ public class LegendControlCommand {
             return 0;
         }
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
+        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getChangeChanceLegendary()
+                .replace("%chance%", Utils.formatFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
         return 1;
     }
 
@@ -75,8 +70,8 @@ public class LegendControlCommand {
             return 0;
         }
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
+        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getChangeChanceLegendary()
+                .replace("%chance%", Utils.formatFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
         return 1;
     }
 
@@ -84,7 +79,7 @@ public class LegendControlCommand {
         LegendControl.getInstance().loadConfig();
         LegendControl.getInstance().loadStorage();
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getReload()));
+        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getReload()));
         return 1;
     }
 }

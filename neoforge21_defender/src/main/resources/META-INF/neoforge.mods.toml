@@ -5,10 +5,10 @@ license = "MIT"
 [[mods]]
 modId = "legendcontrol_defender"
 version = "${project_version}"
-displayName = "${project_name}-Defender"
+displayName = "${project_name}-Defender [Pixelmon]"
 logoFile = "logo.png"
 authors = "Vecoo"
-description = "Sidemod for Pixelmon. Adds an anti-theft system for legendary pokemon."
+description = "Addon changes spawn system for legendary pokemon."
 
 [[dependencies.legendcontrol_defender]]
 modId = "minecraft"
@@ -34,6 +34,6 @@ side = "BOTH"
 [[dependencies.legendcontrol_defender]]
 modId = "extralib"
 type = "required"
-versionRange = "[1.8.8,)"
+versionRange = "[2.0.1,)"
 ordering = "NONE"
 side = "BOTH"

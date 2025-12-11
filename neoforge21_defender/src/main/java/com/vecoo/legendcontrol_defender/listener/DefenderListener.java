@@ -84,7 +84,7 @@ public class DefenderListener {
                 .delay(LegendControlDefender.getInstance().getConfig().getProtectedTime() * 20L)
                 .consume(task -> {
                     if (hasLegendaryDefender(pixelmonEntity.getUUID()) && pixelmonEntity.isAlive() && !pixelmonEntity.hasOwner()) {
-                        UtilChat.broadcast(LegendControlDefender.getInstance().getLocale().getProtection()
+                        UtilChat.broadcast(LegendControlDefender.getInstance().getLocaleConfig().getProtection()
                                 .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
                         NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.ExpiredDefender(pixelmonEntity));
@@ -115,7 +115,7 @@ public class DefenderListener {
 
                 if (target instanceof PixelmonEntity && hasLegendaryPlayerOwner(target.getUUID(), player)
                         && !NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(pixelmonEntity, player)).isCanceled()) {
-                    player.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()));
+                    player.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
                     event.setCanceled(true);
                 }
             });
@@ -145,7 +145,7 @@ public class DefenderListener {
         if (participants.size() == 2 && player != null && wildPixelmon != null && player.getPlayer() != null
                 && wildPixelmon.getEntity() != null && hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), player.getPlayer())) {
             if (!NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender((PixelmonEntity) wildPixelmon.getEntity(), player.getPlayer())).isCanceled()) {
-                player.getPlayer().sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()));
+                player.getPlayer().sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
                 event.setCanceled(true);
             }
         }
@@ -161,7 +161,7 @@ public class DefenderListener {
                     player.getInventory().add(event.getPokeBall().getBallItem());
                 }
 
-                player.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getIncorrectCause()));
+                player.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
                 event.setCanceled(true);
             }
         }

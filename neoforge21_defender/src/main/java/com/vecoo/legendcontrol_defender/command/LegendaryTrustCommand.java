@@ -49,8 +49,8 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeAdd(@NotNull ServerPlayer player, @NotNull String target) {
-        UUID targetUUID = UtilPlayer.getUUID(target);
-        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
+        UUID targetUUID = UtilPlayer.findUUID(target);
+        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocaleConfig();
 
         if (targetUUID == null) {
             player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getPlayerNotFound()
@@ -85,8 +85,8 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeRemove(@NotNull ServerPlayer player, @NotNull String target) {
-        UUID targetUUID = UtilPlayer.getUUID(target);
-        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
+        UUID targetUUID = UtilPlayer.findUUID(target);
+        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocaleConfig();
 
         if (targetUUID == null) {
             player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getPlayerNotFound()
@@ -116,7 +116,7 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeRemoveAll(@NotNull ServerPlayer player) {
-        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
+        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocaleConfig();
 
         if (LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID()).isEmpty()) {
             player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getEmptyTrust()));
@@ -133,7 +133,7 @@ public class LegendaryTrustCommand {
 
     private static int executeList(@NotNull ServerPlayer player) {
         Set<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
-        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
+        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocaleConfig();
 
         if (trustedPlayers.isEmpty()) {
             player.sendSystemMessage(UtilChat.formatMessage(localeConfig.getEmptyTrust()));
@@ -153,7 +153,7 @@ public class LegendaryTrustCommand {
         LegendControlDefender.getInstance().loadConfig();
         LegendControlDefender.getInstance().loadStorage();
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getReload()));
+        source.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getReload()));
         return 1;
     }
 }

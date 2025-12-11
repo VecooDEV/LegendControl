@@ -16,13 +16,13 @@ public class WebhookUtils {
         }
 
         try {
-            LegendControlDefender.getInstance().getWebhook().sendEmbed(discordConfig.getWebhookTitleExpiredDefender()
+            LegendControlDefender.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleExpiredDefender()
                             .replace("%shiny%", getShinyText(pixelmonEntity)),
                     discordConfig.getWebhookDescriptionExpiredDefender()
                             .replace("%pokemon%", pixelmonEntity.getPokemonName()),
-                    Utils.pokemonImage(pixelmonEntity), discordConfig.getWebhookColor());
+                    Utils.getPokemonImage(pixelmonEntity), discordConfig.getWebhookColor());
         } catch (IOException e) {
-            LegendControlDefender.getLogger().error("Error send Discord webhook.", e);
+            LegendControlDefender.getLogger().error("Error send discord webhook.", e);
         }
     }
 

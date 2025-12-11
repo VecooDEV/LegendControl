@@ -5,13 +5,13 @@ license = "MIT"
 [[mods]]
 modId = "legendcontrol"
 version = "${project_version}"
-displayName = "${project_name}"
+displayName = "${project_name} [Pixelmon]"
 logoFile = "logo.png"
 authors = "Vecoo"
-description = "Sidemod for Pixelmon. Changing the spawn elements of legendary pokemon."
+description = "Addon changes spawn system for legendary pokemon."
 
 [[mixins]]
-config = "mixins.legendcontrol.json"
+config = "legendcontrol.mixins.json"
 
 [[dependencies.legendcontrol]]
 modId = "minecraft"
@@ -37,6 +37,6 @@ side = "BOTH"
 [[dependencies.legendcontrol]]
 modId = "extralib"
 type = "required"
-versionRange = "[1.8.8,)"
+versionRange = "[2.0.1,)"
 ordering = "NONE"
 side = "BOTH"

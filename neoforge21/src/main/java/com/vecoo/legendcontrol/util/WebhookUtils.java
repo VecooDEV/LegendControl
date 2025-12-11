@@ -20,14 +20,14 @@ public class WebhookUtils {
         }
 
         try {
-            LegendControl.getInstance().getWebhook().sendEmbed(discordConfig.getWebhookTitleLegendarySpawn()
+            LegendControl.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleLegendarySpawn()
                             .replace("%shiny%", getShinyText(pokemon)),
                     discordConfig.getWebhookDescriptionLegendarySpawn()
                             .replace("%pokemon%", pokemon.getTranslatedName().getString())
-                            .replace("%biome%", UtilBiome.getBiomeName(biome.getRegisteredName())),
-                    Utils.pokemonImage(pokemon), discordConfig.getWebhookColor(), true);
+                            .replace("%biome%", UtilBiome.formatBiomeName(biome.getRegisteredName())),
+                    Utils.getPokemonImage(pokemon), discordConfig.getWebhookColor(), true);
         } catch (IOException e) {
-            LegendControl.getLogger().error("Error send Discord webhook.", e);
+            LegendControl.getLogger().error("Error send discord webhook.", e);
         }
     }
 
@@ -39,14 +39,14 @@ public class WebhookUtils {
         }
 
         try {
-            LegendControl.getInstance().getWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryDefeat()
+            LegendControl.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryDefeat()
                             .replace("%shiny%", getShinyText(pokemon)),
                     discordConfig.getWebhookDescriptionLegendaryDefeat()
                             .replace("%pokemon%", pokemon.getTranslatedName().getString())
                             .replace("%player%", playerName),
-                    Utils.pokemonImage(pokemon), discordConfig.getWebhookColor(), false);
+                    Utils.getPokemonImage(pokemon), discordConfig.getWebhookColor(), false);
         } catch (IOException e) {
-            LegendControl.getLogger().error("Error send Discord webhook.", e);
+            LegendControl.getLogger().error("Error send discord webhook.", e);
         }
     }
 
@@ -58,14 +58,14 @@ public class WebhookUtils {
         }
 
         try {
-            LegendControl.getInstance().getWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryCatch()
+            LegendControl.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryCatch()
                             .replace("%shiny%", getShinyText(pokemon)),
                     discordConfig.getWebhookDescriptionLegendaryCatch()
                             .replace("%pokemon%", pokemon.getTranslatedName().getString())
                             .replace("%player%", playerName),
-                    Utils.pokemonImage(pokemon), discordConfig.getWebhookColor(), false);
+                    Utils.getPokemonImage(pokemon), discordConfig.getWebhookColor(), false);
         } catch (IOException e) {
-            LegendControl.getLogger().error("Error send Discord webhook.", e);
+            LegendControl.getLogger().error("Error send discord webhook.", e);
         }
     }
 
@@ -77,13 +77,13 @@ public class WebhookUtils {
         }
 
         try {
-            LegendControl.getInstance().getWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryDespawn()
+            LegendControl.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryDespawn()
                             .replace("%shiny%", getShinyText(pokemon)),
                     discordConfig.getWebhookDescriptionLegendaryDespawn()
                             .replace("%pokemon%", pokemon.getTranslatedName().getString()),
-                    Utils.pokemonImage(pokemon), discordConfig.getWebhookColor(), false);
+                    Utils.getPokemonImage(pokemon), discordConfig.getWebhookColor(), false);
         } catch (IOException e) {
-            LegendControl.getLogger().error("Error send Discord webhook.", e);
+            LegendControl.getLogger().error("Error send discord webhook.", e);
         }
     }
 
@@ -95,16 +95,16 @@ public class WebhookUtils {
         }
 
         try {
-            LegendControl.getInstance().getWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryLocation()
+            LegendControl.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryLocation()
                             .replace("%shiny%", getShinyText(pixelmonEntity.getPokemon())),
                     discordConfig.getWebhookDescriptionLegendaryLocation()
                             .replace("%pokemon%", pixelmonEntity.getPokemonName())
                             .replace("%x%", String.valueOf(pixelmonEntity.getBlockX()))
                             .replace("%y%", String.valueOf(pixelmonEntity.getBlockY()))
                             .replace("%z%", String.valueOf(pixelmonEntity.getBlockZ())),
-                    Utils.pokemonImage(pixelmonEntity.getPokemon()), discordConfig.getWebhookColor(), false);
+                    Utils.getPokemonImage(pixelmonEntity.getPokemon()), discordConfig.getWebhookColor(), false);
         } catch (IOException e) {
-            LegendControl.getLogger().error("Error send Discord webhook.", e);
+            LegendControl.getLogger().error("Error send discord webhook.", e);
         }
     }
 

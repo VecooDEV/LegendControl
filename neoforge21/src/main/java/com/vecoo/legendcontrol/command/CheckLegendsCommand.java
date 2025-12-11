@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.permission.UtilPermission;
-import com.vecoo.extralib.text.UtilText;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.factory.LegendControlFactory;
 import com.vecoo.legendcontrol.util.PermissionNodes;
@@ -28,19 +27,19 @@ public class CheckLegendsCommand {
         int hours = minutes / 60;
 
         if (seconds < 60) {
-            sendMessage(source, seconds, LegendControl.getInstance().getLocale().getSeconds());
+            sendMessage(source, seconds, LegendControl.getInstance().getLocaleConfig().getSeconds());
         } else if (minutes < 60) {
-            sendMessage(source, minutes, LegendControl.getInstance().getLocale().getMinutes());
+            sendMessage(source, minutes, LegendControl.getInstance().getLocaleConfig().getMinutes());
         } else {
-            sendMessage(source, hours, LegendControl.getInstance().getLocale().getHours());
+            sendMessage(source, hours, LegendControl.getInstance().getLocaleConfig().getHours());
         }
 
         return 1;
     }
 
     private static void sendMessage(@NotNull CommandSourceStack source, int time, @NotNull String timeUnit) {
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getCheckLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))
+        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getCheckLegendary()
+                .replace("%chance%", Utils.formatFloat(LegendControlFactory.ServerProvider.getChanceLegend()))
                 .replace("%time%", time + timeUnit)));
 
         if (UtilPermission.hasPermission(source, PermissionNodes.CHECKLEGENDARY_MODIFY_COMMAND)) {
