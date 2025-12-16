@@ -1,15 +1,14 @@
 package com.vecoo.legendcontrol.config;
 
 import com.google.common.collect.Sets;
-import com.pixelmonmod.pixelmon.api.config.api.data.ConfigPath;
-import com.pixelmonmod.pixelmon.api.config.api.yaml.AbstractYamlConfig;
-import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
+import com.vecoo.extralib.shade.spongepowered.configurate.objectmapping.ConfigSerializable;
+import lombok.Getter;
 
 import java.util.Set;
 
-@ConfigPath("config/LegendControl/config.yml")
+@Getter
 @ConfigSerializable
-public class ServerConfig extends AbstractYamlConfig {
+public class ServerConfig {
     private int locationTime = 600;
     private int despawnTime = 1800;
     private float baseChance = 10.0F;
@@ -24,75 +23,7 @@ public class ServerConfig extends AbstractYamlConfig {
     private boolean notifyLegendaryDespawn = true;
     private boolean legendaryRepeat = true;
     private boolean blacklistDimensions = false;
-    private boolean blacklistPlayers = false;
     private Set<String> blacklistDimensionList = Sets.newHashSet("the_nether", "the_end");
+    private boolean blacklistPlayers = false;
     private Set<String> blacklistPlayersList = Sets.newHashSet("Player");
-
-    public float getBaseChance() {
-        return this.baseChance;
-    }
-
-    public float getStepSpawnChance() {
-        return this.stepSpawnChance;
-    }
-
-    public boolean isNotifyLegendaryCatch() {
-        return this.notifyLegendaryCatch;
-    }
-
-    public int getLocationTime() {
-        return this.locationTime;
-    }
-
-    public int getDespawnTime() {
-        return this.despawnTime;
-    }
-
-    public int getRandomTimeSpawnMin() {
-        return this.randomTimeSpawnMin;
-    }
-
-    public int getRandomTimeSpawnMax() {
-        return this.randomTimeSpawnMax;
-    }
-
-    public String getParticleName() {
-        return this.particleName;
-    }
-
-    public boolean isNotifyPersonalLegendarySpawn() {
-        return this.notifyPersonalLegendarySpawn;
-    }
-
-    public boolean isLegendaryParticle() {
-        return this.legendaryParticle;
-    }
-
-    public boolean isNotifyLegendaryDefeat() {
-        return this.notifyLegendaryDefeat;
-    }
-
-    public boolean isNotifyLegendaryDespawn() {
-        return this.notifyLegendaryDespawn;
-    }
-
-    public boolean isLegendaryRepeat() {
-        return this.legendaryRepeat;
-    }
-
-    public boolean isBlacklistDimensions() {
-        return this.blacklistDimensions;
-    }
-
-    public boolean isBlacklistPlayers() {
-        return this.blacklistPlayers;
-    }
-
-    public Set<String> getBlacklistDimensionList() {
-        return this.blacklistDimensionList;
-    }
-
-    public Set<String> getBlacklistPlayersList() {
-        return this.blacklistPlayersList;
-    }
 }

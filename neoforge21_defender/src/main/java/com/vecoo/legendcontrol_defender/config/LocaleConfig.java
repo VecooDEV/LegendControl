@@ -1,12 +1,11 @@
 package com.vecoo.legendcontrol_defender.config;
 
-import com.pixelmonmod.pixelmon.api.config.api.data.ConfigPath;
-import com.pixelmonmod.pixelmon.api.config.api.yaml.AbstractYamlConfig;
-import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
+import com.vecoo.extralib.shade.spongepowered.configurate.objectmapping.ConfigSerializable;
+import lombok.Getter;
 
-@ConfigPath("config/LegendControl/Defender/locale.yml")
+@Getter
 @ConfigSerializable
-public class LocaleConfig extends AbstractYamlConfig {
+public class LocaleConfig {
     private String reload = "&e(!) Configs have been reloaded.";
     private String addTrust = "&e(!) Player %player% has been successfully added to your trust list.";
     private String removeTrust = "&e(!) Player %player% has been removed from your trust list.";
@@ -18,65 +17,10 @@ public class LocaleConfig extends AbstractYamlConfig {
 
     private String trustedPlayers = "&e- %player%";
 
+    private String errorReload = "&c(!) Reload error, checking console and fixes config.";
     private String cantSelfTrust = "&c(!) You cannot add yourself to the trust list.";
     private String alreadyTrusted = "&c(!) This player is already on your trust list.";
     private String notPlayerTrust = "&c(!) This player is not yet on your trust list.";
     private String trustLimit = "&c(!) You have reached the maximum number of players on the trust list.";
     private String playerNotFound = "&c(!) Player %player% not found.";
-
-    public String getReload() {
-        return this.reload;
-    }
-
-    public String getCantSelfTrust() {
-        return this.cantSelfTrust;
-    }
-
-    public String getAlreadyTrusted() {
-        return this.alreadyTrusted;
-    }
-
-    public String getAddTrust() {
-        return this.addTrust;
-    }
-
-    public String getNotPlayerTrust() {
-        return this.notPlayerTrust;
-    }
-
-    public String getRemoveTrust() {
-        return this.removeTrust;
-    }
-
-    public String getRemoveAllTrust() {
-        return this.removeAllTrust;
-    }
-
-    public String getEmptyTrust() {
-        return this.emptyTrust;
-    }
-
-    public String getListTrust() {
-        return this.listTrust;
-    }
-
-    public String getTrustLimit() {
-        return this.trustLimit;
-    }
-
-    public String getTrustedPlayers() {
-        return this.trustedPlayers;
-    }
-
-    public String getIncorrectCause() {
-        return this.incorrectCause;
-    }
-
-    public String getProtection() {
-        return this.protection;
-    }
-
-    public String getPlayerNotFound() {
-        return this.playerNotFound;
-    }
 }

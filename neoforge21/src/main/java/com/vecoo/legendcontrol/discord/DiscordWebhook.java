@@ -1,6 +1,8 @@
 package com.vecoo.legendcontrol.discord;
 
 import com.vecoo.legendcontrol.LegendControl;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,23 +13,21 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 
+@RequiredArgsConstructor
 public class DiscordWebhook {
+    @NotNull
     private final String url;
 
-    public DiscordWebhook(@NotNull String url) {
-        this.url = url;
-    }
-
     public void sendEmbed(@NotNull String title, @NotNull String description, @NotNull String thumbnailUrl,
-                          @NotNull String color, boolean pingRole) throws IOException {
-        String role = "";
+                          @NotNull String color, boolean pingRole) {
+        var role = "";
 
         if (pingRole) {
-            long roleId = LegendControl.getInstance().getDiscordConfig().getWebhookRole();
+            val roleId = LegendControl.getInstance().getDiscordConfig().getWebhookRole();
             role = roleId != 0 ? "<@&" + roleId + ">" : "";
         }
 
-        String json = String.format("{\"content\": \"%s\", \"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}",
+        val json = String.format("{\"content\": \"%s\", \"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}",
                 escapeJson(role), escapeJson(title), escapeJson(description), escapeJson(thumbnailUrl), color);
 
         CompletableFuture.runAsync(() -> {
@@ -53,19 +53,19 @@ public class DiscordWebhook {
 
     private void sendRequest(@NotNull String json) throws IOException {
         if (!this.url.isEmpty()) {
-            HttpURLConnection connection = (HttpURLConnection) URI.create(this.url).toURL().openConnection();
+            val connection = (HttpURLConnection) URI.create(this.url).toURL().openConnection();
             connection.setConnectTimeout(15000);
             connection.setReadTimeout(15000);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = json.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                val input = json.getBytes(StandardCharsets.UTF_8);
+                outputStream.write(input, 0, input.length);
             }
 
-            int responseCode = connection.getResponseCode();
+            val responseCode = connection.getResponseCode();
 
             if (responseCode != 204) {
                 LegendControl.getLogger().error("Discord webhook failed {}.", responseCode);

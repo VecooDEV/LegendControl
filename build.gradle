@@ -23,6 +23,11 @@ subprojects {
         }
     }
 
+    dependencies {
+        implementation  "org.projectlombok:lombok:${lombok}"
+        annotationProcessor "org.projectlombok:lombok:${lombok}"
+    }
+
     tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
     }

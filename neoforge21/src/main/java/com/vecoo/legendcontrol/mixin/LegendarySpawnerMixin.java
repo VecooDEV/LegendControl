@@ -3,15 +3,14 @@ package com.vecoo.legendcontrol.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.pixelmonmod.pixelmon.api.config.PixelmonConfigProxy;
 import com.pixelmonmod.pixelmon.api.spawning.SpawnAction;
-import com.pixelmonmod.pixelmon.api.spawning.SpawnLocation;
 import com.pixelmonmod.pixelmon.api.spawning.archetypes.spawners.TickingSpawner;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.pixelmonmod.pixelmon.spawning.LegendarySpawner;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.LegendSourceName;
-import com.vecoo.legendcontrol.api.factory.LegendControlFactory;
-import com.vecoo.legendcontrol.config.ServerConfig;
+import com.vecoo.legendcontrol.api.service.LegendControlService;
 import com.vecoo.legendcontrol.util.Utils;
+import lombok.val;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -67,25 +66,27 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
         }
 
         this.possibleSpawns = null;
-        int numPlayers = LegendControl.getInstance().getServer().getPlayerList().getPlayerCount();
-        int baseSpawnTicks = this.firesChooseEvent ? PixelmonConfigProxy.getSpawningLegendary().getLegendarySpawnTicks()
+        val numPlayers = LegendControl.getInstance().getServer().getPlayerList().getPlayerCount();
+        val baseSpawnTicks = this.firesChooseEvent ? PixelmonConfigProxy.getSpawningLegendary().getLegendarySpawnTicks()
                 : PixelmonConfigProxy.getSpawningBoss().getBossSpawnTicks();
         this.spawnFrequency = 1200.0F / (RandomHelper.getRandomNumberBetween(0.6F, 1.4F) * baseSpawnTicks
                                          / (1.0F + (float) (numPlayers - 1) * PixelmonConfigProxy.getSpawningLegendary().getSpawnTicksPlayerMultiplier()));
 
+        val serverConfig = LegendControl.getInstance().getServerConfig();
+
         if (this.firesChooseEvent) {
             Utils.TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(
-                    LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(),
-                    LegendControl.getInstance().getConfig().getRandomTimeSpawnMax()
+                    serverConfig.getRandomTimeSpawnMin(),
+                    serverConfig.getRandomTimeSpawnMax()
             );
         }
 
-        float chance = this.firesChooseEvent ? LegendControlFactory.ServerProvider.getChanceLegend() / 100.0F
+        val chance = this.firesChooseEvent ? LegendControlService.getChanceLegend() / 100.0F
                 : PixelmonConfigProxy.getSpawningBoss().getBossSpawnChance();
 
         if (!RandomHelper.getRandomChance(chance)) {
             if (this.firesChooseEvent && numPlayers > 0) {
-                LegendControlFactory.ServerProvider.addChanceLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getStepSpawnChance());
+                LegendControlService.addChanceLegend(LegendSourceName.PIXELMON, serverConfig.getStepSpawnChance());
             }
 
             return null;
@@ -94,6 +95,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
         if (numPlayers > 0) {
             this.forcefullySpawn(null);
         }
+
         return null;
     }
 
@@ -106,12 +108,12 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
             cancellable = true
     )
     public void forcefullySpawn(ServerPlayer onlyFocus, CallbackInfo ci, @Local(ordinal = 1) ArrayList<ServerPlayer> players) {
-        ServerConfig config = LegendControl.getInstance().getConfig();
+        val serverConfig = LegendControl.getInstance().getServerConfig();
 
         players.removeIf(
-                player -> config.isBlacklistDimensions()
-                          && config.getBlacklistDimensionList().contains(player.level().dimension().location().getPath())
-                          || config.isBlacklistPlayers() && config.getBlacklistPlayersList().contains(player.getName().getString())
+                player -> serverConfig.isBlacklistDimensions()
+                          && serverConfig.getBlacklistDimensionList().contains(player.level().dimension().location().getPath())
+                          || serverConfig.isBlacklistPlayers() && serverConfig.getBlacklistPlayersList().contains(player.getName().getString())
         );
 
         if (players.isEmpty()) {
@@ -128,15 +130,18 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
         return target == null ? CompletableFuture.completedFuture(Collections.emptyList()) : this.getTrackedBlockCollection(
                 target, 0.0F, 0.0F, horizontalSliceRadius,
                 this.verticalSliceRadius, this.minDistFromCentre, this.maxDistFromCentre).thenApply((blockCollection) -> {
-            ArrayList<SpawnLocation> spawnLocations = this.spawnLocationCalculator.calculateSpawnableLocations(blockCollection);
+            val spawnLocations = this.spawnLocationCalculator.calculateSpawnableLocations(blockCollection);
+
             Collections.shuffle(spawnLocations);
-            List<SpawnAction<?>> possibleSpawns = this.selectionAlgorithm.calculateSpawnActions(this, this.spawnSets, spawnLocations);
+
+            val possibleSpawns = this.selectionAlgorithm.calculateSpawnActions(this, this.spawnSets, spawnLocations);
 
             if (possibleSpawns != null && !possibleSpawns.isEmpty()) {
                 possibleSpawns.forEach(SpawnAction::applyLocationMutations);
                 return possibleSpawns;
             } else {
-                LegendControlFactory.ServerProvider.addChanceLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getConfig().getStepSpawnChance());
+                LegendControlService.addChanceLegend(LegendSourceName.PIXELMON,
+                        LegendControl.getInstance().getServerConfig().getStepSpawnChance());
                 return Collections.emptyList();
             }
         });

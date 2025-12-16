@@ -2,13 +2,12 @@ package com.vecoo.legendcontrol.listener;
 
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
-import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.events.LegendControlEvent;
 import com.vecoo.legendcontrol.util.WebhookUtils;
-import net.minecraft.server.level.ServerPlayer;
+import lombok.val;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -23,12 +22,13 @@ public class ResultListener {
     public static Set<UUID> SUB_LEGENDS = new HashSet<>();
 
     @SubscribeEvent
-    public void onDefeat(AttackEvent.Damage event) { //We use this event because in 1.21.1 the BeatWildPixelmonEvent occurs later than EntityLeaveLevelEvent.
+    public void onAttackDamage(AttackEvent.Damage event) { //We use this event because in 1.21.1 the BeatWildPixelmonEvent occurs later than EntityLeaveLevelEvent.
         if (event.willBeFatal()) {
-            PixelmonEntity pixelmonEntity = event.target.getEntity();
+            val pixelmonEntity = event.target.getEntity();
 
-            if (pixelmonEntity != null && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDefeat()) {
-                ServerPlayer player = event.user.getOwnerPlayer();
+            if (pixelmonEntity != null && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity)
+                && LegendControl.getInstance().getServerConfig().isNotifyLegendaryDefeat()) {
+                val player = event.user.getOwnerPlayer();
                 String playerName;
 
                 if (player == null) {
@@ -48,7 +48,7 @@ public class ResultListener {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onStartCapture(CaptureEvent.StartCapture event) {
-        PixelmonEntity pixelmonEntity = event.getPokemon().getEntity();
+        val pixelmonEntity = event.getPokemon().getEntity();
 
         if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity)) {
             SUB_LEGENDS.add(event.getPokemon().getUUID());
@@ -56,11 +56,11 @@ public class ResultListener {
     }
 
     @SubscribeEvent
-    public void onCapture(CaptureEvent.SuccessfulCapture event) {
-        Pokemon pokemon = event.getPokemon();
+    public void onSuccessfulCapture(CaptureEvent.SuccessfulCapture event) {
+        val pokemon = event.getPokemon();
 
-        if (SUB_LEGENDS.remove(pokemon.getUUID()) && LegendControl.getInstance().getConfig().isNotifyLegendaryCatch()) {
-            String playerName = event.getPlayer().getName().getString();
+        if (SUB_LEGENDS.remove(pokemon.getUUID()) && LegendControl.getInstance().getServerConfig().isNotifyLegendaryCatch()) {
+            val playerName = event.getPlayer().getName().getString();
 
             UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyCatch()
                     .replace("%player%", playerName)
@@ -82,7 +82,8 @@ public class ResultListener {
     @SubscribeEvent
     public void onEntityLeave(EntityLeaveLevelEvent event) {
         if (!event.getLevel().isClientSide() && event.getEntity() instanceof PixelmonEntity pixelmonEntity) {
-            if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDespawn()) {
+            if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity)
+                && LegendControl.getInstance().getServerConfig().isNotifyLegendaryDespawn()) {
                 NeoForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
 
                 UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyDespawn()

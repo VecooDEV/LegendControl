@@ -1,20 +1,11 @@
 package com.vecoo.legendcontrol_defender.config;
 
-import com.pixelmonmod.pixelmon.api.config.api.data.ConfigPath;
-import com.pixelmonmod.pixelmon.api.config.api.yaml.AbstractYamlConfig;
-import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
+import com.vecoo.extralib.shade.spongepowered.configurate.objectmapping.ConfigSerializable;
+import lombok.Getter;
 
-@ConfigPath("config/LegendControl/Defender/config.yml")
+@Getter
 @ConfigSerializable
-public class ServerConfig extends AbstractYamlConfig {
+public class ServerConfig {
     private int trustLimit = 15;
     private int protectedTime = 300;
-
-    public int getTrustLimit() {
-        return this.trustLimit;
-    }
-
-    public int getProtectedTime() {
-        return this.protectedTime;
-    }
 }

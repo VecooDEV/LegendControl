@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PermissionNodes {
-    public static final Set<PermissionNode<?>> PERMISSION_LIST = new HashSet<>();
+    private static final Set<PermissionNode<?>> PERMISSION_LIST = new HashSet<>();
 
     public static PermissionNode<Boolean> LEGENDARYTRUST_COMMAND = UtilPermission.getPermissionNode("minecraft.command.ltrust");
     public static PermissionNode<Boolean> LEGENDARYTRUST_RELOAD_COMMAND = UtilPermission.getPermissionNode("minecraft.command.ltrust.reload");

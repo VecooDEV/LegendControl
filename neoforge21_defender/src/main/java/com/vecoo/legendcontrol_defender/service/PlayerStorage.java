@@ -1,53 +1,43 @@
-package com.vecoo.legendcontrol_defender.storage;
+package com.vecoo.legendcontrol_defender.service;
 
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 import java.util.UUID;
 
+@Getter
+@ToString
 public class PlayerStorage {
+    @NotNull
     private final UUID playerUUID;
+    @NotNull
     private final Set<UUID> playersTrust;
 
+    @Setter
     private transient boolean dirty = false;
 
     public PlayerStorage(@NotNull UUID playerUUID, @NotNull Set<UUID> playersTrust) {
         this.playerUUID = playerUUID;
         this.playersTrust = playersTrust;
-        LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
-    }
-
-    @NotNull
-    public UUID getPlayerUUID() {
-        return this.playerUUID;
-    }
-
-    @NotNull
-    public Set<UUID> getPlayersTrust() {
-        return this.playersTrust;
-    }
-
-    public boolean isDirty() {
-        return this.dirty;
+        LegendControlDefender.getInstance().getPlayerService().updatePlayerStorage(this);
     }
 
     public void addPlayerTrust(@NotNull UUID playerUUID) {
         this.playersTrust.add(playerUUID);
-        LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+        LegendControlDefender.getInstance().getPlayerService().updatePlayerStorage(this);
     }
 
     public void removePlayerTrust(@NotNull UUID playerUUID) {
         this.playersTrust.remove(playerUUID);
-        LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
+        LegendControlDefender.getInstance().getPlayerService().updatePlayerStorage(this);
     }
 
     public void clearPlayersTrust() {
         this.playersTrust.clear();
-        LegendControlDefender.getInstance().getPlayerProvider().updatePlayerStorage(this);
-    }
-
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
+        LegendControlDefender.getInstance().getPlayerService().updatePlayerStorage(this);
     }
 }

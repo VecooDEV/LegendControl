@@ -1,45 +1,34 @@
 package com.vecoo.legendcontrol.api.events;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.ICancellableEvent;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class ChangeChanceLegendEvent extends Event implements ICancellableEvent {
+    @NotNull
     private final String source;
     private float chance;
 
-    public ChangeChanceLegendEvent(@NotNull String source, float chance) {
-        this.source = source;
-        this.chance = chance;
-    }
-
-    @NotNull
-    public String getSource() {
-        return this.source;
-    }
-
-    public float getChance() {
-        return this.chance;
-    }
-
-    public void setChance(float chance) {
-        this.chance = chance;
-    }
-
     public static class Set extends ChangeChanceLegendEvent implements ICancellableEvent {
-        public Set(String source, float chance) {
+        public Set(@NotNull String source, float chance) {
             super(source, chance);
         }
     }
 
     public static class Add extends ChangeChanceLegendEvent implements ICancellableEvent {
-        public Add(String source, float chance) {
+        public Add(@NotNull String source, float chance) {
             super(source, chance);
         }
     }
 
     public static class Remove extends ChangeChanceLegendEvent implements ICancellableEvent {
-        public Remove(String source, float chance) {
+        public Remove(@NotNull String source, float chance) {
             super(source, chance);
         }
     }

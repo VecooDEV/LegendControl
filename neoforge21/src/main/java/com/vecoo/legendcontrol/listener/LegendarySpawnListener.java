@@ -7,9 +7,9 @@ import com.vecoo.extralib.task.TaskTimer;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.LegendSourceName;
 import com.vecoo.legendcontrol.api.events.LegendControlEvent;
-import com.vecoo.legendcontrol.api.factory.LegendControlFactory;
-import com.vecoo.legendcontrol.config.ServerConfig;
+import com.vecoo.legendcontrol.api.service.LegendControlService;
 import com.vecoo.legendcontrol.util.WebhookUtils;
+import lombok.val;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.EventPriority;
@@ -25,17 +25,17 @@ public class LegendarySpawnListener {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onDoSpawn(LegendarySpawnEvent.DoSpawn event) {
-        ServerConfig config = LegendControl.getInstance().getConfig();
-        ServerPlayer player = (ServerPlayer) event.action.spawnLocation.cause;
-        PixelmonEntity pixelmonEntity = event.action.getOrCreateEntity();
+        val serverConfig = LegendControl.getInstance().getServerConfig();
+        val player = (ServerPlayer) event.action.spawnLocation.cause;
+        val pixelmonEntity = event.action.getOrCreateEntity();
 
-        if (!config.isLegendaryRepeat() && LegendControlFactory.ServerProvider.getLastLegend().equals(pixelmonEntity.getPokemonName())) {
-            LegendControlFactory.ServerProvider.addChanceLegend(LegendSourceName.PIXELMON, config.getStepSpawnChance());
+        if (!serverConfig.isLegendaryRepeat() && LegendControlService.getLastLegend().equals(pixelmonEntity.getPokemonName())) {
+            LegendControlService.addChanceLegend(LegendSourceName.PIXELMON, serverConfig.getStepSpawnChance());
             event.setCanceled(true);
             return;
         }
 
-        if (config.isNotifyPersonalLegendarySpawn()) {
+        if (serverConfig.isNotifyPersonalLegendarySpawn()) {
             player.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getSpawnPlayerLegendary()
                     .replace("%pokemon%", pixelmonEntity.getSpecies().getName())
                     .replace("%x%", String.valueOf(pixelmonEntity.getBlockX()))
@@ -43,22 +43,22 @@ public class LegendarySpawnListener {
                     .replace("%z%", String.valueOf(pixelmonEntity.getBlockZ()))));
         }
 
-        LegendControlFactory.ServerProvider.setChanceLegend(LegendSourceName.PIXELMON, config.getBaseChance());
-        LegendControlFactory.ServerProvider.setLastLegend(pixelmonEntity.getPokemonName());
+        LegendControlService.setChanceLegend(LegendSourceName.PIXELMON, serverConfig.getBaseChance());
+        LegendControlService.setLastLegend(pixelmonEntity.getPokemonName());
         LEGENDS.add(pixelmonEntity);
         setTimers(pixelmonEntity);
         WebhookUtils.spawnWebhook(pixelmonEntity.getPokemon(), event.action.spawnLocation.biome);
     }
 
     private void setTimers(@NotNull PixelmonEntity pixelmonEntity) {
-        ServerConfig config = LegendControl.getInstance().getConfig();
+        val serverConfig = LegendControl.getInstance().getServerConfig();
 
-        if (config.getLocationTime() > 0) {
+        if (serverConfig.getLocationTime() > 0) {
             TaskTimer.builder()
-                    .delay(config.getLocationTime() * 20L)
+                    .delay(serverConfig.getLocationTime() * 20L)
                     .consume(task -> {
                         if (LEGENDS.contains(pixelmonEntity)) {
-                            LegendControlEvent.Location event = new LegendControlEvent.Location(pixelmonEntity, pixelmonEntity.getX(), pixelmonEntity.getY(), pixelmonEntity.getZ());
+                            val event = new LegendControlEvent.Location(pixelmonEntity, pixelmonEntity.getX(), pixelmonEntity.getY(), pixelmonEntity.getZ());
 
                             if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
                                 UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getLocation()
@@ -73,9 +73,9 @@ public class LegendarySpawnListener {
                     }).build();
         }
 
-        if (config.getDespawnTime() > 0) {
+        if (serverConfig.getDespawnTime() > 0) {
             TaskTimer.builder()
-                    .delay(config.getDespawnTime() * 20L)
+                    .delay(serverConfig.getDespawnTime() * 20L)
                     .consume(task -> {
                         if (LEGENDS.contains(pixelmonEntity) && !NeoForge.EVENT_BUS.post(new LegendControlEvent.ForceDespawn(pixelmonEntity)).isCanceled()) {
                             if (pixelmonEntity.battleController != null) {

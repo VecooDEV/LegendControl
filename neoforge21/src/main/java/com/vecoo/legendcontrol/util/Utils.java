@@ -3,19 +3,19 @@ package com.vecoo.legendcontrol.util;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.config.DiscordConfig;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
 public class Utils {
     public static int TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(
-            LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(),
-            LegendControl.getInstance().getConfig().getRandomTimeSpawnMax()
+            LegendControl.getInstance().getServerConfig().getRandomTimeSpawnMin(),
+            LegendControl.getInstance().getServerConfig().getRandomTimeSpawnMax()
     );
 
     @NotNull
     public static String getPokemonImage(@NotNull Pokemon pokemon) {
-        DiscordConfig discordConfig = LegendControl.getInstance().getDiscordConfig();
-        String pokemonName = pokemon.getTranslatedName().getString().toLowerCase();
+        val discordConfig = LegendControl.getInstance().getDiscordConfig();
+        var pokemonName = pokemon.getTranslatedName().getString().toLowerCase();
 
         switch (pokemonName) {
             case "typenull": {
@@ -50,7 +50,7 @@ public class Utils {
 
     @NotNull
     public static String formatFloat(float value) {
-        String format = String.format("%.3f", value).replaceAll("\\.?0+$", "");
+        var format = String.format("%.3f", value).replaceAll("\\.?0+$", "");
 
         if (format.endsWith(",")) {
             format = format.replace(",", "");

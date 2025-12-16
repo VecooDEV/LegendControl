@@ -2,14 +2,14 @@ package com.vecoo.legendcontrol_defender.util;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
-import com.vecoo.legendcontrol_defender.config.DiscordConfig;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
 public class Utils {
     @NotNull
     public static String getPokemonImage(@NotNull PixelmonEntity pixelmonEntity) {
-        DiscordConfig discordConfig = LegendControlDefender.getInstance().getDiscordConfig();
-        String pokemonName = pixelmonEntity.getPokemonName().toLowerCase();
+        val discordConfig = LegendControlDefender.getInstance().getDiscordConfig();
+        var pokemonName = pixelmonEntity.getPokemonName().toLowerCase();
 
         switch (pokemonName) {
             case "typenull": {

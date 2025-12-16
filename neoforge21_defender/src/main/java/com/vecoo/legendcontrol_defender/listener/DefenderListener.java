@@ -5,9 +5,7 @@ import com.pixelmonmod.pixelmon.api.events.KeyEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
-import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
@@ -16,16 +14,15 @@ import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.task.TaskTimer;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import com.vecoo.legendcontrol_defender.api.events.LegendControlDefenderEvent;
-import com.vecoo.legendcontrol_defender.api.factory.LegendControlFactory;
+import com.vecoo.legendcontrol_defender.api.factory.LegendControlService;
 import com.vecoo.legendcontrol_defender.util.WebhookUtils;
+import lombok.val;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -65,32 +62,32 @@ public class DefenderListener {
             return false;
         }
 
-        return !LegendControlFactory.PlayerProvider.hasPlayerTrust(ownerUUID, player.getUUID());
+        return !LegendControlService.hasPlayerTrust(ownerUUID, player.getUUID());
     }
 
     @SubscribeEvent
     public void onDoSpawn(LegendarySpawnEvent.DoSpawn event) {
-        PixelmonEntity pixelmonEntity = event.action.getOrCreateEntity();
+        val pixelmonEntity = event.action.getOrCreateEntity();
 
         addLegendaryDefender(pixelmonEntity.getUUID(), event.action.spawnLocation.cause.getUUID());
 
-        if (LegendControlDefender.getInstance().getConfig().getProtectedTime() > 0) {
+        if (LegendControlDefender.getInstance().getServerConfig().getProtectedTime() > 0) {
             startDefender(pixelmonEntity);
         }
     }
 
     private void startDefender(@NotNull PixelmonEntity pixelmonEntity) {
         TaskTimer.builder()
-                .delay(LegendControlDefender.getInstance().getConfig().getProtectedTime() * 20L)
+                .delay(LegendControlDefender.getInstance().getServerConfig().getProtectedTime() * 20L)
                 .consume(task -> {
-                    if (hasLegendaryDefender(pixelmonEntity.getUUID()) && pixelmonEntity.isAlive() && !pixelmonEntity.hasOwner()) {
-                        UtilChat.broadcast(LegendControlDefender.getInstance().getLocaleConfig().getProtection()
-                                .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+                    if (removeLegendaryDefender(pixelmonEntity.getUUID()) && pixelmonEntity.isAlive() && !pixelmonEntity.hasOwner()) {
+                        val event = new LegendControlDefenderEvent.ExpiredDefender(pixelmonEntity);
 
-                        NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.ExpiredDefender(pixelmonEntity));
-
-                        removeLegendaryDefender(pixelmonEntity.getUUID());
-                        WebhookUtils.defenderExpiredWebhook(pixelmonEntity);
+                        if (!event.isCanceled()) {
+                            UtilChat.broadcast(LegendControlDefender.getInstance().getLocaleConfig().getProtection()
+                                    .replace("%pokemon%", pixelmonEntity.getPokemonName()));
+                            WebhookUtils.defenderExpiredWebhook(pixelmonEntity);
+                        }
                     }
                 }).build();
     }
@@ -101,20 +98,20 @@ public class DefenderListener {
             return;
         }
 
-        PlayerPartyStorage party = StorageProxy.getStorageManager().getPartyNow(event.player);
+        val party = StorageProxy.getStorageManager().getPartyNow(event.player);
 
         if (party == null) {
             return;
         }
 
-        ServerPlayer player = event.player;
+        val player = event.player;
 
         for (Pokemon pokemon : party.getTeam()) {
             pokemon.ifEntityExists(pixelmonEntity -> {
-                Entity target = pixelmonEntity.getTarget();
+                val target = pixelmonEntity.getTarget();
 
                 if (target instanceof PixelmonEntity && hasLegendaryPlayerOwner(target.getUUID(), player)
-                        && !NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(pixelmonEntity, player)).isCanceled()) {
+                    && !NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(pixelmonEntity, player)).isCanceled()) {
                     player.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
                     event.setCanceled(true);
                 }
@@ -128,22 +125,22 @@ public class DefenderListener {
             return;
         }
 
-        List<BattleParticipant> participants = event.getBattleController().participants;
+        val participants = event.getBattleController().participants;
 
-        PlayerParticipant player = participants.stream()
+        val player = participants.stream()
                 .filter(PlayerParticipant.class::isInstance)
                 .map(PlayerParticipant.class::cast)
                 .findFirst()
                 .orElse(null);
 
-        WildPixelmonParticipant wildPixelmon = participants.stream()
+        val wildPixelmon = participants.stream()
                 .filter(WildPixelmonParticipant.class::isInstance)
                 .map(WildPixelmonParticipant.class::cast)
                 .findFirst()
                 .orElse(null);
 
         if (participants.size() == 2 && player != null && wildPixelmon != null && player.getPlayer() != null
-                && wildPixelmon.getEntity() != null && hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), player.getPlayer())) {
+            && wildPixelmon.getEntity() != null && hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), player.getPlayer())) {
             if (!NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender((PixelmonEntity) wildPixelmon.getEntity(), player.getPlayer())).isCanceled()) {
                 player.getPlayer().sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
                 event.setCanceled(true);
@@ -153,10 +150,11 @@ public class DefenderListener {
 
     @SubscribeEvent
     public void onStartCapture(CaptureEvent.StartCapture event) {
-        ServerPlayer player = event.getPlayer();
+        val player = event.getPlayer();
 
         if (hasLegendaryPlayerOwner(event.getPokemon().getUUID(), player)) {
-            if (!NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(event.getPokemon().getPixelmonEntity().orElse(null), player)).isCanceled()) {
+            if (!NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(
+                    event.getPokemon().getPixelmonEntity().orElse(null), player)).isCanceled()) {
                 if (!player.isCreative()) {
                     player.getInventory().add(event.getPokeBall().getBallItem());
                 }

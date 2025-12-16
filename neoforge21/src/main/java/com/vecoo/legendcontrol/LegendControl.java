@@ -2,7 +2,7 @@ package com.vecoo.legendcontrol;
 
 import com.mojang.logging.LogUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
+import com.vecoo.extralib.config.YamlConfigFactory;
 import com.vecoo.legendcontrol.command.CheckLegendsCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.config.DiscordConfig;
@@ -13,8 +13,9 @@ import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
 import com.vecoo.legendcontrol.listener.OtherListener;
 import com.vecoo.legendcontrol.listener.ParticleListener;
 import com.vecoo.legendcontrol.listener.ResultListener;
-import com.vecoo.legendcontrol.storage.ServerProvider;
+import com.vecoo.legendcontrol.service.ServerService;
 import com.vecoo.legendcontrol.util.PermissionNodes;
+import lombok.Getter;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -25,18 +26,21 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
 import org.slf4j.Logger;
 
+import java.nio.file.Path;
+
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
     public static final String MOD_ID = "legendcontrol";
     private static final Logger LOGGER = LogUtils.getLogger();
 
+    @Getter
     private static LegendControl instance;
 
-    private ServerConfig config;
+    private ServerConfig serverConfig;
     private LocaleConfig localeConfig;
     private DiscordConfig discordConfig;
 
-    private ServerProvider serverProvider;
+    private ServerService serverService;
 
     private MinecraftServer server;
 
@@ -74,42 +78,31 @@ public class LegendControl {
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
-        this.serverProvider.save();
+        this.serverService.save();
     }
 
     public void loadConfig() {
-        try {
-            this.config = YamlConfigFactory.getInstance(ServerConfig.class);
-            this.localeConfig = YamlConfigFactory.getInstance(LocaleConfig.class);
-            this.discordConfig = YamlConfigFactory.getInstance(DiscordConfig.class);
-            this.discordWebhook = new DiscordWebhook(this.discordConfig.getWebhookUrl());
-        } catch (Exception e) {
-            LOGGER.error("Error load config.", e);
-        }
+        this.serverConfig = YamlConfigFactory.load(ServerConfig.class, Path.of("config/LegendControl/config.yml"));
+        this.localeConfig = YamlConfigFactory.load(LocaleConfig.class, Path.of("config/LegendControl/locale.yml"));
+        this.discordConfig = YamlConfigFactory.load(DiscordConfig.class, Path.of("config/LegendControl/discord.yml"));
+        this.discordWebhook = new DiscordWebhook(this.discordConfig.getWebhookUrl());
     }
 
-    public void loadStorage() {
+    private void loadStorage() {
         try {
-            if (this.serverProvider == null) {
-                this.serverProvider = new ServerProvider("/%directory%/storage/LegendControl/", this.server);
-            }
-
-            this.serverProvider.init();
+            this.serverService = new ServerService("/%directory%/storage/LegendControl/", this.server);
+            this.serverService.init();
         } catch (Exception e) {
             LOGGER.error("Error load storage.", e);
         }
-    }
-
-    public static LegendControl getInstance() {
-        return instance;
     }
 
     public static Logger getLogger() {
         return LOGGER;
     }
 
-    public ServerConfig getConfig() {
-        return instance.config;
+    public ServerConfig getServerConfig() {
+        return instance.serverConfig;
     }
 
     public LocaleConfig getLocaleConfig() {
@@ -120,8 +113,8 @@ public class LegendControl {
         return instance.discordConfig;
     }
 
-    public ServerProvider getServerProvider() {
-        return instance.serverProvider;
+    public ServerService getServerService() {
+        return instance.serverService;
     }
 
     public MinecraftServer getServer() {
