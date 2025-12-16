@@ -24,7 +24,7 @@ subprojects {
     }
 
     dependencies {
-        implementation  "org.projectlombok:lombok:${lombok}"
+        implementation "org.projectlombok:lombok:${lombok}"
         annotationProcessor "org.projectlombok:lombok:${lombok}"
     }
 
