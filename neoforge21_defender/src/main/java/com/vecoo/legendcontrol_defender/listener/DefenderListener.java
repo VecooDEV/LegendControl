@@ -14,7 +14,7 @@ import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.task.TaskTimer;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import com.vecoo.legendcontrol_defender.api.events.LegendControlDefenderEvent;
-import com.vecoo.legendcontrol_defender.api.factory.LegendControlService;
+import com.vecoo.legendcontrol_defender.api.service.LegendControlService;
 import com.vecoo.legendcontrol_defender.util.WebhookUtils;
 import lombok.val;
 import net.minecraft.server.level.ServerPlayer;

@@ -7,7 +7,7 @@ import com.vecoo.extralib.permission.UtilPermission;
 import com.vecoo.extralib.player.UtilPlayer;
 import com.vecoo.extralib.server.UtilCommand;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
-import com.vecoo.legendcontrol_defender.api.factory.LegendControlService;
+import com.vecoo.legendcontrol_defender.api.service.LegendControlService;
 import com.vecoo.legendcontrol_defender.util.PermissionNodes;
 import lombok.val;
 import net.minecraft.commands.CommandSourceStack;

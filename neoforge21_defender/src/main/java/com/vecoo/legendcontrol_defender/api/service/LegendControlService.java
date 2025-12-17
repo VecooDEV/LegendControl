@@ -1,4 +1,4 @@
-package com.vecoo.legendcontrol_defender.api.factory;
+package com.vecoo.legendcontrol_defender.api.service;
 
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import com.vecoo.legendcontrol_defender.api.events.PlayerTrustEvent;
