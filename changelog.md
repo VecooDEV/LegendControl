@@ -1,1 +1,1 @@
-* Fixed webhook sending on certain clients.
+* Remove debug logger.
