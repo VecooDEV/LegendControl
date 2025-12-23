@@ -19,7 +19,7 @@ public class DiscordWebhook {
     private final String url;
 
     public void sendEmbed(@NotNull String title, @NotNull String description, @NotNull String thumbnailUrl,
-                          @NotNull String color, boolean pingRole) {
+                          int color, boolean pingRole) {
         var role = "";
 
         if (pingRole) {

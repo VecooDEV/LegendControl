@@ -7,7 +7,7 @@ import lombok.Getter;
 @ConfigSerializable
 public class DiscordConfig {
     private String webhookUrl = "";
-    private String webhookColor = "16711680";
+    private int webhookColor = 16711680;
     private long webhookRole = 0;
     private String webhookTitleLegendarySpawn = "%shiny%Legendary pokemon spawned!";
     private String webhookDescriptionLegendarySpawn = "The legendary pokemon **%pokemon%** to **%biome%** biome has appeared.";

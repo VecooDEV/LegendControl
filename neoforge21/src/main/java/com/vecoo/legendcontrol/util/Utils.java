@@ -15,7 +15,8 @@ public class Utils {
     @NotNull
     public static String getPokemonImage(@NotNull Pokemon pokemon) {
         val discordConfig = LegendControl.getInstance().getDiscordConfig();
-        var pokemonName = pokemon.getTranslatedName().getString().toLowerCase();
+        var pokemonName = pokemon.getSpecies().getName().toLowerCase();
+        LegendControl.getLogger().error(pokemonName);
 
         switch (pokemonName) {
             case "typenull": {
