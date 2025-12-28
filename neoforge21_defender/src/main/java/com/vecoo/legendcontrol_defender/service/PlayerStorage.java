@@ -18,7 +18,7 @@ public class PlayerStorage {
     private final Set<UUID> playersTrust;
 
     @Setter
-    private transient boolean dirty = false;
+    private transient volatile boolean dirty = false;
 
     public PlayerStorage(@NotNull UUID playerUUID, @NotNull Set<UUID> playersTrust) {
         this.playerUUID = playerUUID;

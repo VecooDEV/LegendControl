@@ -4,12 +4,15 @@ import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.extralib.task.TaskTimer;
 import com.vecoo.extralib.world.UtilWorld;
 import com.vecoo.legendcontrol.LegendControl;
+import lombok.Getter;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
 public class ServerService {
+    @NotNull
     private transient final String filePath;
-    private ServerStorage serverStorage;
+    private ServerStorage storage;
 
     private transient volatile boolean dirty = false;
 
@@ -19,15 +22,15 @@ public class ServerService {
 
     @NotNull
     public ServerStorage getStorage() {
-        if (this.serverStorage == null) {
-            this.serverStorage = new ServerStorage(LegendControl.getInstance().getServerConfig().getBaseChance(), "None");
+        if (this.storage == null) {
+            this.storage = new ServerStorage(LegendControl.getInstance().getServerConfig().getBaseChance(), "None");
         }
 
-        return this.serverStorage;
+        return this.storage;
     }
 
-    public void updateStorage(@NotNull ServerStorage serverStorage) {
-        this.serverStorage = serverStorage;
+    public void updateStorage(@NotNull ServerStorage storage) {
+        this.storage = storage;
         this.dirty = true;
     }
 
@@ -52,7 +55,8 @@ public class ServerService {
 
     public void init() {
         UtilGson.readFileAsync(this.filePath, "server_storage.json",
-                el -> this.serverStorage = UtilGson.getGson().fromJson(el, ServerStorage.class)).join();
+                el -> this.storage = UtilGson.getGson().fromJson(el, ServerStorage.class)).join();
+
         saveInterval();
     }
 }

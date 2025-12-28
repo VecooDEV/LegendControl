@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -52,7 +51,7 @@ public class DiscordWebhook {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
-            try (OutputStream outputStream = connection.getOutputStream()) {
+            try (val outputStream = connection.getOutputStream()) {
                 val input = json.getBytes(StandardCharsets.UTF_8);
                 outputStream.write(input, 0, input.length);
             }

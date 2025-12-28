@@ -4,6 +4,7 @@ import com.vecoo.extralib.gson.UtilGson;
 import com.vecoo.extralib.task.TaskTimer;
 import com.vecoo.extralib.world.UtilWorld;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
+import lombok.Getter;
 import lombok.val;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;
@@ -13,39 +14,37 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.UUID;
 
+@Getter
 public class PlayerService {
+    @NotNull
     private transient final String filePath;
-    private final Map<UUID, PlayerStorage> playerMap;
+    @NotNull
+    private final Map<UUID, PlayerStorage> storage;
 
     public PlayerService(@NotNull String filePath, @NotNull MinecraftServer server) {
         this.filePath = UtilWorld.resolveWorldDirectory(filePath, server);
 
-        this.playerMap = new HashMap<>();
-    }
-
-    @NotNull
-    public Map<UUID, PlayerStorage> getStorage() {
-        return this.playerMap;
+        this.storage = new HashMap<>();
     }
 
     @NotNull
     public PlayerStorage getStorage(@NotNull UUID playerUUID) {
-        if (this.playerMap.get(playerUUID) == null) {
+        if (this.storage.get(playerUUID) == null) {
             new PlayerStorage(playerUUID, new LinkedHashSet<>());
         }
 
-        return this.playerMap.get(playerUUID);
+        return this.storage.get(playerUUID);
     }
 
-    public void updatePlayerStorage(@NotNull PlayerStorage playerStorage) {
-        playerStorage.setDirty(true);
-        this.playerMap.put(playerStorage.getPlayerUUID(), playerStorage);
+    public void updatePlayerStorage(@NotNull PlayerStorage storage) {
+        storage.setDirty(true);
+        this.storage.put(storage.getPlayerUUID(), storage);
     }
 
     public void save() {
-        for (PlayerStorage playerStorage : this.playerMap.values()) {
-            UtilGson.writeFileAsync(this.filePath, playerStorage.getPlayerUUID() + ".json",
-                    UtilGson.getGson().toJson(playerStorage)).join();
+        for (PlayerStorage storage : this.storage.values()) {
+            UtilGson.writeFileAsync(this.filePath, storage.getPlayerUUID() + ".json",
+                    UtilGson.getGson().toJson(storage)).join();
         }
     }
 
@@ -56,10 +55,10 @@ public class PlayerService {
                 .infinite()
                 .consume(task -> {
                     if (LegendControlDefender.getInstance().getServer().isRunning()) {
-                        for (PlayerStorage playerStorage : this.playerMap.values()) {
-                            if (playerStorage.isDirty()) {
-                                UtilGson.writeFileAsync(this.filePath, playerStorage.getPlayerUUID() + ".json",
-                                        UtilGson.getGson().toJson(playerStorage)).thenRun(() -> playerStorage.setDirty(false));
+                        for (PlayerStorage storage : this.storage.values()) {
+                            if (storage.isDirty()) {
+                                UtilGson.writeFileAsync(this.filePath, storage.getPlayerUUID() + ".json",
+                                        UtilGson.getGson().toJson(storage)).thenRun(() -> storage.setDirty(false));
                             }
                         }
                     }
@@ -76,10 +75,10 @@ public class PlayerService {
 
         for (String file : list) {
             UtilGson.readFileAsync(this.filePath, file, el -> {
-                val playerStorage = UtilGson.getGson().fromJson(el, PlayerStorage.class);
+                val storage = UtilGson.getGson().fromJson(el, PlayerStorage.class);
 
-                playerStorage.setDirty(false);
-                this.playerMap.put(playerStorage.getPlayerUUID(), playerStorage);
+                storage.setDirty(false);
+                this.storage.put(storage.getPlayerUUID(), storage);
             }).join();
         }
 
