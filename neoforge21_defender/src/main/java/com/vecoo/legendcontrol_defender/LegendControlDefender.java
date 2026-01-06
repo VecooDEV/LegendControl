@@ -22,8 +22,6 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
 import org.slf4j.Logger;
 
-import java.nio.file.Path;
-
 @Mod(LegendControlDefender.MOD_ID)
 public class LegendControlDefender {
     public static final String MOD_ID = "legendcontrol_defender";
@@ -73,9 +71,9 @@ public class LegendControlDefender {
     }
 
     public void loadConfig() {
-        this.serverConfig = com.vecoo.extralib.config.YamlConfigFactory.load(ServerConfig.class, Path.of("config/LegendControl/Defender/config.yml"));
-        this.localeConfig = com.vecoo.extralib.config.YamlConfigFactory.load(LocaleConfig.class, Path.of("config/LegendControl/Defender/locale.yml"));
-        this.discordConfig = YamlConfigFactory.load(DiscordConfig.class, Path.of("config/LegendControl/Defender/discord.yml"));
+        this.serverConfig = com.vecoo.extralib.config.YamlConfigFactory.load(ServerConfig.class, "config/LegendControl/Defender/config.yml");
+        this.localeConfig = com.vecoo.extralib.config.YamlConfigFactory.load(LocaleConfig.class, "config/LegendControl/Defender/locale.yml");
+        this.discordConfig = YamlConfigFactory.load(DiscordConfig.class, "config/LegendControl/Defender/discord.yml");
         this.discordWebhook = new DiscordWebhook(this.discordConfig.getWebhookUrl());
     }
 

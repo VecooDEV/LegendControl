@@ -1,1 +1,1 @@
-* Remove debug logger.
+* Update depends.
