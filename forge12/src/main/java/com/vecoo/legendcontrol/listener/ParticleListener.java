@@ -2,7 +2,7 @@ package com.vecoo.legendcontrol.listener;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.config.ServerConfig;
+import lombok.val;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -13,13 +13,13 @@ public class ParticleListener {
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
-        ServerConfig config = LegendControl.getInstance().getConfig();
+        val serverConfig = LegendControl.getInstance().getServerConfig();
 
-        if (event.phase == TickEvent.Phase.START || !config.isLegendaryParticle() || ++this.currentTick % 20 != 0) {
+        if (event.phase == TickEvent.Phase.START || !serverConfig.isLegendaryParticle() || ++this.currentTick % 20 != 0) {
             return;
         }
 
-        EnumParticleTypes particle = EnumParticleTypes.getByName(config.getParticleName());
+        val particle = EnumParticleTypes.getByName(serverConfig.getParticleName());
 
         if (particle == null) {
             return;
@@ -31,7 +31,7 @@ public class ParticleListener {
 
         for (EntityPixelmon entity : LegendarySpawnListener.LEGENDS) {
             if (entity.world instanceof WorldServer) {
-                WorldServer world = (WorldServer) entity.world;
+                val world = (WorldServer) entity.world;
 
                 world.spawnParticle(particle, entity.posX, entity.getYCentre(), entity.posZ, 3,
                         world.rand.nextDouble() - 0.5, world.rand.nextDouble() - 0.5, world.rand.nextDouble() - 0.5, 0.1);

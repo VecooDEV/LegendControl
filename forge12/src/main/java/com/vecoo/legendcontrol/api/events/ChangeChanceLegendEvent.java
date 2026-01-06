@@ -1,32 +1,20 @@
 package com.vecoo.legendcontrol.api.events;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import javax.annotation.Nonnull;
 
-@Cancelable
+@Getter
+@Setter
+@AllArgsConstructor
 public class ChangeChanceLegendEvent extends Event {
+    @Nonnull
     private final String source;
     private float chance;
-
-    public ChangeChanceLegendEvent(@Nonnull String source, float chance) {
-        this.source = source;
-        this.chance = chance;
-    }
-
-    @Nonnull
-    public String getSource() {
-        return this.source;
-    }
-
-    public float getChance() {
-        return this.chance;
-    }
-
-    public void setChance(float chance) {
-        this.chance = chance;
-    }
 
     @Cancelable
     public static class Set extends ChangeChanceLegendEvent {

@@ -3,20 +3,21 @@ package com.vecoo.legendcontrol.util;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
 import com.vecoo.legendcontrol.LegendControl;
-import com.vecoo.legendcontrol.config.DiscordConfig;
+import lombok.val;
+import lombok.var;
 
 import javax.annotation.Nonnull;
 
 public class Utils {
     public static int TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(
-            LegendControl.getInstance().getConfig().getRandomTimeSpawnMin(),
-            LegendControl.getInstance().getConfig().getRandomTimeSpawnMax()
+            LegendControl.getInstance().getServerConfig().getRandomTimeSpawnMin(),
+            LegendControl.getInstance().getServerConfig().getRandomTimeSpawnMax()
     );
 
     @Nonnull
-    public static String pokemonImage(@Nonnull Pokemon pokemon) {
-        DiscordConfig discordConfig = LegendControl.getInstance().getDiscordConfig();
-        String pokemonName = pokemon.getTranslatedName().getString().toLowerCase();
+    public static String getPokemonImage(@Nonnull Pokemon pokemon) {
+        val discordConfig = LegendControl.getInstance().getDiscordConfig();
+        var pokemonName = pokemon.getSpecies().getName().toLowerCase();
 
         switch (pokemonName) {
             case "typenull": {
@@ -47,5 +48,16 @@ public class Utils {
 
         return pokemon.isShiny() ? discordConfig.getPokedexShinyUrl().replace("%pokemon%", pokemonName)
                 : discordConfig.getPokedexNormalUrl().replace("%pokemon%", pokemonName);
+    }
+
+    @Nonnull
+    public static String formatFloat(float value) {
+        var format = String.format("%.3f", value).replaceAll("\\.?0+$", "");
+
+        if (format.endsWith(",")) {
+            format = format.replace(",", "");
+        }
+
+        return format;
     }
 }

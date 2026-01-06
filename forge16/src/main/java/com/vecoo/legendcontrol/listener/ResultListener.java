@@ -7,6 +7,7 @@ import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.events.LegendControlEvent;
 import com.vecoo.legendcontrol.util.WebhookUtils;
+import lombok.val;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -21,12 +22,12 @@ public class ResultListener {
 
     @SubscribeEvent
     public void onBeatWild(BeatWildPixelmonEvent event) {
-        PixelmonEntity pixelmonEntity = event.wpp.getFaintedPokemon().entity;
+        val pixelmonEntity = event.wpp.getFaintedPokemon().entity;
 
-        if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDefeat()) {
-            String playerName = event.player.getName().getString();
+        if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getServerConfig().isNotifyLegendaryDefeat()) {
+            val playerName = event.player.getName().getString();
 
-            UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDefeat()
+            UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyDefeat()
                     .replace("%player%", playerName)
                     .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
@@ -36,7 +37,7 @@ public class ResultListener {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onStartCapture(CaptureEvent.StartCapture event) {
-        PixelmonEntity pixelmonEntity = event.getPokemon();
+        val pixelmonEntity = event.getPokemon();
 
         if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity)) {
             SUB_LEGENDS.add(pixelmonEntity.getUUID());
@@ -45,7 +46,7 @@ public class ResultListener {
 
     @SubscribeEvent
     public void onFailureCapture(CaptureEvent.FailedCapture event) {
-        PixelmonEntity pixelmonEntity = event.getPokemon();
+        val pixelmonEntity = event.getPokemon();
 
         if (SUB_LEGENDS.remove(pixelmonEntity.getUUID())) {
             LegendarySpawnListener.LEGENDS.add(pixelmonEntity);
@@ -54,12 +55,12 @@ public class ResultListener {
 
     @SubscribeEvent
     public void onCapture(CaptureEvent.SuccessfulCapture event) {
-        PixelmonEntity pixelmonEntity = event.getPokemon();
+        val pixelmonEntity = event.getPokemon();
 
-        if (SUB_LEGENDS.remove(pixelmonEntity.getUUID()) && LegendControl.getInstance().getConfig().isNotifyLegendaryCatch()) {
-            String playerName = event.getPlayer().getName().getString();
+        if (SUB_LEGENDS.remove(pixelmonEntity.getUUID()) && LegendControl.getInstance().getServerConfig().isNotifyLegendaryCatch()) {
+            val playerName = event.getPlayer().getName().getString();
 
-            UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyCatch()
+            UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyCatch()
                     .replace("%player%", playerName)
                     .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
@@ -70,12 +71,12 @@ public class ResultListener {
     @SubscribeEvent
     public void onDespawn(EntityLeaveWorldEvent event) {
         if (!event.getWorld().isClientSide() && event.getEntity() instanceof PixelmonEntity) {
-            PixelmonEntity pixelmonEntity = (PixelmonEntity) event.getEntity();
+            val pixelmonEntity = (PixelmonEntity) event.getEntity();
 
-            if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getConfig().isNotifyLegendaryDespawn()) {
+            if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity) && LegendControl.getInstance().getServerConfig().isNotifyLegendaryDespawn()) {
                 MinecraftForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
 
-                UtilChat.broadcast(LegendControl.getInstance().getLocale().getNotifyDespawn()
+                UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyDespawn()
                         .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
                 WebhookUtils.despawnWebhook(pixelmonEntity.getPokemon());

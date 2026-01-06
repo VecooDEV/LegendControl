@@ -1,7 +1,7 @@
 package com.vecoo.legendcontrol;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
+import com.vecoo.extralib.config.YamlConfigFactory;
 import com.vecoo.legendcontrol.command.CheckLegendsCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.config.DiscordConfig;
@@ -12,7 +12,8 @@ import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
 import com.vecoo.legendcontrol.listener.OtherListener;
 import com.vecoo.legendcontrol.listener.ParticleListener;
 import com.vecoo.legendcontrol.listener.ResultListener;
-import com.vecoo.legendcontrol.storage.ServerProvider;
+import com.vecoo.legendcontrol.service.ServerService;
+import lombok.Getter;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -30,17 +31,18 @@ public class LegendControl {
     public static final String MOD_ID = "legendcontrol";
     private static final Logger LOGGER = LogManager.getLogger();
 
+    @Getter
     private static LegendControl instance;
 
-    private ServerConfig config;
-    private LocaleConfig locale;
-    private DiscordConfig discord;
+    private ServerConfig serverConfig;
+    private LocaleConfig localeConfig;
+    private DiscordConfig discordConfig;
 
-    private ServerProvider serverProvider;
+    private ServerService serverService;
 
     private MinecraftServer server;
 
-    private DiscordWebhook webhook;
+    private DiscordWebhook discordWebhook;
 
     public LegendControl() {
         instance = this;
@@ -62,7 +64,7 @@ public class LegendControl {
     }
 
     @SubscribeEvent
-    public void onServerStarting(FMLServerStartingEvent event) {
+    public void onFMLServerStarting(FMLServerStartingEvent event) {
         this.server = event.getServer();
         loadStorage();
 
@@ -72,62 +74,51 @@ public class LegendControl {
     }
 
     @SubscribeEvent
-    public void onServerStopping(FMLServerStoppingEvent event) {
-        this.serverProvider.write();
+    public void onFMLServerStopping(FMLServerStoppingEvent event) {
+        this.serverService.save();
     }
 
     public void loadConfig() {
-        try {
-            this.config = YamlConfigFactory.getInstance(ServerConfig.class);
-            this.locale = YamlConfigFactory.getInstance(LocaleConfig.class);
-            this.discord = YamlConfigFactory.getInstance(DiscordConfig.class);
-            this.webhook = new DiscordWebhook(this.discord.getWebhookUrl());
-        } catch (Exception e) {
-            LOGGER.error("Error load config.", e);
-        }
+        this.serverConfig = YamlConfigFactory.load(ServerConfig.class, "config/LegendControl/config.yml");
+        this.localeConfig = YamlConfigFactory.load(LocaleConfig.class, "config/LegendControl/locale.yml");
+        this.discordConfig = YamlConfigFactory.load(DiscordConfig.class, "config/LegendControl/discord.yml");
+        this.discordWebhook = new DiscordWebhook(this.discordConfig.getWebhookUrl());
     }
 
-    public void loadStorage() {
+    private void loadStorage() {
         try {
-            if (this.serverProvider == null) {
-                this.serverProvider = new ServerProvider("/%directory%/storage/LegendControl/", this.server);
-            }
-
-            this.serverProvider.init();
+            this.serverService = new ServerService("/%directory%/storage/LegendControl/", this.server);
+            this.serverService.init();
         } catch (Exception e) {
             LOGGER.error("Error load storage.", e);
         }
-    }
-
-    public static LegendControl getInstance() {
-        return instance;
     }
 
     public static Logger getLogger() {
         return LOGGER;
     }
 
-    public ServerConfig getConfig() {
-        return instance.config;
+    public ServerConfig getServerConfig() {
+        return instance.serverConfig;
     }
 
-    public LocaleConfig getLocale() {
-        return instance.locale;
+    public LocaleConfig getLocaleConfig() {
+        return instance.localeConfig;
     }
 
     public DiscordConfig getDiscordConfig() {
-        return instance.discord;
+        return instance.discordConfig;
     }
 
-    public ServerProvider getServerProvider() {
-        return instance.serverProvider;
+    public ServerService getServerService() {
+        return instance.serverService;
     }
 
     public MinecraftServer getServer() {
         return instance.server;
     }
 
-    public DiscordWebhook getWebhook() {
-        return instance.webhook;
+    public DiscordWebhook getDiscordWebhook() {
+        return instance.discordWebhook;
     }
 }

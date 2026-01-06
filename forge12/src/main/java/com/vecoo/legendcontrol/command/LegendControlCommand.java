@@ -1,10 +1,11 @@
 package com.vecoo.legendcontrol.command;
 
 import com.vecoo.extralib.chat.UtilChat;
-import com.vecoo.extralib.text.UtilText;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.LegendSourceName;
-import com.vecoo.legendcontrol.api.factory.LegendControlFactory;
+import com.vecoo.legendcontrol.api.service.LegendControlService;
+import com.vecoo.legendcontrol.util.Utils;
+import lombok.val;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -79,46 +80,57 @@ public class LegendControlCommand extends CommandBase {
     }
 
     private static void executeAdd(@Nonnull ICommandSender source, float chance) {
-        if (LegendControlFactory.ServerProvider.getChanceLegend() + chance > 100F) {
-            source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()));
+        val localeConfig = LegendControl.getInstance().getLocaleConfig();
+
+        if (LegendControlService.getChanceLegend() + chance > 100F) {
+            source.sendMessage(UtilChat.formatMessage(localeConfig.getErrorChance()));
             return;
         }
 
-        if (!LegendControlFactory.ServerProvider.addChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance)) {
+        if (!LegendControlService.addChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance)) {
             return;
         }
 
-        source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
+        source.sendMessage(UtilChat.formatMessage(localeConfig.getChangeChanceLegendary()
+                .replace("%chance%", Utils.formatFloat(LegendControlService.getChanceLegend()))));
     }
 
     private static void executeRemove(@Nonnull ICommandSender source, float chance) {
-        if (LegendControlFactory.ServerProvider.getChanceLegend() - chance < 0F) {
-            source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getErrorChance()));
+        val localeConfig = LegendControl.getInstance().getLocaleConfig();
+
+        if (LegendControlService.getChanceLegend() - chance < 0F) {
+            source.sendMessage(UtilChat.formatMessage(localeConfig.getErrorChance()));
             return;
         }
 
-        if (!LegendControlFactory.ServerProvider.removeChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance)) {
+        if (!LegendControlService.removeChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance)) {
             return;
         }
 
-        source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
+        source.sendMessage(UtilChat.formatMessage(localeConfig.getChangeChanceLegendary()
+                .replace("%chance%", Utils.formatFloat(LegendControlService.getChanceLegend()))));
     }
 
     private static void executeSet(@Nonnull ICommandSender source, float chance) {
-        if (!LegendControlFactory.ServerProvider.setChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance)) {
+        if (!LegendControlService.setChanceLegend(LegendSourceName.PLAYER_AND_CONSOLE, chance)) {
             return;
         }
 
-        source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getChangeChanceLegendary()
-                .replace("%chance%", UtilText.getFormattedFloat(LegendControlFactory.ServerProvider.getChanceLegend()))));
+        source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getChangeChanceLegendary()
+                .replace("%chance%", Utils.formatFloat(LegendControlService.getChanceLegend()))));
     }
 
     private static void executeReload(@Nonnull ICommandSender source) {
-        LegendControl.getInstance().loadConfig();
-        LegendControl.getInstance().loadStorage();
+        val localeConfig = LegendControl.getInstance().getLocaleConfig();
 
-        source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocale().getReload()));
+        try {
+            LegendControl.getInstance().loadConfig();
+        } catch (Exception e) {
+            source.sendMessage(UtilChat.formatMessage(localeConfig.getErrorReload()));
+            LegendControl.getLogger().error(e.getMessage());
+            return;
+        }
+
+        source.sendMessage(UtilChat.formatMessage(localeConfig.getReload()));
     }
 }

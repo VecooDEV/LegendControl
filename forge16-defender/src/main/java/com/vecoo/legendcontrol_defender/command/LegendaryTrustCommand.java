@@ -5,16 +5,16 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.vecoo.extralib.chat.UtilChat;
 import com.vecoo.extralib.permission.UtilPermission;
 import com.vecoo.extralib.player.UtilPlayer;
+import com.vecoo.extralib.server.UtilCommand;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
-import com.vecoo.legendcontrol_defender.api.factory.LegendControlFactory;
-import com.vecoo.legendcontrol_defender.config.LocaleConfig;
+import com.vecoo.legendcontrol_defender.api.service.LegendControlService;
+import lombok.val;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
 
 import javax.annotation.Nonnull;
-import java.util.Set;
 import java.util.UUID;
 
 public class LegendaryTrustCommand {
@@ -23,22 +23,17 @@ public class LegendaryTrustCommand {
                 .requires(p -> UtilPermission.hasPermission(p, "minecraft.command.ltrust"))
                 .then(Commands.literal("add")
                         .then(Commands.argument("player", StringArgumentType.string())
-                                .suggests((s, builder) -> {
-                                    for (String playerName : s.getSource().getOnlinePlayerNames()) {
-                                        if (playerName.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
-                                            builder.suggest(playerName);
-                                        }
-                                    }
-                                    return builder.buildFuture();
-                                })
+                                .suggests(UtilCommand.suggestOnlinePlayers())
                                 .executes(e -> executeAdd(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player")))))
+
                 .then(Commands.literal("remove")
                         .then(Commands.argument("player", StringArgumentType.string())
                                 .suggests((s, builder) -> {
-                                    for (UUID playerUUID : LegendControlFactory.PlayerProvider.getPlayersTrust(s.getSource().getPlayerOrException().getUUID())) {
-                                        String name = UtilPlayer.getPlayerName(playerUUID);
-                                        if (name.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
-                                            builder.suggest(name);
+                                    for (UUID playerUUID : LegendControlService.getPlayersTrust(s.getSource().getPlayerOrException().getUUID())) {
+                                        val playerName = UtilPlayer.getPlayerName(playerUUID);
+
+                                        if (playerName.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
+                                            builder.suggest(playerName);
                                         }
                                     }
                                     return builder.buildFuture();
@@ -46,16 +41,18 @@ public class LegendaryTrustCommand {
                                 .executes(e -> executeRemove(e.getSource().getPlayerOrException(), StringArgumentType.getString(e, "player"))))
                         .then(Commands.literal("all")
                                 .executes(e -> executeRemoveAll(e.getSource().getPlayerOrException()))))
+
                 .then(Commands.literal("list")
                         .executes(e -> executeList(e.getSource().getPlayerOrException())))
+
                 .then(Commands.literal("reload")
                         .requires(p -> UtilPermission.hasPermission(p, "minecraft.command.ltrust.reload"))
                         .executes(e -> executeReload(e.getSource()))));
     }
 
     private static int executeAdd(@Nonnull ServerPlayerEntity player, @Nonnull String target) {
-        UUID targetUUID = UtilPlayer.getUUID(target);
-        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
+        val localeConfig = LegendControlDefender.getInstance().getLocaleConfig();
+        val targetUUID = UtilPlayer.findUUID(target);
 
         if (targetUUID == null) {
             player.sendMessage(UtilChat.formatMessage(localeConfig.getPlayerNotFound()
@@ -68,19 +65,20 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        Set<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
+        val trustedPlayers = LegendControlService.getPlayersTrust(player.getUUID());
 
         if (trustedPlayers.contains(targetUUID)) {
             player.sendMessage(UtilChat.formatMessage(localeConfig.getAlreadyTrusted()), Util.NIL_UUID);
             return 0;
         }
 
-        if (LegendControlDefender.getInstance().getConfig().getTrustLimit() > 0 && trustedPlayers.size() >= LegendControlDefender.getInstance().getConfig().getTrustLimit()) {
+        if (LegendControlDefender.getInstance().getServerConfig().getTrustLimit() > 0
+            && trustedPlayers.size() >= LegendControlDefender.getInstance().getServerConfig().getTrustLimit()) {
             player.sendMessage(UtilChat.formatMessage(localeConfig.getTrustLimit()), Util.NIL_UUID);
             return 0;
         }
 
-        if (!LegendControlFactory.PlayerProvider.addPlayerTrust(player.getUUID(), targetUUID)) {
+        if (!LegendControlService.addPlayerTrust(player.getUUID(), targetUUID)) {
             return 0;
         }
 
@@ -90,8 +88,8 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeRemove(@Nonnull ServerPlayerEntity player, @Nonnull String target) {
-        UUID targetUUID = UtilPlayer.getUUID(target);
-        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
+        val localeConfig = LegendControlDefender.getInstance().getLocaleConfig();
+        val targetUUID = UtilPlayer.findUUID(target);
 
         if (targetUUID == null) {
             player.sendMessage(UtilChat.formatMessage(localeConfig.getPlayerNotFound()
@@ -99,7 +97,7 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        Set<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
+        val trustedPlayers = LegendControlService.getPlayersTrust(player.getUUID());
 
         if (trustedPlayers.isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(localeConfig.getEmptyTrust()), Util.NIL_UUID);
@@ -111,7 +109,7 @@ public class LegendaryTrustCommand {
             return 0;
         }
 
-        if (!LegendControlFactory.PlayerProvider.removePlayerTrust(player.getUUID(), targetUUID)) {
+        if (!LegendControlService.removePlayerTrust(player.getUUID(), targetUUID)) {
             return 0;
         }
 
@@ -121,14 +119,14 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeRemoveAll(@Nonnull ServerPlayerEntity player) {
-        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
+        val localeConfig = LegendControlDefender.getInstance().getLocaleConfig();
 
-        if (LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID()).isEmpty()) {
+        if (LegendControlService.getPlayersTrust(player.getUUID()).isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(localeConfig.getEmptyTrust()), Util.NIL_UUID);
             return 0;
         }
 
-        if (!LegendControlFactory.PlayerProvider.clearPlayersTrust(player.getUUID())) {
+        if (!LegendControlService.clearPlayersTrust(player.getUUID())) {
             return 0;
         }
 
@@ -137,8 +135,8 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeList(@Nonnull ServerPlayerEntity player) {
-        Set<UUID> trustedPlayers = LegendControlFactory.PlayerProvider.getPlayersTrust(player.getUUID());
-        LocaleConfig localeConfig = LegendControlDefender.getInstance().getLocale();
+        val localeConfig = LegendControlDefender.getInstance().getLocaleConfig();
+        val trustedPlayers = LegendControlService.getPlayersTrust(player.getUUID());
 
         if (trustedPlayers.isEmpty()) {
             player.sendMessage(UtilChat.formatMessage(localeConfig.getEmptyTrust()), Util.NIL_UUID);
@@ -155,10 +153,17 @@ public class LegendaryTrustCommand {
     }
 
     private static int executeReload(@Nonnull CommandSource source) {
-        LegendControlDefender.getInstance().loadConfig();
-        LegendControlDefender.getInstance().loadStorage();
+        val localeConfig = LegendControlDefender.getInstance().getLocaleConfig();
 
-        source.sendSuccess(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocale().getReload()), false);
+        try {
+            LegendControlDefender.getInstance().loadConfig();
+        } catch (Exception e) {
+            source.sendSuccess(UtilChat.formatMessage(localeConfig.getErrorReload()), false);
+            LegendControlDefender.getLogger().error(e.getMessage());
+            return 0;
+        }
+
+        source.sendSuccess(UtilChat.formatMessage(localeConfig.getReload()), false);
         return 1;
     }
 }

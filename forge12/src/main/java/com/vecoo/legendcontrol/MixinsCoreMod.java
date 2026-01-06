@@ -106,7 +106,7 @@ public class MixinsCoreMod implements IFMLLoadingPlugin {
     }
 
     public MixinsCoreMod() {
-        addToCoremodList("com/pixelmonmod/pixelmon/Pixelmon.class", "mixins.legendcontrol.json");
+        addToCoremodList("com/pixelmonmod/pixelmon/Pixelmon.class", "legendcontrol.mixins.json");
         loadCoremodList();
     }
 

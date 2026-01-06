@@ -1,6 +1,6 @@
 subprojects {
-    apply plugin: 'java'
     apply plugin: 'idea'
+    apply plugin: 'java'
 
     group = 'com.vecoo.legendcontrol'
     version = project_version
@@ -22,6 +22,11 @@ subprojects {
                 artifact('[revision]/[artifact].[ext]')
             }
         }
+    }
+
+    dependencies {
+        implementation "org.projectlombok:lombok:${lombok}"
+        annotationProcessor "org.projectlombok:lombok:${lombok}"
     }
 
     tasks.withType(JavaCompile).configureEach {

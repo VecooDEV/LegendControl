@@ -2,6 +2,7 @@ package com.vecoo.legendcontrol.listener;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
 import com.vecoo.legendcontrol.LegendControl;
+import lombok.val;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.server.ServerWorld;
@@ -14,12 +15,14 @@ public class ParticleListener {
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START || !LegendControl.getInstance().getConfig().isLegendaryParticle() || ++this.currentTick % 20 != 0) {
+        val serverConfig = LegendControl.getInstance().getServerConfig();
+
+        if (event.phase == TickEvent.Phase.START || !serverConfig.isLegendaryParticle() || ++this.currentTick % 20 != 0) {
             return;
         }
 
-        BasicParticleType particle = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(
-                new ResourceLocation(LegendControl.getInstance().getConfig().getParticleName())
+        val particle = (BasicParticleType) ForgeRegistries.PARTICLE_TYPES.getValue(
+                new ResourceLocation(serverConfig.getParticleName())
         );
 
         if (particle == null) {
@@ -28,7 +31,7 @@ public class ParticleListener {
 
         for (PixelmonEntity entity : LegendarySpawnListener.LEGENDS) {
             if (entity.level instanceof ServerWorld) {
-                ServerWorld world = (ServerWorld) entity.level;
+                val world = (ServerWorld) entity.level;
 
                 world.sendParticles(
                         particle, entity.getX(), entity.getYCentre(), entity.getZ(), 3,

@@ -23,8 +23,8 @@ dependencies {
 }
 
 mixin {
-    add sourceSets.main, 'mixins.legendcontrol.refmap.json'
-    config 'mixins.legendcontrol.json'
+    add sourceSets.main, 'legendcontrol.mixins.refmap.json'
+    config 'legendcontrol.mixins.json'
 }
 
 processResources {

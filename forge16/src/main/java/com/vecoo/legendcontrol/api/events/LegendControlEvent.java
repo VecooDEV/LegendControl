@@ -1,28 +1,23 @@
 package com.vecoo.legendcontrol.api.events;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nonnull;
 
+@Getter
+@RequiredArgsConstructor
 public class LegendControlEvent extends Event {
+    @Nonnull
     private final PixelmonEntity pixelmonEntity;
 
-    public LegendControlEvent(@Nonnull PixelmonEntity pixelmonEntity) {
-        this.pixelmonEntity = pixelmonEntity;
-    }
-
-    @Nonnull
-    public PixelmonEntity getPixelmonEntity() {
-        return this.pixelmonEntity;
-    }
-
+    @Getter
     @Cancelable
-    public static class Location extends LegendControlEvent{
-        private double x;
-        private double y;
-        private double z;
+    public static class Location extends LegendControlEvent {
+        private final double x, y, z;
 
         public Location(@Nonnull PixelmonEntity pixelmonEntity, double x, double y, double z) {
             super(pixelmonEntity);
@@ -30,34 +25,10 @@ public class LegendControlEvent extends Event {
             this.y = y;
             this.z = z;
         }
-
-        public double getX() {
-            return this.x;
-        }
-
-        public double getY() {
-            return this.y;
-        }
-
-        public double getZ() {
-            return this.z;
-        }
-
-        public void setX(double x) {
-            this.x = x;
-        }
-
-        public void setY(double y) {
-            this.y = y;
-        }
-
-        public void setZ(double z) {
-            this.z = z;
-        }
     }
 
     @Cancelable
-    public static class ForceDespawn extends LegendControlEvent{
+    public static class ForceDespawn extends LegendControlEvent {
         public ForceDespawn(@Nonnull PixelmonEntity pixelmonEntity) {
             super(pixelmonEntity);
         }
