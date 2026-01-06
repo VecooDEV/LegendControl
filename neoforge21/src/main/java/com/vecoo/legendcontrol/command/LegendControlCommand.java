@@ -40,8 +40,10 @@ public class LegendControlCommand {
     }
 
     private static int executeAdd(@NotNull CommandSourceStack source, float chance) {
+        val localeConfig = LegendControl.getInstance().getLocaleConfig();
+
         if (LegendControlService.getChanceLegend() + chance > 100F) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getErrorChance()));
+            source.sendSystemMessage(UtilChat.formatMessage(localeConfig.getErrorChance()));
             return 0;
         }
 
@@ -49,14 +51,16 @@ public class LegendControlCommand {
             return 0;
         }
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getChangeChanceLegendary()
+        source.sendSystemMessage(UtilChat.formatMessage(localeConfig.getChangeChanceLegendary()
                 .replace("%chance%", Utils.formatFloat(LegendControlService.getChanceLegend()))));
         return 1;
     }
 
     private static int executeRemove(@NotNull CommandSourceStack source, float chance) {
+        val localeConfig = LegendControl.getInstance().getLocaleConfig();
+
         if (LegendControlService.getChanceLegend() - chance < 0F) {
-            source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getErrorChance()));
+            source.sendSystemMessage(UtilChat.formatMessage(localeConfig.getErrorChance()));
             return 0;
         }
 
@@ -64,7 +68,7 @@ public class LegendControlCommand {
             return 0;
         }
 
-        source.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getChangeChanceLegendary()
+        source.sendSystemMessage(UtilChat.formatMessage(localeConfig.getChangeChanceLegendary()
                 .replace("%chance%", Utils.formatFloat(LegendControlService.getChanceLegend()))));
         return 1;
     }
