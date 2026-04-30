@@ -1,5 +1,6 @@
 package com.vecoo.legendcontrol.command;
 
+import com.google.common.collect.Sets;
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.vecoo.extralib.util.PermissionUtil;
@@ -13,24 +14,27 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import org.jetbrains.annotations.NotNull;
 
-public class CheckLegendsCommand {
+public class CheckLegendaryCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("checkleg")
-                .requires(p -> PermissionUtil.hasPermission(p, PermissionNodes.CHECKLEGENDARY_COMMAND))
-                .executes(e -> execute(e.getSource())));
+        for (String command : Sets.newHashSet("checklegendary", "checkleg")) {
+            dispatcher.register(Commands.literal(command)
+                    .requires(p -> PermissionUtil.hasPermission(p, PermissionNodes.CHECKLEGENDARY_COMMAND))
+                    .executes(e -> execute(e.getSource())));
+        }
     }
 
     private static int execute(@NotNull CommandSourceStack source) {
-        val seconds = (int) ((PixelmonSpawning.legendarySpawner.nextSpawnTime - System.currentTimeMillis()) / 1000 + Utils.TIME_DO_LEGEND);
-        val minutes = seconds / 60;
-        val hours = minutes / 60;
+        val localeConfig = LegendControl.getInstance().getLocaleConfig();
+        int seconds = (int) ((PixelmonSpawning.legendarySpawner.nextSpawnTime - System.currentTimeMillis()) / 1000 + Utils.TIME_DO_LEGEND);
+        int minutes = seconds / 60;
+        int hours = minutes / 60;
 
         if (seconds < 60) {
-            sendMessage(source, seconds, LegendControl.getInstance().getLocaleConfig().getSeconds());
+            sendMessage(source, seconds, localeConfig.getSeconds());
         } else if (minutes < 60) {
-            sendMessage(source, minutes, LegendControl.getInstance().getLocaleConfig().getMinutes());
+            sendMessage(source, minutes, localeConfig.getMinutes());
         } else {
-            sendMessage(source, hours, LegendControl.getInstance().getLocaleConfig().getHours());
+            sendMessage(source, hours, localeConfig.getHours());
         }
 
         return 1;

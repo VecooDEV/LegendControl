@@ -3,7 +3,7 @@ package com.vecoo.legendcontrol;
 import com.mojang.logging.LogUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.vecoo.extralib.loader.YamlLoader;
-import com.vecoo.legendcontrol.command.CheckLegendsCommand;
+import com.vecoo.legendcontrol.command.CheckLegendaryCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.config.DiscordConfig;
 import com.vecoo.legendcontrol.config.LocaleConfig;
@@ -66,7 +66,7 @@ public class LegendControl {
 
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
-        CheckLegendsCommand.register(event.getDispatcher());
+        CheckLegendaryCommand.register(event.getDispatcher());
         LegendControlCommand.register(event.getDispatcher());
     }
 
@@ -94,7 +94,7 @@ public class LegendControl {
     }
 
     private void loadStorage() {
-        this.serverService = new ServerService("/%directory%/storage/LegendControl/", this.server);
+        this.serverService = new ServerService("/%directory%/storage/legendcontrol/", this.server);
 
         try {
             this.serverService.init();

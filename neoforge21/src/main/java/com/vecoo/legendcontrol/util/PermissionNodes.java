@@ -11,13 +11,11 @@ import java.util.Set;
 public class PermissionNodes {
     private static final Set<PermissionNode<?>> PERMISSION_LIST = new HashSet<>();
 
-    public static PermissionNode<Boolean> CHECKLEGENDARY_COMMAND = PermissionUtil.getPermissionNode("minecraft.command.checkleg", true);
-    public static PermissionNode<Boolean> CHECKLEGENDARY_MODIFY_COMMAND = PermissionUtil.getPermissionNode("minecraft.command.checkleg.modify", false);
+    public static PermissionNode<Boolean> CHECKLEGENDARY_COMMAND = PermissionUtil.getPermissionNode("minecraft.command.checklegendary", true);
     public static PermissionNode<Boolean> LEGENDCONTROL_COMMAND = PermissionUtil.getPermissionNode("minecraft.command.lc", false);
 
     public static void registerPermission(@NotNull PermissionGatherEvent.Nodes event) {
         PERMISSION_LIST.add(CHECKLEGENDARY_COMMAND);
-        PERMISSION_LIST.add(CHECKLEGENDARY_MODIFY_COMMAND);
         PERMISSION_LIST.add(LEGENDCONTROL_COMMAND);
 
         for (PermissionNode<?> node : PERMISSION_LIST) {
