@@ -7,6 +7,7 @@ import com.vecoo.legendcontrol.command.CheckLegendaryCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.config.DiscordConfig;
 import com.vecoo.legendcontrol.config.LocaleConfig;
+import com.vecoo.legendcontrol.config.PermissionConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.discord.DiscordWebhook;
 import com.vecoo.legendcontrol.listener.LegendControlListener;
@@ -37,6 +38,7 @@ public class LegendControl {
     private ServerConfig serverConfig;
     private LocaleConfig localeConfig;
     private DiscordConfig discordConfig;
+    private PermissionConfig permissionConfig;
 
     private ServerService serverService;
 
@@ -83,6 +85,7 @@ public class LegendControl {
             this.serverConfig = YamlLoader.load(ServerConfig.class, "config/legendcontrol/config.yml", false);
             this.localeConfig = YamlLoader.load(LocaleConfig.class, "config/legendcontrol/locale.yml", false);
             this.discordConfig = YamlLoader.load(DiscordConfig.class, "config/legendcontrol/discord.yml", false);
+            this.permissionConfig = YamlLoader.load(PermissionConfig.class, "config/legendcontrol/permissions.yml", false);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -114,6 +117,10 @@ public class LegendControl {
 
     public DiscordConfig getDiscordConfig() {
         return instance.discordConfig;
+    }
+
+    public PermissionConfig getPermissionConfig() {
+        return instance.permissionConfig;
     }
 
     public ServerService getServerService() {
