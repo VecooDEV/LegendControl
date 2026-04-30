@@ -12,7 +12,7 @@ public class PermissionNodes {
     private static final Set<PermissionNode<?>> PERMISSION_LIST = new HashSet<>();
 
     public static PermissionNode<Boolean> CHECKLEGENDARY_COMMAND = PermissionUtil.getPermissionNode("minecraft.command.checklegendary", true);
-    public static PermissionNode<Boolean> LEGENDCONTROL_COMMAND = PermissionUtil.getPermissionNode("minecraft.command.lc", false);
+    public static PermissionNode<Boolean> LEGENDCONTROL_COMMAND = PermissionUtil.getPermissionNode("minecraft.command.legendcontrol", false);
 
     public static void registerPermission(@NotNull PermissionGatherEvent.Nodes event) {
         PERMISSION_LIST.add(CHECKLEGENDARY_COMMAND);

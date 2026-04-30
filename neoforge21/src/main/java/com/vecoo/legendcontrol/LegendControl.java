@@ -50,11 +50,10 @@ public class LegendControl {
         loadConfig();
 
         NeoForge.EVENT_BUS.register(this);
-        NeoForge.EVENT_BUS.register(new ParticleListener());
+        NeoForge.EVENT_BUS.register(new LegendControlListener());
         NeoForge.EVENT_BUS.register(new LegendControlResultListener());
-        Pixelmon.EVENT_BUS.register(new LegendControlResultListener());
         Pixelmon.EVENT_BUS.register(new LegendControlListener());
-        Pixelmon.EVENT_BUS.register(new OtherListener());
+        Pixelmon.EVENT_BUS.register(new LegendControlResultListener());
     }
 
     @SubscribeEvent

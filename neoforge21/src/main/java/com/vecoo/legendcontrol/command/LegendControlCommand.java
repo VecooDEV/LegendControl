@@ -18,25 +18,27 @@ import org.jetbrains.annotations.NotNull;
 
 public class LegendControlCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("lc")
-                .requires(p -> PermissionUtil.hasPermission(p, PermissionNodes.LEGENDCONTROL_COMMAND))
-                .then(Commands.literal("add")
-                        .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
-                                .suggests(CommandUtil.suggestAmount(Sets.newHashSet(10, 25, 50)))
-                                .executes(e -> executeAdd(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
+        for (String command : Sets.newHashSet("legendcontrol", "lc")) {
+            dispatcher.register(Commands.literal(command)
+                    .requires(p -> PermissionUtil.hasPermission(p, PermissionNodes.LEGENDCONTROL_COMMAND))
+                    .then(Commands.literal("add")
+                            .then(Commands.argument("chance", FloatArgumentType.floatArg(0.0F, 100.0F))
+                                    .suggests(CommandUtil.suggestAmount(Sets.newHashSet(10, 25, 50)))
+                                    .executes(e -> executeAdd(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
 
-                .then(Commands.literal("remove")
-                        .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
-                                .suggests(CommandUtil.suggestAmount(Sets.newHashSet(10, 25, 50)))
-                                .executes(e -> executeRemove(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
+                    .then(Commands.literal("remove")
+                            .then(Commands.argument("chance", FloatArgumentType.floatArg(0.0F, 100.0F))
+                                    .suggests(CommandUtil.suggestAmount(Sets.newHashSet(10, 25, 50)))
+                                    .executes(e -> executeRemove(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
 
-                .then(Commands.literal("set")
-                        .then(Commands.argument("chance", FloatArgumentType.floatArg(0F, 100F))
-                                .suggests(CommandUtil.suggestAmount(Sets.newHashSet(10, 50, 100)))
-                                .executes(e -> executeSet(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
+                    .then(Commands.literal("set")
+                            .then(Commands.argument("chance", FloatArgumentType.floatArg(0.0F, 100.0F))
+                                    .suggests(CommandUtil.suggestAmount(Sets.newHashSet(10, 50, 100)))
+                                    .executes(e -> executeSet(e.getSource(), FloatArgumentType.getFloat(e, "chance")))))
 
-                .then(Commands.literal("reload")
-                        .executes(e -> executeReload(e.getSource()))));
+                    .then(Commands.literal("reload")
+                            .executes(e -> executeReload(e.getSource()))));
+        }
     }
 
     private static int executeAdd(@NotNull CommandSourceStack source, float chance) {
