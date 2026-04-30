@@ -3,7 +3,7 @@ package com.vecoo.legendcontrol.listener;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.util.ChatUtil;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.events.LegendControlEvent;
 import com.vecoo.legendcontrol.util.WebhookUtils;
@@ -37,7 +37,7 @@ public class ResultListener {
                     playerName = player.getName().getString();
                 }
 
-                UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyDefeat()
+                ChatUtil.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyDefeat()
                         .replace("%player%", playerName)
                         .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
@@ -62,7 +62,7 @@ public class ResultListener {
         if (SUB_LEGENDS.remove(pokemon.getUUID()) && LegendControl.getInstance().getServerConfig().isNotifyLegendaryCatch()) {
             val playerName = event.getPlayer().getName().getString();
 
-            UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyCatch()
+            ChatUtil.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyCatch()
                     .replace("%player%", playerName)
                     .replace("%pokemon%", pokemon.getTranslatedName().getString()));
 
@@ -86,7 +86,7 @@ public class ResultListener {
                 && LegendControl.getInstance().getServerConfig().isNotifyLegendaryDespawn()) {
                 NeoForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
 
-                UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyDespawn()
+                ChatUtil.broadcast(LegendControl.getInstance().getLocaleConfig().getNotifyDespawn()
                         .replace("%pokemon%", pixelmonEntity.getPokemonName()));
 
                 WebhookUtils.despawnWebhook(pixelmonEntity.getPokemon());

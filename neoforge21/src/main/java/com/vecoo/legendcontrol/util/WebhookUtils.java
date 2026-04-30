@@ -2,7 +2,7 @@ package com.vecoo.legendcontrol.util;
 
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import com.vecoo.extralib.world.UtilBiome;
+import com.vecoo.extralib.util.WorldUtil;
 import com.vecoo.legendcontrol.LegendControl;
 import lombok.val;
 import net.minecraft.core.Holder;
@@ -18,7 +18,7 @@ public class WebhookUtils {
                             .replace("%shiny%", getShinyText(pokemon)),
                     discordConfig.getWebhookDescriptionLegendarySpawn()
                             .replace("%pokemon%", pokemon.getTranslatedName().getString())
-                            .replace("%biome%", UtilBiome.formatBiomeName(biome.getRegisteredName())),
+                            .replace("%biome%", WorldUtil.formatBiomeName(biome.getRegisteredName())),
                     Utils.getPokemonImage(pokemon), discordConfig.getWebhookColor(), true);
         }
     }

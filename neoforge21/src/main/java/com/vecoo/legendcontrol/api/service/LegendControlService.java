@@ -23,7 +23,7 @@ public class LegendControlService {
             return false;
         }
 
-        LegendControl.getInstance().getServerService().getStorage().setChanceLegend(event.getChance());
+        LegendControl.getInstance().getServerService().modifyStorage(storage -> storage.setChanceLegend(event.getChance()));
         return true;
     }
 
@@ -34,7 +34,7 @@ public class LegendControlService {
             return false;
         }
 
-        LegendControl.getInstance().getServerService().getStorage().addChanceLegend(event.getChance());
+        LegendControl.getInstance().getServerService().modifyStorage(storage -> storage.setChanceLegend(getChanceLegend() + event.getChance()));
         return true;
     }
 
@@ -45,11 +45,11 @@ public class LegendControlService {
             return false;
         }
 
-        LegendControl.getInstance().getServerService().getStorage().removeChanceLegend(event.getChance());
+        LegendControl.getInstance().getServerService().modifyStorage(storage -> storage.setChanceLegend(getChanceLegend() - event.getChance()));
         return true;
     }
 
     public static void setLastLegend(@NotNull String pokemonName) {
-        LegendControl.getInstance().getServerService().getStorage().setLastLegend(pokemonName);
+        LegendControl.getInstance().getServerService().modifyStorage(storage -> storage.setLastLegend(pokemonName));
     }
 }

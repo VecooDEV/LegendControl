@@ -2,8 +2,9 @@ package com.vecoo.legendcontrol.listener;
 
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import com.vecoo.extralib.chat.UtilChat;
-import com.vecoo.extralib.task.TaskTimer;
+import com.vecoo.extralib.scheduler.TaskTimer;
+import com.vecoo.extralib.util.ChatUtil;
+import com.vecoo.extralib.util.TextUtil;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.LegendSourceName;
 import com.vecoo.legendcontrol.api.events.LegendControlEvent;
@@ -36,7 +37,7 @@ public class LegendarySpawnListener {
         }
 
         if (serverConfig.isNotifyPersonalLegendarySpawn()) {
-            player.sendSystemMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getSpawnPlayerLegendary()
+            player.sendSystemMessage(TextUtil.formatMessage(LegendControl.getInstance().getLocaleConfig().getSpawnPlayerLegendary()
                     .replace("%pokemon%", pixelmonEntity.getSpecies().getName())
                     .replace("%x%", String.valueOf(pixelmonEntity.getBlockX()))
                     .replace("%y%", String.valueOf(pixelmonEntity.getBlockY()))
@@ -61,7 +62,7 @@ public class LegendarySpawnListener {
                             val event = new LegendControlEvent.Location(pixelmonEntity, pixelmonEntity.getX(), pixelmonEntity.getY(), pixelmonEntity.getZ());
 
                             if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
-                                UtilChat.broadcast(LegendControl.getInstance().getLocaleConfig().getLocation()
+                                ChatUtil.broadcast(LegendControl.getInstance().getLocaleConfig().getLocation()
                                         .replace("%pokemon%", pixelmonEntity.getPokemonName())
                                         .replace("%x%", String.valueOf(pixelmonEntity.getBlockX()))
                                         .replace("%y%", String.valueOf(pixelmonEntity.getBlockY()))
