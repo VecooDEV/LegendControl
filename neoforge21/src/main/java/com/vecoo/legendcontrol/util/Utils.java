@@ -6,6 +6,8 @@ import com.vecoo.legendcontrol.LegendControl;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 public class Utils {
     public static int TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(
             LegendControl.getInstance().getServerConfig().getRandomTimeSpawnMin(),
@@ -15,7 +17,7 @@ public class Utils {
     @NotNull
     public static String getPokemonImage(@NotNull Pokemon pokemon) {
         val discordConfig = LegendControl.getInstance().getDiscordConfig();
-        var pokemonName = pokemon.getSpecies().getName().toLowerCase();
+        var pokemonName = pokemon.getSpecies().getName().toLowerCase(Locale.ROOT);
 
         switch (pokemonName) {
             case "typenull": {

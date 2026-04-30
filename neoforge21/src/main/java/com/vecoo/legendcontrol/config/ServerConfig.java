@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Getter
 @ConfigSerializable
+@SuppressWarnings("FieldMayBeFinal")
 public class ServerConfig {
     private int locationTime = 600;
     private int despawnTime = 1800;

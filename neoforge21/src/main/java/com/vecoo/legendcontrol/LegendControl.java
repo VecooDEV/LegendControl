@@ -9,10 +9,8 @@ import com.vecoo.legendcontrol.config.DiscordConfig;
 import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.discord.DiscordWebhook;
-import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
-import com.vecoo.legendcontrol.listener.OtherListener;
-import com.vecoo.legendcontrol.listener.ParticleListener;
-import com.vecoo.legendcontrol.listener.ResultListener;
+import com.vecoo.legendcontrol.listener.LegendControlListener;
+import com.vecoo.legendcontrol.listener.LegendControlResultListener;
 import com.vecoo.legendcontrol.service.ServerService;
 import com.vecoo.legendcontrol.util.PermissionNodes;
 import lombok.Getter;
@@ -53,9 +51,9 @@ public class LegendControl {
 
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(new ParticleListener());
-        NeoForge.EVENT_BUS.register(new ResultListener());
-        Pixelmon.EVENT_BUS.register(new ResultListener());
-        Pixelmon.EVENT_BUS.register(new LegendarySpawnListener());
+        NeoForge.EVENT_BUS.register(new LegendControlResultListener());
+        Pixelmon.EVENT_BUS.register(new LegendControlResultListener());
+        Pixelmon.EVENT_BUS.register(new LegendControlListener());
         Pixelmon.EVENT_BUS.register(new OtherListener());
     }
 

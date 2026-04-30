@@ -15,7 +15,7 @@ public class WebhookUtils {
 
         if (!discordConfig.getWebhookUrl().isEmpty()) {
             LegendControl.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleLegendarySpawn()
-                            .replace("%shiny%", getShinyText(pokemon)),
+                            .replace("%shiny%", getShinyText(pokemon.isShiny())),
                     discordConfig.getWebhookDescriptionLegendarySpawn()
                             .replace("%pokemon%", pokemon.getTranslatedName().getString())
                             .replace("%biome%", WorldUtil.formatBiomeName(biome.getRegisteredName())),
@@ -28,7 +28,7 @@ public class WebhookUtils {
 
         if (!discordConfig.getWebhookUrl().isEmpty()) {
             LegendControl.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryDefeat()
-                            .replace("%shiny%", getShinyText(pokemon)),
+                            .replace("%shiny%", getShinyText(pokemon.isShiny())),
                     discordConfig.getWebhookDescriptionLegendaryDefeat()
                             .replace("%pokemon%", pokemon.getTranslatedName().getString())
                             .replace("%player%", playerName),
@@ -41,7 +41,7 @@ public class WebhookUtils {
 
         if (!discordConfig.getWebhookUrl().isEmpty()) {
             LegendControl.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryCatch()
-                            .replace("%shiny%", getShinyText(pokemon)),
+                            .replace("%shiny%", getShinyText(pokemon.isShiny())),
                     discordConfig.getWebhookDescriptionLegendaryCatch()
                             .replace("%pokemon%", pokemon.getTranslatedName().getString())
                             .replace("%player%", playerName),
@@ -54,7 +54,7 @@ public class WebhookUtils {
 
         if (!discordConfig.getWebhookUrl().isEmpty()) {
             LegendControl.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryDespawn()
-                            .replace("%shiny%", getShinyText(pokemon)),
+                            .replace("%shiny%", getShinyText(pokemon.isShiny())),
                     discordConfig.getWebhookDescriptionLegendaryDespawn()
                             .replace("%pokemon%", pokemon.getTranslatedName().getString()),
                     Utils.getPokemonImage(pokemon), discordConfig.getWebhookColor(), false);
@@ -66,7 +66,7 @@ public class WebhookUtils {
 
         if (!discordConfig.getWebhookUrl().isEmpty()) {
             LegendControl.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleLegendaryLocation()
-                            .replace("%shiny%", getShinyText(pixelmonEntity.getPokemon())),
+                            .replace("%shiny%", getShinyText(pixelmonEntity.getPokemon().isShiny())),
                     discordConfig.getWebhookDescriptionLegendaryLocation()
                             .replace("%pokemon%", pixelmonEntity.getPokemonName())
                             .replace("%x%", String.valueOf(pixelmonEntity.getBlockX()))
@@ -77,7 +77,7 @@ public class WebhookUtils {
     }
 
     @NotNull
-    private static String getShinyText(@NotNull Pokemon pokemon) {
-        return pokemon.isShiny() ? ":star2: " : "";
+    private static String getShinyText(boolean shiny) {
+        return shiny ? ":star2: " : "";
     }
 }

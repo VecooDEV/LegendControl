@@ -13,20 +13,22 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class ResultListener {
-    public static Set<UUID> SUB_LEGENDS = new HashSet<>();
+public class LegendControlResultListener {
+    @NotNull
+    public static final Set<UUID> SUB_LEGENDS = new HashSet<>();
 
     @SubscribeEvent
     public void onAttackDamage(AttackEvent.Damage event) { //We use this event because in 1.21.1 the BeatWildPixelmonEvent occurs later than EntityLeaveLevelEvent.
         if (event.willBeFatal()) {
             val pixelmonEntity = event.target.getEntity();
 
-            if (pixelmonEntity != null && LegendarySpawnListener.LEGENDS.remove(pixelmonEntity)
+            if (pixelmonEntity != null && LegendControlListener.LEGENDS.remove(pixelmonEntity)
                 && LegendControl.getInstance().getServerConfig().isNotifyLegendaryDefeat()) {
                 val player = event.user.getOwnerPlayer();
                 String playerName;
@@ -50,7 +52,7 @@ public class ResultListener {
     public void onStartCapture(CaptureEvent.StartCapture event) {
         val pixelmonEntity = event.getPokemon().getEntity();
 
-        if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity)) {
+        if (LegendControlListener.LEGENDS.remove(pixelmonEntity)) {
             SUB_LEGENDS.add(event.getPokemon().getUUID());
         }
     }
@@ -71,10 +73,10 @@ public class ResultListener {
     }
 
     @SubscribeEvent
-    public void onEntityJoin(EntityJoinLevelEvent event) {
+    public void onEntityJoinLevel(EntityJoinLevelEvent event) {
         if (!event.getLevel().isClientSide() && event.getEntity() instanceof PixelmonEntity pixelmonEntity) {
             if (SUB_LEGENDS.contains(pixelmonEntity.getUUID())) {
-                LegendarySpawnListener.LEGENDS.add(pixelmonEntity);
+                LegendControlListener.LEGENDS.add(pixelmonEntity);
             }
         }
     }
@@ -82,7 +84,7 @@ public class ResultListener {
     @SubscribeEvent
     public void onEntityLeave(EntityLeaveLevelEvent event) {
         if (!event.getLevel().isClientSide() && event.getEntity() instanceof PixelmonEntity pixelmonEntity) {
-            if (LegendarySpawnListener.LEGENDS.remove(pixelmonEntity)
+            if (LegendControlListener.LEGENDS.remove(pixelmonEntity)
                 && LegendControl.getInstance().getServerConfig().isNotifyLegendaryDespawn()) {
                 NeoForge.EVENT_BUS.post(new LegendControlEvent.ChunkDespawn(pixelmonEntity));
 

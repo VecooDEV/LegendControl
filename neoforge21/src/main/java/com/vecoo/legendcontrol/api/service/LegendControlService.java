@@ -34,7 +34,8 @@ public class LegendControlService {
             return false;
         }
 
-        LegendControl.getInstance().getServerService().modifyStorage(storage -> storage.setChanceLegend(getChanceLegend() + event.getChance()));
+        LegendControl.getInstance().getServerService().modifyStorage(storage ->
+                storage.setChanceLegend(getChanceLegend() + event.getChance()));
         return true;
     }
 
@@ -45,7 +46,8 @@ public class LegendControlService {
             return false;
         }
 
-        LegendControl.getInstance().getServerService().modifyStorage(storage -> storage.setChanceLegend(getChanceLegend() - event.getChance()));
+        LegendControl.getInstance().getServerService().modifyStorage(storage ->
+                storage.setChanceLegend(getChanceLegend() - event.getChance()));
         return true;
     }
 
