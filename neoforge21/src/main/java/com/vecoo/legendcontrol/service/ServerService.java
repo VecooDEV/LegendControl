@@ -10,6 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -76,13 +77,20 @@ public class ServerService {
             return;
         }
 
-        val storage = GsonLoader.load(ServerStorage.class, this.filePath, true);
-
-        if (storage == null) {
+        if (!Files.exists(this.filePath)) {
             this.storage = new ServerStorage(LegendControl.getInstance().getServerConfig().getBaseChance(), "None");
             save();
         } else {
-            this.storage = storage;
+            val storage = GsonLoader.load(ServerStorage.class, this.filePath, true);
+
+            if (storage == null) {
+                this.storage = new ServerStorage(LegendControl.getInstance().getServerConfig().getBaseChance(), "None");
+                save();
+
+                throw new IOException(String.format("Failed to load file: %s. Reset data and create backup.", this.filePath));
+            } else {
+                this.storage = storage;
+            }
         }
 
         saveInterval();

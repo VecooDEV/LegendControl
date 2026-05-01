@@ -94,7 +94,7 @@ public class LegendControl {
     }
 
     private void loadStorage() {
-        this.serverService = new ServerService("/%directory%/storage/legendcontrol/", this.server);
+        this.serverService = new ServerService("%directory%/storage/legendcontrol/", this.server);
 
         try {
             this.serverService.init();

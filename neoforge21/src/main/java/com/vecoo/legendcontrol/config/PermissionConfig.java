@@ -8,6 +8,6 @@ import lombok.Getter;
 @ConfigSerializable
 @SuppressWarnings("FieldMayBeFinal")
 public class PermissionConfig {
-    @Comment("Will the /checklegendary command be available to all players? It doesn't work with LuckPerms.")
+    @Comment("Will the /checklegendary command be available to all players? It doesn't work with LuckPerms. A restart is required.")
     private boolean isCheckLegendaryCommand = true;
 }

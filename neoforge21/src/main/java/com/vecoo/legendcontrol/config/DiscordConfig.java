@@ -8,7 +8,7 @@ import lombok.Getter;
 @ConfigSerializable
 @SuppressWarnings("FieldMayBeFinal")
 public class DiscordConfig {
-    @Comment("Discord webhook for sending notifications.")
+    @Comment("Discord webhook for sending notifications. A restart is required.")
     private String webhookUrl = "";
     @Comment("Color for notification.")
     private int webhookColor = 16711680;
