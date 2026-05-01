@@ -24,7 +24,7 @@ public class LegendControlResultListener {
     public static final Set<UUID> SUB_LEGENDS = new HashSet<>();
 
     @SubscribeEvent
-    public void onAttackDamage(AttackEvent.Damage event) { //We use this event because in 1.21.1 the BeatWildPixelmonEvent occurs later than EntityLeaveLevelEvent.
+    public void onAttackDamage(AttackEvent.Damage event) {
         if (event.willBeFatal()) {
             val pixelmonEntity = event.target.getEntity();
 
