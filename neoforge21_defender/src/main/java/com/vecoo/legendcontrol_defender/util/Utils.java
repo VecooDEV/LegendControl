@@ -5,11 +5,13 @@ import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 public class Utils {
     @NotNull
     public static String getPokemonImage(@NotNull PixelmonEntity pixelmonEntity) {
         val discordConfig = LegendControlDefender.getInstance().getDiscordConfig();
-        var pokemonName = pixelmonEntity.getPokemonName().toLowerCase();
+        var pokemonName = pixelmonEntity.getPokemonName().toLowerCase(Locale.ROOT);
 
         switch (pokemonName) {
             case "typenull": {

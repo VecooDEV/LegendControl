@@ -2,10 +2,11 @@ package com.vecoo.legendcontrol_defender;
 
 import com.mojang.logging.LogUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.vecoo.extralib.config.YamlConfigFactory;
+import com.vecoo.extralib.loader.YamlLoader;
 import com.vecoo.legendcontrol_defender.command.LegendaryTrustCommand;
 import com.vecoo.legendcontrol_defender.config.DiscordConfig;
 import com.vecoo.legendcontrol_defender.config.LocaleConfig;
+import com.vecoo.legendcontrol_defender.config.PermissionConfig;
 import com.vecoo.legendcontrol_defender.config.ServerConfig;
 import com.vecoo.legendcontrol_defender.discord.DiscordWebhook;
 import com.vecoo.legendcontrol_defender.listener.DefenderListener;
@@ -22,6 +23,8 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
 import org.slf4j.Logger;
 
+import java.io.IOException;
+
 @Mod(LegendControlDefender.MOD_ID)
 public class LegendControlDefender {
     public static final String MOD_ID = "legendcontrol_defender";
@@ -33,6 +36,7 @@ public class LegendControlDefender {
     private ServerConfig serverConfig;
     private LocaleConfig localeConfig;
     private DiscordConfig discordConfig;
+    private PermissionConfig permissionConfig;
 
     private PlayerService playerService;
 
@@ -71,18 +75,25 @@ public class LegendControlDefender {
     }
 
     public void loadConfig() {
-        this.serverConfig = com.vecoo.extralib.config.YamlConfigFactory.load(ServerConfig.class, "config/LegendControl/Defender/config.yml");
-        this.localeConfig = com.vecoo.extralib.config.YamlConfigFactory.load(LocaleConfig.class, "config/LegendControl/Defender/locale.yml");
-        this.discordConfig = YamlConfigFactory.load(DiscordConfig.class, "config/LegendControl/Defender/discord.yml");
+        try {
+            this.serverConfig = YamlLoader.load(ServerConfig.class, "config/legendcontrol/defender/config.yml", false);
+            this.localeConfig = YamlLoader.load(LocaleConfig.class, "config/legendcontrol/defender/locale.yml", false);
+            this.discordConfig = YamlLoader.load(DiscordConfig.class, "config/legendcontrol/defender/discord.yml", false);
+            this.permissionConfig = YamlLoader.load(PermissionConfig.class, "config/legendcontrol/defender/permissions.yml", false);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
         this.discordWebhook = new DiscordWebhook(this.discordConfig.getWebhookUrl());
     }
 
     public void loadStorage() {
+        this.playerService = new PlayerService("%directory%/storage/legendcontrol/defender/players/", this.server);
+
         try {
-            this.playerService = new PlayerService("/%directory%/storage/LegendControl/Defender/players/", this.server);
             this.playerService.init();
-        } catch (Exception e) {
-            LOGGER.error("Error load storage.", e);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -100,6 +111,10 @@ public class LegendControlDefender {
 
     public DiscordConfig getDiscordConfig() {
         return instance.discordConfig;
+    }
+
+    public PermissionConfig getPermissionConfig() {
+        return instance.permissionConfig;
     }
 
     public PlayerService getPlayerService() {

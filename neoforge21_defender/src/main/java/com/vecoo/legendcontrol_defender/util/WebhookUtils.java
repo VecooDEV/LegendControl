@@ -11,7 +11,7 @@ public class WebhookUtils {
 
         if (!discordConfig.getWebhookUrl().isEmpty()) {
             LegendControlDefender.getInstance().getDiscordWebhook().sendEmbed(discordConfig.getWebhookTitleExpiredDefender()
-                            .replace("%shiny%", getShinyText(pixelmonEntity)),
+                            .replace("%shiny%", getShinyText(pixelmonEntity.getPokemon().isShiny())),
                     discordConfig.getWebhookDescriptionExpiredDefender()
                             .replace("%pokemon%", pixelmonEntity.getPokemonName()),
                     Utils.getPokemonImage(pixelmonEntity), discordConfig.getWebhookColor());
@@ -19,7 +19,7 @@ public class WebhookUtils {
     }
 
     @NotNull
-    private static String getShinyText(@NotNull PixelmonEntity pixelmonEntity) {
-        return pixelmonEntity.getPokemon().isShiny() ? ":star2: " : "";
+    private static String getShinyText(boolean shiny) {
+        return shiny ? ":star2: " : "";
     }
 }

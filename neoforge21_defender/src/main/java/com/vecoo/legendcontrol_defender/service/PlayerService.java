@@ -9,6 +9,7 @@ import lombok.val;
 import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -66,7 +67,7 @@ public class PlayerService {
                 .build();
     }
 
-    public void init() {
+    public void init() throws IOException {
         val list = UtilGson.checkForDirectory(this.filePath).list();
 
         if (list == null) {

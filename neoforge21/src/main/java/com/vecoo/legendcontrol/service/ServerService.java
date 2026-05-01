@@ -87,7 +87,7 @@ public class ServerService {
                 this.storage = new ServerStorage(LegendControl.getInstance().getServerConfig().getBaseChance(), "None");
                 save();
 
-                throw new IOException(String.format("Failed to load file: %s. Reset data and create backup.", this.filePath));
+                throw new IOException(String.format("Failed to load file: %s. Data reset, create backup.", this.filePath));
             } else {
                 this.storage = storage;
             }
