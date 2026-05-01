@@ -18,10 +18,10 @@ import java.util.function.Consumer;
 @Getter
 public class ServerService {
     @NotNull
-    private transient final Path filePath;
+    private final Path filePath;
     private volatile ServerStorage storage;
 
-    private transient final AtomicBoolean dirty = new AtomicBoolean(false);
+    private final AtomicBoolean dirty = new AtomicBoolean(false);
 
     public ServerService(@NotNull String directory, @NotNull MinecraftServer server) {
         this.filePath = Path.of(WorldUtil.resolveWorldDirectory(directory, server), "server_storage.json");
@@ -54,7 +54,7 @@ public class ServerService {
 
     private void saveInterval() {
         TaskTimer.builder()
-                .withoutDelay()
+                .delay(300 * 20L)
                 .interval(300 * 20L)
                 .infinite()
                 .execute(() -> {
