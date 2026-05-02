@@ -21,6 +21,7 @@ public class ServerService {
     private final Path filePath;
     private volatile ServerStorage storage;
 
+    @NotNull
     private final AtomicBoolean dirty = new AtomicBoolean(false);
 
     public ServerService(@NotNull String directory, @NotNull MinecraftServer server) {
@@ -44,8 +45,10 @@ public class ServerService {
     public void save() {
         this.dirty.set(false);
 
+        val snapshot = getStorage().copy();
+
         try {
-            GsonLoader.save(getStorage(), this.filePath);
+            GsonLoader.save(snapshot, this.filePath);
         } catch (IOException e) {
             this.dirty.set(true);
             LegendControl.getLogger().error(e.getMessage());
