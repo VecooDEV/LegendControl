@@ -24,6 +24,11 @@ public class ServerStorage {
 
     @NotNull
     public ServerStorage copy() {
-        return new ServerStorage(this.chanceLegend, this.lastLegend);
+        val storage = new ServerStorage();
+
+        storage.chanceLegend = this.chanceLegend;
+        storage.lastLegend = this.lastLegend;
+
+        return storage;
     }
 }

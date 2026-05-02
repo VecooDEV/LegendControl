@@ -71,7 +71,7 @@ public class LegendControlDefender {
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
-        this.playerService.save();
+        this.playerService.save(true);
     }
 
     public void loadConfig() {

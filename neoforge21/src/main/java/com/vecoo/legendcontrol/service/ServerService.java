@@ -42,22 +42,28 @@ public class ServerService {
     }
 
     public void modifyStorage(Consumer<ServerStorage> consumer) {
-        consumer.accept(getStorage());
-        this.dirty.set(true);
+        this.saveLock.lock();
+
+        try {
+            consumer.accept(getStorage());
+            this.dirty.set(true);
+        } finally {
+            this.saveLock.unlock();
+        }
     }
 
     public void save(boolean force) {
-        if (this.dirty.compareAndSet(true, false) || force) {
-            this.saveLock.lock();
+        this.saveLock.lock();
 
-            try {
+        try {
+            if (this.dirty.compareAndSet(true, false) || force) {
                 GsonLoader.save(getStorage().copy(), this.filePath);
-            } catch (IOException e) {
-                this.dirty.set(true);
-                LegendControl.getLogger().error(e.getMessage());
-            } finally {
-                this.saveLock.unlock();
             }
+        } catch (IOException e) {
+            this.dirty.set(true);
+            LegendControl.getLogger().error(e.getMessage());
+        } finally {
+            this.saveLock.unlock();
         }
     }
 
@@ -67,24 +73,31 @@ public class ServerService {
                 .interval(300 * 20L)
                 .infinite()
                 .execute(() -> {
-                    if (LegendControl.getInstance().getServer().isRunning() && this.dirty.compareAndSet(true, false)) {
-                        val snapshot = getStorage().copy();
+                    if (LegendControl.getInstance().getServer().isRunning()) {
+                        ServerStorage snapshot;
+
+                        this.saveLock.lock();
+
+                        try {
+                            if (!this.dirty.compareAndSet(true, false)) {
+                                return;
+                            }
+
+                            snapshot = getStorage().copy();
+                        } finally {
+                            this.saveLock.unlock();
+                        }
 
                         CompletableFuture.runAsync(() -> {
-                            this.saveLock.lock();
-
                             try {
                                 GsonLoader.save(snapshot, this.filePath);
                             } catch (IOException e) {
                                 this.dirty.set(true);
                                 LegendControl.getLogger().error("Async save error: ", e);
-                            } finally {
-                                this.saveLock.unlock();
                             }
                         }, GsonLoader.WRITER_EXECUTOR);
                     }
-                })
-                .build();
+                }).build();
     }
 
     public void init() throws IOException {

@@ -37,6 +37,6 @@ side = "BOTH"
 [[dependencies.legendcontrol]]
 modId = "extralib"
 type = "required"
-versionRange = "[3.0.2,)"
+versionRange = "[3.0.3,)"
 ordering = "NONE"
 side = "BOTH"
