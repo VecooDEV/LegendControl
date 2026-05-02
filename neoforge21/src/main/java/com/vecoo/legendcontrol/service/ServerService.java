@@ -12,7 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 @Getter
@@ -23,6 +25,8 @@ public class ServerService {
 
     @NotNull
     private final AtomicBoolean dirty = new AtomicBoolean(false);
+    @NotNull
+    private final ReentrantLock saveLock = new ReentrantLock();
 
     public ServerService(@NotNull String directory, @NotNull MinecraftServer server) {
         this.filePath = Path.of(WorldUtil.resolveWorldDirectory(directory, server), "server_storage.json");
@@ -42,16 +46,18 @@ public class ServerService {
         this.dirty.set(true);
     }
 
-    public void save() {
-        this.dirty.set(false);
+    public void save(boolean force) {
+        if (this.dirty.compareAndSet(true, false) || force) {
+            this.saveLock.lock();
 
-        val snapshot = getStorage().copy();
-
-        try {
-            GsonLoader.save(snapshot, this.filePath);
-        } catch (IOException e) {
-            this.dirty.set(true);
-            LegendControl.getLogger().error(e.getMessage());
+            try {
+                GsonLoader.save(getStorage().copy(), this.filePath);
+            } catch (IOException e) {
+                this.dirty.set(true);
+                LegendControl.getLogger().error(e.getMessage());
+            } finally {
+                this.saveLock.unlock();
+            }
         }
     }
 
@@ -64,12 +70,18 @@ public class ServerService {
                     if (LegendControl.getInstance().getServer().isRunning() && this.dirty.compareAndSet(true, false)) {
                         val snapshot = getStorage().copy();
 
-                        GsonLoader.saveAsync(snapshot, this.filePath)
-                                .exceptionally(e -> {
-                                    this.dirty.set(true);
-                                    LegendControl.getLogger().error("Async save error: ", e);
-                                    return null;
-                                });
+                        CompletableFuture.runAsync(() -> {
+                            this.saveLock.lock();
+
+                            try {
+                                GsonLoader.save(snapshot, this.filePath);
+                            } catch (IOException e) {
+                                this.dirty.set(true);
+                                LegendControl.getLogger().error("Async save error: ", e);
+                            } finally {
+                                this.saveLock.unlock();
+                            }
+                        }, GsonLoader.WRITER_EXECUTOR);
                     }
                 })
                 .build();
@@ -82,13 +94,13 @@ public class ServerService {
 
         if (!Files.exists(this.filePath)) {
             this.storage = new ServerStorage(LegendControl.getInstance().getServerConfig().getBaseChance(), "None");
-            save();
+            save(true);
         } else {
             val storage = GsonLoader.load(ServerStorage.class, this.filePath, true);
 
             if (storage == null) {
                 this.storage = new ServerStorage(LegendControl.getInstance().getServerConfig().getBaseChance(), "None");
-                save();
+                save(true);
 
                 throw new IOException(String.format("Failed to load file: %s. Data reset, create backup.", this.filePath));
             } else {
