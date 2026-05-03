@@ -17,7 +17,7 @@ public class DiscordWebhook {
     @NotNull
     private final String url;
 
-    public void sendEmbed(@NotNull String title, @NotNull String description, @NotNull String thumbnailUrl, @NotNull String color) {
+    public void sendEmbed(@NotNull String title, @NotNull String description, @NotNull String thumbnailUrl, int color) {
         val json = String.format("{\"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}",
                 escapeJson(escapeMarkdown(title)), escapeJson(escapeMarkdown(description)), escapeJson(thumbnailUrl), color);
 
