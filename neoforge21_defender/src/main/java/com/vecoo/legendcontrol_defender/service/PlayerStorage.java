@@ -4,16 +4,18 @@ import com.vecoo.extralib.shade.spongepowered.configurate.objectmapping.ConfigSe
 import com.vecoo.extralib.shade.spongepowered.configurate.objectmapping.meta.Setting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Getter
 @ToString
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @ConfigSerializable
 public class PlayerStorage {
@@ -24,8 +26,8 @@ public class PlayerStorage {
     @Setting("playersTrust")
     private final Set<UUID> playersTrust;
 
-    @Setter
-    private transient volatile boolean dirty;
+    @NotNull
+    private transient final AtomicBoolean dirty = new AtomicBoolean(true);
 
     public void addPlayerTrust(@NotNull UUID playerUUID) {
         this.playersTrust.add(playerUUID);
@@ -41,6 +43,6 @@ public class PlayerStorage {
 
     @NotNull
     public PlayerStorage copy() {
-        return new PlayerStorage(this.playerUUID, new HashSet<>(this.playersTrust), false);
+        return new PlayerStorage(this.playerUUID, new LinkedHashSet<>(this.playersTrust));
     }
 }

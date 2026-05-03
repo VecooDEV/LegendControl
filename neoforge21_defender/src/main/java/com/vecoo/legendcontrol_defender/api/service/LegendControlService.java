@@ -30,7 +30,7 @@ public class LegendControlService {
             return false;
         }
 
-        LegendControlDefender.getInstance().getPlayerService().getStorage(playerUUID).addPlayerTrust(targetUUID);
+        LegendControlDefender.getInstance().getPlayerService().modifyStorage(playerUUID, storage -> storage.addPlayerTrust(targetUUID));
         return true;
     }
 
@@ -39,7 +39,7 @@ public class LegendControlService {
             return false;
         }
 
-        LegendControlDefender.getInstance().getPlayerService().getStorage(playerUUID).removePlayerTrust(targetUUID);
+        LegendControlDefender.getInstance().getPlayerService().modifyStorage(playerUUID, storage -> storage.removePlayerTrust(targetUUID));
         return true;
     }
 
@@ -48,7 +48,7 @@ public class LegendControlService {
             return false;
         }
 
-        LegendControlDefender.getInstance().getPlayerService().getStorage(playerUUID).clearPlayersTrust();
+        LegendControlDefender.getInstance().getPlayerService().modifyStorage(playerUUID, PlayerStorage::clearPlayersTrust);
         return true;
     }
 }

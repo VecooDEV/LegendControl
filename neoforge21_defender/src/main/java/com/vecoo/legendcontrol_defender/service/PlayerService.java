@@ -15,7 +15,9 @@ import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 @Getter
@@ -23,61 +25,88 @@ public class PlayerService {
     @NotNull
     private final Path filePath;
     @NotNull
-    private final Map<UUID, PlayerStorage> storage;
+    private final Map<UUID, PlayerStorage> storage = new ConcurrentHashMap<>();
+    @NotNull
+    private final Map<UUID, ReentrantLock> playerLocks = new ConcurrentHashMap<>();
 
     public PlayerService(@NotNull String directory, @NotNull MinecraftServer server) {
         this.filePath = Path.of(WorldUtil.resolveWorldDirectory(directory, server));
-
-        this.storage = new ConcurrentHashMap<>();
     }
 
     @NotNull
     public PlayerStorage getStorage(@NotNull UUID playerUUID) {
         return this.storage.computeIfAbsent(playerUUID, uuid ->
-                new PlayerStorage(uuid, new LinkedHashSet<>(), true)
+                new PlayerStorage(uuid, new LinkedHashSet<>())
         );
     }
 
     public void modifyStorage(@NotNull UUID playerUUID, Consumer<PlayerStorage> consumer) {
         val storage = getStorage(playerUUID);
+        val lock = getLock(playerUUID);
 
-        storage.setDirty(true);
-        consumer.accept(storage);
+        lock.lock();
+
+        try {
+            consumer.accept(storage);
+            storage.getDirty().set(true);
+        } finally {
+            lock.unlock();
+        }
     }
 
-    public void save() {
+    public void save(boolean force) {
         for (PlayerStorage storage : this.storage.values()) {
+            val lock = getLock(storage.getPlayerUUID());
+
+            lock.lock();
+
             try {
-                GsonLoader.save(getStorage(), this.filePath.resolve(storage.getPlayerUUID() + ".json"));
+                if (storage.getDirty().compareAndSet(true, false) || force) {
+                    GsonLoader.save(storage.copy(), this.filePath.resolve(storage.getPlayerUUID() + ".json"));
+                }
             } catch (IOException e) {
-                storage.setDirty(false);
+                storage.getDirty().set(true);
                 LegendControlDefender.getLogger().error(e.getMessage());
+            } finally {
+                lock.unlock();
             }
         }
     }
 
     private void saveInterval() {
         TaskTimer.builder()
-                .delay(325 * 20L)
-                .interval(325 * 20L)
+                .delay(15 * 20L)
+                .interval(15 * 20L)
                 .infinite()
                 .execute(() -> {
                     if (LegendControlDefender.getInstance().getServer().isRunning()) {
                         for (PlayerStorage storage : this.storage.values()) {
-                            if (storage.isDirty()) {
-                                val snapshot = storage.copy();
+                            PlayerStorage snapshot;
+                            val lock = getLock(storage.getPlayerUUID());
 
-                                GsonLoader.saveAsync(snapshot, this.filePath.resolve(snapshot.getPlayerUUID() + ".json"))
-                                        .exceptionally(e -> {
-                                            snapshot.setDirty(true);
-                                            LegendControlDefender.getLogger().error("Async save error: ", e);
-                                            return null;
-                                        });
+                            lock.lock();
+
+                            try {
+                                if (!storage.getDirty().compareAndSet(true, false)) {
+                                    continue;
+                                }
+
+                                snapshot = storage.copy();
+                            } finally {
+                                lock.unlock();
                             }
+
+                            CompletableFuture.runAsync(() -> {
+                                try {
+                                    GsonLoader.save(snapshot, this.filePath.resolve(snapshot.getPlayerUUID() + ".json"));
+                                } catch (IOException e) {
+                                    storage.getDirty().set(true);
+                                    LegendControlDefender.getLogger().error("Async save error: ", e);
+                                }
+                            }, GsonLoader.WRITER_EXECUTOR);
                         }
                     }
-                })
-                .build();
+                }).build();
     }
 
     public void init() throws IOException {
@@ -85,21 +114,28 @@ public class PlayerService {
             return;
         }
 
-        val list = filePath.toFile().listFiles((dir, name) -> name.endsWith(".json"));
+        val list = this.filePath.toFile().listFiles((dir, name) -> name.endsWith(".json"));
 
         if (list == null) {
             return;
         }
 
         for (File file : list) {
+            LegendControlDefender.getLogger().info("Loading " + file.getName());
             val storage = GsonLoader.load(PlayerStorage.class, file.toPath(), true);
 
-            if (storage != null) {
-                storage.setDirty(false);
+            if (storage == null) {
+                throw new IOException(String.format("Failed to load file: %s. Data reset, create backup.", this.filePath));
+            } else {
                 this.storage.put(storage.getPlayerUUID(), storage);
             }
         }
 
         saveInterval();
+    }
+
+    @NotNull
+    private ReentrantLock getLock(@NotNull UUID playerUUID) {
+        return this.playerLocks.computeIfAbsent(playerUUID, uuid -> new ReentrantLock());
     }
 }

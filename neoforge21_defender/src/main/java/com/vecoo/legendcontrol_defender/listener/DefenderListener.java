@@ -10,8 +10,9 @@ import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipan
 import com.pixelmonmod.pixelmon.battles.controller.participants.WildPixelmonParticipant;
 import com.pixelmonmod.pixelmon.comm.packetHandlers.EnumKeyPacketMode;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import com.vecoo.extralib.chat.UtilChat;
-import com.vecoo.extralib.task.TaskTimer;
+import com.vecoo.extralib.scheduler.TaskTimer;
+import com.vecoo.extralib.util.ChatUtil;
+import com.vecoo.extralib.util.TextUtil;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import com.vecoo.legendcontrol_defender.api.events.LegendControlDefenderEvent;
 import com.vecoo.legendcontrol_defender.api.service.LegendControlService;
@@ -84,7 +85,7 @@ public class DefenderListener {
                         val event = new LegendControlDefenderEvent.ExpiredDefender(pixelmonEntity);
 
                         if (!event.isCanceled()) {
-                            UtilChat.broadcast(LegendControlDefender.getInstance().getLocaleConfig().getProtection()
+                            ChatUtil.broadcast(LegendControlDefender.getInstance().getLocaleConfig().getProtection()
                                     .replace("%pokemon%", pixelmonEntity.getPokemonName()));
                             WebhookUtils.defenderExpiredWebhook(pixelmonEntity);
                         }
@@ -112,7 +113,7 @@ public class DefenderListener {
 
                 if (target instanceof PixelmonEntity && hasLegendaryPlayerOwner(target.getUUID(), player)
                     && !NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(pixelmonEntity, player)).isCanceled()) {
-                    player.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
+                    player.sendSystemMessage(TextUtil.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
                     event.setCanceled(true);
                 }
             });
@@ -142,7 +143,7 @@ public class DefenderListener {
         if (participants.size() == 2 && player != null && wildPixelmon != null && player.getPlayer() != null
             && wildPixelmon.getEntity() != null && hasLegendaryPlayerOwner(wildPixelmon.getEntity().getUUID(), player.getPlayer())) {
             if (!NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender((PixelmonEntity) wildPixelmon.getEntity(), player.getPlayer())).isCanceled()) {
-                player.getPlayer().sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
+                player.getPlayer().sendSystemMessage(TextUtil.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
                 event.setCanceled(true);
             }
         }
@@ -159,7 +160,7 @@ public class DefenderListener {
                     player.getInventory().add(event.getPokeBall().getBallItem());
                 }
 
-                player.sendSystemMessage(UtilChat.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
+                player.sendSystemMessage(TextUtil.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
                 event.setCanceled(true);
             }
         }
