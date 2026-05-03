@@ -26,11 +26,8 @@ public class DiscordWebhook {
             role = roleId != 0 ? "<@&" + roleId + ">" : "";
         }
 
-        String safeTitle = escapeMarkdown(title);
-        String safeDescription = escapeMarkdown(description);
-
         val json = String.format("{\"content\": \"%s\", \"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}",
-                escapeJson(role), escapeJson(safeTitle), escapeJson(safeDescription), escapeJson(thumbnailUrl), color);
+                escapeJson(role), escapeJson(escapeMarkdown(title)), escapeJson(escapeMarkdown(description)), escapeJson(thumbnailUrl), color);
 
         CompletableFuture.runAsync(() -> {
             try {

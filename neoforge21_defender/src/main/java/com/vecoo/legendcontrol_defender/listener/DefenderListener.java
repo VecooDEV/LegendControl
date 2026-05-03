@@ -28,10 +28,11 @@ import java.util.Map;
 import java.util.UUID;
 
 public class DefenderListener {
-    private final Map<UUID, UUID> LEGENDARY_DEFENDER = new HashMap<>();
+    @NotNull
+    private final Map<UUID, UUID> legendaryDefender = new HashMap<>();
 
     public boolean hasLegendaryDefender(@NotNull UUID pokemonUUID) {
-        return LEGENDARY_DEFENDER.containsKey(pokemonUUID);
+        return this.legendaryDefender.containsKey(pokemonUUID);
     }
 
     public boolean addLegendaryDefender(@NotNull UUID pokemonUUID, @NotNull UUID playerUUID) {
@@ -39,7 +40,7 @@ public class DefenderListener {
             return false;
         }
 
-        LEGENDARY_DEFENDER.put(pokemonUUID, playerUUID);
+        this.legendaryDefender.put(pokemonUUID, playerUUID);
         return true;
     }
 
@@ -48,7 +49,7 @@ public class DefenderListener {
             return false;
         }
 
-        LEGENDARY_DEFENDER.remove(pokemonUUID);
+        this.legendaryDefender.remove(pokemonUUID);
         return true;
     }
 
@@ -57,7 +58,7 @@ public class DefenderListener {
             return false;
         }
 
-        UUID ownerUUID = LEGENDARY_DEFENDER.get(pokemonUUID);
+        val ownerUUID = this.legendaryDefender.get(pokemonUUID);
 
         if (ownerUUID.equals(player.getUUID())) {
             return false;
@@ -67,7 +68,7 @@ public class DefenderListener {
     }
 
     @SubscribeEvent
-    public void onDoSpawn(LegendarySpawnEvent.DoSpawn event) {
+    public void onLegendarySpawnDoSpawn(LegendarySpawnEvent.DoSpawn event) {
         val pixelmonEntity = event.action.getOrCreateEntity();
 
         addLegendaryDefender(pixelmonEntity.getUUID(), event.action.spawnLocation.cause.getUUID());
@@ -80,7 +81,7 @@ public class DefenderListener {
     private void startDefender(@NotNull PixelmonEntity pixelmonEntity) {
         TaskTimer.builder()
                 .delay(LegendControlDefender.getInstance().getServerConfig().getProtectedTime() * 20L)
-                .consume(task -> {
+                .execute(() -> {
                     if (removeLegendaryDefender(pixelmonEntity.getUUID()) && pixelmonEntity.isAlive() && !pixelmonEntity.hasOwner()) {
                         val event = new LegendControlDefenderEvent.ExpiredDefender(pixelmonEntity);
 
@@ -101,27 +102,25 @@ public class DefenderListener {
 
         val party = StorageProxy.getStorageManager().getPartyNow(event.player);
 
-        if (party == null) {
-            return;
-        }
+        if (party != null) {
+            val player = event.player;
 
-        val player = event.player;
+            for (Pokemon pokemon : party.getTeam()) {
+                pokemon.ifEntityExists(pixelmonEntity -> {
+                    val target = pixelmonEntity.getTarget();
 
-        for (Pokemon pokemon : party.getTeam()) {
-            pokemon.ifEntityExists(pixelmonEntity -> {
-                val target = pixelmonEntity.getTarget();
-
-                if (target instanceof PixelmonEntity && hasLegendaryPlayerOwner(target.getUUID(), player)
-                    && !NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(pixelmonEntity, player)).isCanceled()) {
-                    player.sendSystemMessage(TextUtil.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
-                    event.setCanceled(true);
-                }
-            });
+                    if (target instanceof PixelmonEntity && hasLegendaryPlayerOwner(target.getUUID(), player)
+                        && !NeoForge.EVENT_BUS.post(new LegendControlDefenderEvent.WorkedDefender(pixelmonEntity, player)).isCanceled()) {
+                        player.sendSystemMessage(TextUtil.formatMessage(LegendControlDefender.getInstance().getLocaleConfig().getIncorrectCause()));
+                        event.setCanceled(true);
+                    }
+                });
+            }
         }
     }
 
     @SubscribeEvent
-    public void onBattleStarted(BattleStartedEvent.Pre event) {
+    public void onBattleStartedPre(BattleStartedEvent.Pre event) {
         if (event.getBattleController().isPvP()) {
             return;
         }

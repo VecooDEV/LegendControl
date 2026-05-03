@@ -19,7 +19,7 @@ public class DiscordWebhook {
 
     public void sendEmbed(@NotNull String title, @NotNull String description, @NotNull String thumbnailUrl, @NotNull String color) {
         val json = String.format("{\"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}",
-                escapeJson(title), escapeJson(description), escapeJson(thumbnailUrl), color);
+                escapeJson(escapeMarkdown(title)), escapeJson(escapeMarkdown(description)), escapeJson(thumbnailUrl), color);
 
         CompletableFuture.runAsync(() -> {
             try {
@@ -40,6 +40,19 @@ public class DiscordWebhook {
                 .replace("\n", "\\n")
                 .replace("\r", "\\r")
                 .replace("\t", "\\t");
+    }
+
+    @NotNull
+    private String escapeMarkdown(@Nullable String input) {
+        if (input == null) {
+            return "";
+        }
+
+        return input.replace("_", "\\_")
+                .replace("*", "\\*")
+                .replace("~", "\\~")
+                .replace("`", "\\`")
+                .replace("|", "\\|");
     }
 
     private void sendRequest(@NotNull String json) throws IOException {

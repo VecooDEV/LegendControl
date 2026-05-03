@@ -153,6 +153,7 @@ public class LegendaryTrustCommand {
             player.sendSystemMessage(TextUtil.formatMessage(localeConfig.getTrustedPlayers()
                     .replace("%player%", PlayerUtil.getPlayerName(playerUUID))));
         }
+
         return 1;
     }
 
