@@ -75,8 +75,8 @@ public class PlayerService {
 
     private void saveInterval() {
         TaskTimer.builder()
-                .delay(15 * 20L)
-                .interval(15 * 20L)
+                .delay(315 * 20L)
+                .interval(315 * 20L)
                 .infinite()
                 .execute(() -> {
                     if (LegendControlDefender.getInstance().getServer().isRunning()) {
@@ -121,11 +121,10 @@ public class PlayerService {
         }
 
         for (File file : list) {
-            LegendControlDefender.getLogger().info("Loading " + file.getName());
             val storage = GsonLoader.load(PlayerStorage.class, file.toPath(), true);
 
             if (storage == null) {
-                throw new IOException(String.format("Failed to load file: %s. Data reset, create backup.", this.filePath));
+                throw new IOException(String.format("Failed to load file: %s. Data reset, create backup.", file.toPath()));
             } else {
                 this.storage.put(storage.getPlayerUUID(), storage);
             }
