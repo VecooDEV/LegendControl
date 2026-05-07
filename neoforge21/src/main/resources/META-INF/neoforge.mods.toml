@@ -30,7 +30,7 @@ side = "BOTH"
 [[dependencies.legendcontrol]]
 modId = "pixelmon"
 type = "required"
-versionRange = "[9.3,)"
+versionRange = "[9.3.16,)"
 ordering = "NONE"
 side = "BOTH"
 

@@ -57,7 +57,7 @@ public class LegendControlListener {
         LegendControlService.setLastLegend(pixelmonEntity.getPokemonName());
         LEGENDS.add(pixelmonEntity);
         setTimers(pixelmonEntity);
-        WebhookUtils.spawnWebhook(pixelmonEntity.getPokemon(), event.action.spawnLocation.biome);
+        WebhookUtils.spawnWebhook(pixelmonEntity.getPokemon(), event.action.spawnLocation.getBiome());
     }
 
     private void setTimers(@NotNull PixelmonEntity pixelmonEntity) {
