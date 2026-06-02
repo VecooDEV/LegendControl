@@ -1,5 +1,7 @@
 package com.vecoo.legendcontrol_defender.discord;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -18,28 +20,31 @@ public class DiscordWebhook {
     private final String url;
 
     public void sendEmbed(@NotNull String title, @NotNull String description, @NotNull String thumbnailUrl, int color) {
-        val json = String.format("{\"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}",
-                escapeJson(escapeMarkdown(title)), escapeJson(escapeMarkdown(description)), escapeJson(thumbnailUrl), color);
+        val json = new JsonObject();
+        val embed = new JsonObject();
+        val embedsArray = new JsonArray();
+
+        embed.addProperty("title", title);
+        embed.addProperty("description", escapeMarkdown(description));
+        embed.addProperty("color", color & 0xFFFFFF);
+
+        if (!thumbnailUrl.isEmpty()) {
+            val thumbnail = new JsonObject();
+
+            thumbnail.addProperty("url", thumbnailUrl);
+            embed.add("thumbnail", thumbnail);
+        }
+
+        embedsArray.add(embed);
+        json.add("embeds", embedsArray);
 
         CompletableFuture.runAsync(() -> {
             try {
-                sendRequest(json);
+                sendRequest(json.toString());
             } catch (IOException e) {
                 LegendControlDefender.getLogger().error("Error sending embed.", e);
             }
         });
-    }
-
-    @NotNull
-    private String escapeJson(@Nullable String input) {
-        if (input == null) {
-            return "";
-        }
-
-        return input.replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
     }
 
     @NotNull
@@ -49,7 +54,6 @@ public class DiscordWebhook {
         }
 
         return input.replace("_", "\\_")
-                .replace("*", "\\*")
                 .replace("~", "\\~")
                 .replace("`", "\\`")
                 .replace("|", "\\|");

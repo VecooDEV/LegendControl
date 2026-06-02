@@ -1,5 +1,7 @@
 package com.vecoo.legendcontrol.discord;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.vecoo.legendcontrol.LegendControl;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -19,35 +21,38 @@ public class DiscordWebhook {
 
     public void sendEmbed(@NotNull String title, @NotNull String description, @NotNull String thumbnailUrl,
                           int color, boolean pingRole) {
-        var role = "";
+        val json = new JsonObject();
+        val embed = new JsonObject();
+        val embedsArray = new JsonArray();
 
         if (pingRole) {
             val roleId = LegendControl.getInstance().getDiscordConfig().getWebhookRole();
-            role = roleId != 0 ? "<@&" + roleId + ">" : "";
+            if (roleId != 0) {
+                json.addProperty("content", "<@&" + roleId + ">");
+            }
         }
 
-        val json = String.format("{\"content\": \"%s\", \"embeds\": [{\"title\": \"%s\", \"description\": \"%s\", \"thumbnail\": {\"url\": \"%s\"}, \"color\": %s}]}",
-                escapeJson(role), escapeJson(escapeMarkdown(title)), escapeJson(escapeMarkdown(description)), escapeJson(thumbnailUrl), color);
+        embed.addProperty("title", title);
+        embed.addProperty("description", escapeMarkdown(description));
+        embed.addProperty("color", color & 0xFFFFFF);
+
+        if (!thumbnailUrl.isEmpty()) {
+            val thumbnail = new JsonObject();
+
+            thumbnail.addProperty("url", thumbnailUrl);
+            embed.add("thumbnail", thumbnail);
+        }
+
+        embedsArray.add(embed);
+        json.add("embeds", embedsArray);
 
         CompletableFuture.runAsync(() -> {
             try {
-                sendRequest(json);
+                sendRequest(json.toString());
             } catch (IOException e) {
                 LegendControl.getLogger().error("Error sending discord embed.", e);
             }
         });
-    }
-
-    @NotNull
-    private String escapeJson(@Nullable String input) {
-        if (input == null) {
-            return "";
-        }
-
-        return input.replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
     }
 
     @NotNull
@@ -57,7 +62,6 @@ public class DiscordWebhook {
         }
 
         return input.replace("_", "\\_")
-                .replace("*", "\\*")
                 .replace("~", "\\~")
                 .replace("`", "\\`")
                 .replace("|", "\\|");

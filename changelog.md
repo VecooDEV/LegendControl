@@ -1,1 +1,1 @@
-* Update to Pixelmon 9.3.16.
+* fixed discord webhook.
