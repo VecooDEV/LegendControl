@@ -19,7 +19,7 @@ public class ServerStorage {
     private String lastLegend;
 
     public void setChanceLegend(float amount) {
-        this.chanceLegend = Math.min(100.0F, Math.max(amount, 0.0F));
+        this.chanceLegend = Math.clamp(amount, 0.0F, 100.0F);
     }
 
     @NotNull

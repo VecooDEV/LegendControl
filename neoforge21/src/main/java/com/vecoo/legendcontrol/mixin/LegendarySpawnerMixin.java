@@ -107,7 +107,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
             ),
             cancellable = true
     )
-    public void forcefullySpawn(ServerPlayer onlyFocus, CallbackInfo ci, @Local(ordinal = 1) ArrayList<ServerPlayer> players) {
+    public void forcefullySpawn(ServerPlayer onlyFocus, CallbackInfo ci, @Local(name = "players") ArrayList<ServerPlayer> players) {
         val serverConfig = LegendControl.getInstance().getServerConfig();
 
         players.removeIf(
