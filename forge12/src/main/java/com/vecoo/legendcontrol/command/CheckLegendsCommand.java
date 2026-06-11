@@ -1,7 +1,7 @@
 package com.vecoo.legendcontrol.command;
 
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
-import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.util.TextUtil;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.service.LegendControlService;
 import com.vecoo.legendcontrol.util.Utils;
@@ -40,7 +40,7 @@ public class CheckLegendsCommand extends CommandBase {
     }
 
     private static void sendMessage(@Nonnull ICommandSender source, int time, @Nonnull String timeUnit) {
-        source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getCheckLegendary()
+        source.sendMessage(TextUtil.formatMessage(LegendControl.getInstance().getLocaleConfig().getCheckLegendary()
                 .replace("%chance%", Utils.formatFloat(LegendControlService.getChanceLegend()))
                 .replace("%time%", time + timeUnit)));
     }

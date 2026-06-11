@@ -1,43 +1,48 @@
 package com.vecoo.legendcontrol_defender.service;
 
-import com.vecoo.legendcontrol_defender.LegendControlDefender;
+import com.vecoo.extralib.shade.spongepowered.configurate.objectmapping.ConfigSerializable;
+import com.vecoo.extralib.shade.spongepowered.configurate.objectmapping.meta.Setting;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.annotation.Nonnull;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Getter
 @ToString
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
+@ConfigSerializable
 public class PlayerStorage {
     @Nonnull
+    @Setting("playerUUID")
     private final UUID playerUUID;
     @Nonnull
+    @Setting("playersTrust")
     private final Set<UUID> playersTrust;
 
-    @Setter
-    private transient volatile boolean dirty = false;
-
-    public PlayerStorage(@Nonnull UUID playerUUID, @Nonnull Set<UUID> playersTrust) {
-        this.playerUUID = playerUUID;
-        this.playersTrust = playersTrust;
-        LegendControlDefender.getInstance().getPlayerService().updatePlayerStorage(this);
-    }
+    @Nonnull
+    private transient final AtomicBoolean dirty = new AtomicBoolean(true);
 
     public void addPlayerTrust(@Nonnull UUID playerUUID) {
         this.playersTrust.add(playerUUID);
-        LegendControlDefender.getInstance().getPlayerService().updatePlayerStorage(this);
     }
 
     public void removePlayerTrust(@Nonnull UUID playerUUID) {
         this.playersTrust.remove(playerUUID);
-        LegendControlDefender.getInstance().getPlayerService().updatePlayerStorage(this);
     }
 
     public void clearPlayersTrust() {
         this.playersTrust.clear();
-        LegendControlDefender.getInstance().getPlayerService().updatePlayerStorage(this);
+    }
+
+    @Nonnull
+    public PlayerStorage copy() {
+        return new PlayerStorage(this.playerUUID, new LinkedHashSet<>(this.playersTrust));
     }
 }

@@ -1,6 +1,6 @@
 package com.vecoo.legendcontrol.command;
 
-import com.vecoo.extralib.chat.UtilChat;
+import com.vecoo.extralib.util.TextUtil;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.LegendSourceName;
 import com.vecoo.legendcontrol.api.service.LegendControlService;
@@ -75,7 +75,7 @@ public class LegendControlCommand extends CommandBase {
                 }
             }
         } catch (Exception e) {
-            sender.sendMessage(UtilChat.formatMessage("/lc"));
+            sender.sendMessage(TextUtil.formatMessage("/lc"));
         }
     }
 
@@ -83,7 +83,7 @@ public class LegendControlCommand extends CommandBase {
         val localeConfig = LegendControl.getInstance().getLocaleConfig();
 
         if (LegendControlService.getChanceLegend() + chance > 100F) {
-            source.sendMessage(UtilChat.formatMessage(localeConfig.getErrorChance()));
+            source.sendMessage(TextUtil.formatMessage(localeConfig.getErrorChance()));
             return;
         }
 
@@ -91,7 +91,7 @@ public class LegendControlCommand extends CommandBase {
             return;
         }
 
-        source.sendMessage(UtilChat.formatMessage(localeConfig.getChangeChanceLegendary()
+        source.sendMessage(TextUtil.formatMessage(localeConfig.getChangeChanceLegendary()
                 .replace("%chance%", Utils.formatFloat(LegendControlService.getChanceLegend()))));
     }
 
@@ -99,7 +99,7 @@ public class LegendControlCommand extends CommandBase {
         val localeConfig = LegendControl.getInstance().getLocaleConfig();
 
         if (LegendControlService.getChanceLegend() - chance < 0F) {
-            source.sendMessage(UtilChat.formatMessage(localeConfig.getErrorChance()));
+            source.sendMessage(TextUtil.formatMessage(localeConfig.getErrorChance()));
             return;
         }
 
@@ -107,7 +107,7 @@ public class LegendControlCommand extends CommandBase {
             return;
         }
 
-        source.sendMessage(UtilChat.formatMessage(localeConfig.getChangeChanceLegendary()
+        source.sendMessage(TextUtil.formatMessage(localeConfig.getChangeChanceLegendary()
                 .replace("%chance%", Utils.formatFloat(LegendControlService.getChanceLegend()))));
     }
 
@@ -116,7 +116,7 @@ public class LegendControlCommand extends CommandBase {
             return;
         }
 
-        source.sendMessage(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getChangeChanceLegendary()
+        source.sendMessage(TextUtil.formatMessage(LegendControl.getInstance().getLocaleConfig().getChangeChanceLegendary()
                 .replace("%chance%", Utils.formatFloat(LegendControlService.getChanceLegend()))));
     }
 
@@ -126,11 +126,11 @@ public class LegendControlCommand extends CommandBase {
         try {
             LegendControl.getInstance().loadConfig();
         } catch (Exception e) {
-            source.sendMessage(UtilChat.formatMessage(localeConfig.getErrorReload()));
+            source.sendMessage(TextUtil.formatMessage(localeConfig.getErrorReload()));
             LegendControl.getLogger().error(e.getMessage());
             return;
         }
 
-        source.sendMessage(UtilChat.formatMessage(localeConfig.getReload()));
+        source.sendMessage(TextUtil.formatMessage(localeConfig.getReload()));
     }
 }

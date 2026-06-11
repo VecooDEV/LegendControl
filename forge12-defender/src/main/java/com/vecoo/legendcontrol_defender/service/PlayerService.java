@@ -1,87 +1,141 @@
 package com.vecoo.legendcontrol_defender.service;
 
-import com.vecoo.extralib.gson.UtilGson;
-import com.vecoo.extralib.task.TaskTimer;
-import com.vecoo.extralib.world.UtilWorld;
+import com.vecoo.extralib.loader.GsonLoader;
+import com.vecoo.extralib.scheduler.TaskTimer;
+import com.vecoo.extralib.util.WorldUtil;
 import com.vecoo.legendcontrol_defender.LegendControlDefender;
 import lombok.Getter;
 import lombok.val;
 import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 @Getter
 public class PlayerService {
     @Nonnull
-    private transient final String filePath;
+    private final Path filePath;
     @Nonnull
-    private final Map<UUID, PlayerStorage> storage;
+    private final Map<UUID, PlayerStorage> storage = new ConcurrentHashMap<>();
+    @Nonnull
+    private final Map<UUID, ReentrantLock> playerLocks = new ConcurrentHashMap<>();
 
-    public PlayerService(@Nonnull String filePath, @Nonnull MinecraftServer server) {
-        this.filePath = UtilWorld.resolveWorldDirectory(filePath, server);
-
-        this.storage = new HashMap<>();
+    public PlayerService(@Nonnull String directory, @Nonnull MinecraftServer server) {
+        this.filePath = Paths.get(WorldUtil.resolveWorldDirectory(directory, server));
     }
 
     @Nonnull
     public PlayerStorage getStorage(@Nonnull UUID playerUUID) {
-        if (this.storage.get(playerUUID) == null) {
-            new PlayerStorage(playerUUID, new LinkedHashSet<>());
+        return this.storage.computeIfAbsent(playerUUID, uuid ->
+                new PlayerStorage(uuid, new LinkedHashSet<>())
+        );
+    }
+
+    public void modifyStorage(@Nonnull UUID playerUUID, Consumer<PlayerStorage> consumer) {
+        val storage = getStorage(playerUUID);
+        val lock = getLock(playerUUID);
+
+        lock.lock();
+
+        try {
+            consumer.accept(storage);
+            storage.getDirty().set(true);
+        } finally {
+            lock.unlock();
         }
-
-        return this.storage.get(playerUUID);
     }
 
-    public void updatePlayerStorage(@Nonnull PlayerStorage storage) {
-        storage.setDirty(true);
-        this.storage.put(storage.getPlayerUUID(), storage);
-    }
-
-    public void save() {
+    public void save(boolean force) {
         for (PlayerStorage storage : this.storage.values()) {
-            UtilGson.writeFileAsync(this.filePath, storage.getPlayerUUID() + ".json",
-                    UtilGson.getGson().toJson(storage)).join();
+            val lock = getLock(storage.getPlayerUUID());
+
+            lock.lock();
+
+            try {
+                if (storage.getDirty().compareAndSet(true, false) || force) {
+                    GsonLoader.save(storage.copy(), this.filePath.resolve(storage.getPlayerUUID() + ".json"));
+                }
+            } catch (IOException e) {
+                storage.getDirty().set(true);
+                LegendControlDefender.getLogger().error(e.getMessage());
+            } finally {
+                lock.unlock();
+            }
         }
     }
 
     private void saveInterval() {
         TaskTimer.builder()
-                .withoutDelay()
-                .interval(350 * 20L)
+                .delay(315 * 20L)
+                .interval(315 * 20L)
                 .infinite()
-                .consume(task -> {
+                .execute(() -> {
                     if (LegendControlDefender.getInstance().getServer().isServerRunning()) {
                         for (PlayerStorage storage : this.storage.values()) {
-                            if (storage.isDirty()) {
-                                UtilGson.writeFileAsync(this.filePath, storage.getPlayerUUID() + ".json",
-                                        UtilGson.getGson().toJson(storage)).thenRun(() -> storage.setDirty(false));
+                            PlayerStorage snapshot;
+                            val lock = getLock(storage.getPlayerUUID());
+
+                            lock.lock();
+
+                            try {
+                                if (!storage.getDirty().compareAndSet(true, false)) {
+                                    continue;
+                                }
+
+                                snapshot = storage.copy();
+                            } finally {
+                                lock.unlock();
                             }
+
+                            CompletableFuture.runAsync(() -> {
+                                try {
+                                    GsonLoader.save(snapshot, this.filePath.resolve(snapshot.getPlayerUUID() + ".json"));
+                                } catch (IOException e) {
+                                    storage.getDirty().set(true);
+                                    LegendControlDefender.getLogger().error("Async save error: ", e);
+                                }
+                            }, GsonLoader.WRITER_EXECUTOR);
                         }
                     }
-                })
-                .build();
+                }).build();
     }
 
-    public void init() {
-        val list = UtilGson.checkForDirectory(this.filePath).list();
+    public void init() throws IOException {
+        if (!this.storage.isEmpty()) {
+            return;
+        }
+
+        val list = this.filePath.toFile().listFiles((dir, name) -> name.endsWith(".json"));
 
         if (list == null) {
             return;
         }
 
-        for (String file : list) {
-            UtilGson.readFileAsync(this.filePath, file, el -> {
-                val storage = UtilGson.getGson().fromJson(el, PlayerStorage.class);
+        for (File file : list) {
+            val storage = GsonLoader.load(PlayerStorage.class, file.toPath(), true);
 
-                storage.setDirty(false);
+            if (storage == null) {
+                throw new IOException(String.format("Failed to load file: %s. Data reset, create backup.", file.toPath()));
+            } else {
                 this.storage.put(storage.getPlayerUUID(), storage);
-            }).join();
+            }
         }
 
         saveInterval();
+    }
+
+    @Nonnull
+    private ReentrantLock getLock(@Nonnull UUID playerUUID) {
+        return this.playerLocks.computeIfAbsent(playerUUID, uuid -> new ReentrantLock());
     }
 }

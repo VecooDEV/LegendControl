@@ -1,41 +1,35 @@
 package com.vecoo.legendcontrol.service;
 
-import com.vecoo.legendcontrol.LegendControl;
-import lombok.Getter;
-import lombok.ToString;
+import com.vecoo.extralib.shade.spongepowered.configurate.objectmapping.ConfigSerializable;
+import com.vecoo.extralib.shade.spongepowered.configurate.objectmapping.meta.Setting;
+import lombok.*;
 
 import javax.annotation.Nonnull;
 
 @Getter
+@Setter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@ConfigSerializable
 public class ServerStorage {
+    @Setting("chanceLegend")
     private float chanceLegend;
     @Nonnull
+    @Setting("lastLegend")
     private String lastLegend;
 
-    public ServerStorage(float chanceLegend, @Nonnull String lastLegend) {
-        this.chanceLegend = chanceLegend;
-        this.lastLegend = lastLegend;
-        LegendControl.getInstance().getServerService().updateStorage(this);
-    }
-
     public void setChanceLegend(float amount) {
-        this.chanceLegend = amount;
-        LegendControl.getInstance().getServerService().updateStorage(this);
+        this.chanceLegend = Math.min(100.0F, Math.max(amount, 0.0F));
     }
 
-    public void addChanceLegend(float amount) {
-        this.chanceLegend = Math.min(getChanceLegend() + amount, 100F);
-        LegendControl.getInstance().getServerService().updateStorage(this);
-    }
+    @Nonnull
+    public ServerStorage copy() {
+        val storage = new ServerStorage();
 
-    public void removeChanceLegend(float amount) {
-        this.chanceLegend = Math.max(getChanceLegend() - amount, 0F);
-        LegendControl.getInstance().getServerService().updateStorage(this);
-    }
+        storage.chanceLegend = this.chanceLegend;
+        storage.lastLegend = this.lastLegend;
 
-    public void setLastLegend(@Nonnull String pokemonName) {
-        this.lastLegend = pokemonName;
-        LegendControl.getInstance().getServerService().updateStorage(this);
+        return storage;
     }
 }

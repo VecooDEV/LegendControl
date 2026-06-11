@@ -9,6 +9,10 @@ subprojects {
         setArchiveBaseName("${rootProject.name}")
     }
 
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
     repositories {
         mavenCentral()
         maven { url = "https://api.modrinth.com/maven" }
@@ -27,10 +31,6 @@ subprojects {
     dependencies {
         implementation "org.projectlombok:lombok:${lombok}"
         annotationProcessor "org.projectlombok:lombok:${lombok}"
-    }
-
-    tasks.withType(JavaCompile).configureEach {
-        options.encoding = 'UTF-8'
     }
 
     tasks.register('versionedRelease', Copy) {

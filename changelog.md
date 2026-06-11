@@ -1,2 +1,2 @@
 ## The mod for this version of Minecraft is limited/partially limited in functionality, support for such versions is provided at low priority. 
-* Update 3.3.3.
+* Update 3.4.2.

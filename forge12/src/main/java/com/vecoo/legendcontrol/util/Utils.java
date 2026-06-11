@@ -7,6 +7,7 @@ import lombok.val;
 import lombok.var;
 
 import javax.annotation.Nonnull;
+import java.util.Locale;
 
 public class Utils {
     public static int TIME_DO_LEGEND = RandomHelper.getRandomNumberBetween(
@@ -17,7 +18,7 @@ public class Utils {
     @Nonnull
     public static String getPokemonImage(@Nonnull Pokemon pokemon) {
         val discordConfig = LegendControl.getInstance().getDiscordConfig();
-        var pokemonName = pokemon.getSpecies().getPokemonName().toLowerCase();
+        var pokemonName = pokemon.getSpecies().getPokemonName().toLowerCase(Locale.ROOT);
 
         switch (pokemonName) {
             case "typenull": {

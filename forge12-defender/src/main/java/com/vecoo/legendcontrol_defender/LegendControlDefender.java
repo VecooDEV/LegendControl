@@ -1,7 +1,7 @@
 package com.vecoo.legendcontrol_defender;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.vecoo.extralib.config.YamlConfigFactory;
+import com.vecoo.extralib.loader.YamlLoader;
 import com.vecoo.legendcontrol_defender.command.LegendaryTrustCommand;
 import com.vecoo.legendcontrol_defender.config.DiscordConfig;
 import com.vecoo.legendcontrol_defender.config.LocaleConfig;
@@ -18,8 +18,10 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+
 @Mod(modid = LegendControlDefender.MOD_ID, acceptableRemoteVersions = "*", useMetadata = true)
-public class LegendControlDefender {
+public class    LegendControlDefender {
     public static final String MOD_ID = "legendcontrol_defender";
     private static Logger LOGGER;
 
@@ -59,22 +61,28 @@ public class LegendControlDefender {
 
     @Mod.EventHandler
     public void onServerStopping(FMLServerStoppingEvent event) {
-        this.playerService.save();
+        this.playerService.save(true);
     }
 
     public void loadConfig() {
-        this.serverConfig = YamlConfigFactory.load(ServerConfig.class, "config/LegendControl/Defender/config.yml");
-        this.localeConfig = YamlConfigFactory.load(LocaleConfig.class, "config/LegendControl/Defender/locale.yml");
-        this.discordConfig = YamlConfigFactory.load(DiscordConfig.class, "config/LegendControl/Defender/discord.yml");
+        try {
+            this.serverConfig = YamlLoader.load(ServerConfig.class, "config/legendcontrol/defender/config.yml", false);
+            this.localeConfig = YamlLoader.load(LocaleConfig.class, "config/legendcontrol/defender/locale.yml", false);
+            this.discordConfig = YamlLoader.load(DiscordConfig.class, "config/legendcontrol/defender/discord.yml", false);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
         this.discordWebhook = new DiscordWebhook(this.discordConfig.getWebhookUrl());
     }
 
-    private void loadStorage() {
+    public void loadStorage() {
+        this.playerService = new PlayerService("%directory%/storage/legendcontrol/defender/players/", this.server);
+
         try {
-            this.playerService = new PlayerService("/%directory%/storage/LegendControl/Defender/players/", this.server);
             this.playerService.init();
-        } catch (Exception e) {
-            LOGGER.error("Error load storage.", e);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
         }
     }
 
