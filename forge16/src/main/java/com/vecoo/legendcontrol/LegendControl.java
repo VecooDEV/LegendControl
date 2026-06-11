@@ -1,17 +1,15 @@
 package com.vecoo.legendcontrol;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.vecoo.extralib.config.YamlConfigFactory;
+import com.vecoo.extralib.loader.YamlLoader;
 import com.vecoo.legendcontrol.command.CheckLegendsCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.config.DiscordConfig;
 import com.vecoo.legendcontrol.config.LocaleConfig;
 import com.vecoo.legendcontrol.config.ServerConfig;
 import com.vecoo.legendcontrol.discord.DiscordWebhook;
-import com.vecoo.legendcontrol.listener.LegendarySpawnListener;
-import com.vecoo.legendcontrol.listener.OtherListener;
-import com.vecoo.legendcontrol.listener.ParticleListener;
-import com.vecoo.legendcontrol.listener.ResultListener;
+import com.vecoo.legendcontrol.listener.LegendControlListener;
+import com.vecoo.legendcontrol.listener.LegendControlResultListener;
 import com.vecoo.legendcontrol.service.ServerService;
 import lombok.Getter;
 import net.minecraft.server.MinecraftServer;
@@ -25,6 +23,8 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 @Mod(LegendControl.MOD_ID)
 public class LegendControl {
@@ -50,11 +50,10 @@ public class LegendControl {
         loadConfig();
 
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(new ParticleListener());
-        MinecraftForge.EVENT_BUS.register(new ResultListener());
-        Pixelmon.EVENT_BUS.register(new ResultListener());
-        Pixelmon.EVENT_BUS.register(new LegendarySpawnListener());
-        Pixelmon.EVENT_BUS.register(new OtherListener());
+        MinecraftForge.EVENT_BUS.register(new LegendControlListener());
+        MinecraftForge.EVENT_BUS.register(new LegendControlResultListener());
+        Pixelmon.EVENT_BUS.register(new LegendControlListener());
+        Pixelmon.EVENT_BUS.register(new LegendControlResultListener());
     }
 
     @SubscribeEvent
@@ -75,22 +74,28 @@ public class LegendControl {
 
     @SubscribeEvent
     public void onFMLServerStopping(FMLServerStoppingEvent event) {
-        this.serverService.save();
+        this.serverService.save(true);
     }
 
     public void loadConfig() {
-        this.serverConfig = YamlConfigFactory.load(ServerConfig.class, "config/LegendControl/config.yml");
-        this.localeConfig = YamlConfigFactory.load(LocaleConfig.class, "config/LegendControl/locale.yml");
-        this.discordConfig = YamlConfigFactory.load(DiscordConfig.class, "config/LegendControl/discord.yml");
+        try {
+            this.serverConfig = YamlLoader.load(ServerConfig.class, "config/legendcontrol/config.yml", false);
+            this.localeConfig = YamlLoader.load(LocaleConfig.class, "config/legendcontrol/locale.yml", false);
+            this.discordConfig = YamlLoader.load(DiscordConfig.class, "config/legendcontrol/discord.yml", false);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
         this.discordWebhook = new DiscordWebhook(this.discordConfig.getWebhookUrl());
     }
 
     private void loadStorage() {
+        this.serverService = new ServerService("%directory%/storage/legendcontrol/", this.server);
+
         try {
-            this.serverService = new ServerService("/%directory%/storage/LegendControl/", this.server);
             this.serverService.init();
-        } catch (Exception e) {
-            LOGGER.error("Error load storage.", e);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
         }
     }
 

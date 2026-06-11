@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 @ConfigSerializable
+@SuppressWarnings("FieldMayBeFinal")
 public class LocaleConfig {
     private String reload = "&e(!) Configs have been reloaded.";
     private String addTrust = "&e(!) Player %player% has been successfully added to your trust list.";

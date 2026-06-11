@@ -2,8 +2,8 @@ package com.vecoo.legendcontrol.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
-import com.vecoo.extralib.chat.UtilChat;
-import com.vecoo.extralib.permission.UtilPermission;
+import com.vecoo.extralib.util.PermissionUtil;
+import com.vecoo.extralib.util.TextUtil;
 import com.vecoo.legendcontrol.LegendControl;
 import com.vecoo.legendcontrol.api.service.LegendControlService;
 import com.vecoo.legendcontrol.util.Utils;
@@ -11,12 +11,11 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 
 public class CheckLegendsCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("checkleg")
-                .requires(p -> UtilPermission.hasPermission(p, "minecraft.command.checkleg"))
+                .requires(p -> PermissionUtil.hasPermission(p, "minecraft.command.checkleg"))
                 .executes(e -> execute(e.getSource())));
     }
 
@@ -37,12 +36,8 @@ public class CheckLegendsCommand {
     }
 
     private static void sendMessage(@Nonnull CommandSource source, int time, @Nonnull String timeUnit) {
-        source.sendSuccess(UtilChat.formatMessage(LegendControl.getInstance().getLocaleConfig().getCheckLegendary()
+        source.sendSuccess(TextUtil.formatMessage(LegendControl.getInstance().getLocaleConfig().getCheckLegendary()
                 .replace("%chance%", Utils.formatFloat(LegendControlService.getChanceLegend()))
                 .replace("%time%", time + timeUnit)), false);
-
-        if (UtilPermission.hasPermission(source, "minecraft.command.checkleg.modify")) {
-            PixelmonSpawning.legendarySpawner.checkSpawns.checkSpawns(PixelmonSpawning.legendarySpawner, source, new ArrayList<>());
-        }
     }
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 @ConfigSerializable
+@SuppressWarnings("FieldMayBeFinal")
 public class LocaleConfig {
     private String reload = "&e(!) Configs have been reloaded.";
     private String location = "&e(!) Location of Pokemon %pokemon%: X: %x%, Y: %y%, Z: %z%.";

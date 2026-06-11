@@ -2,7 +2,7 @@ package com.vecoo.legendcontrol.util;
 
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.PixelmonEntity;
-import com.vecoo.extralib.world.UtilBiome;
+import com.vecoo.extralib.util.WorldUtil;
 import com.vecoo.legendcontrol.LegendControl;
 import lombok.val;
 import net.minecraft.world.biome.Biome;
@@ -83,6 +83,6 @@ public class WebhookUtils {
 
     @Nonnull
     private static String getBiomeText(@Nonnull Biome biome) {
-        return biome.getRegistryName() == null ? "Unknown" : UtilBiome.formatBiomeName(biome.getRegistryName().toString());
+        return biome.getRegistryName() == null ? "Unknown" : WorldUtil.formatBiomeName(biome.getRegistryName().toString());
     }
 }
