@@ -17,6 +17,8 @@ public class ServerStorage {
     @NotNull
     @Setting("lastLegend")
     private String lastLegend;
+    @Setting("remainingSpawnTime")
+    private long remainingSpawnTime;
 
     public void setChanceLegend(float amount) {
         this.chanceLegend = Math.clamp(amount, 0.0F, 100.0F);
@@ -28,6 +30,7 @@ public class ServerStorage {
 
         storage.chanceLegend = this.chanceLegend;
         storage.lastLegend = this.lastLegend;
+        storage.remainingSpawnTime = this.remainingSpawnTime;
 
         return storage;
     }

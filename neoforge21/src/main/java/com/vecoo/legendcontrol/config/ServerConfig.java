@@ -23,6 +23,10 @@ public class ServerConfig {
     private int randomTimeSpawnMin = 0;
     @Comment("The maximum number of seconds added to display the command time, it only changes the time visually.")
     private int randomTimeSpawnMax = 300;
+    @Comment("The time threshold for a legendary pokemon when you need to add time.")
+    private int thresholdRemaining = 300;
+    @Comment("Additional time for legendary spawn time if threshold is exceeded.")
+    private int extraTimeRemaining = 300;
     @Comment("Will legendary pokemon have particles?")
     private boolean legendaryParticle = true;
     @Comment("The name of the particle to display legendary pokemon.")

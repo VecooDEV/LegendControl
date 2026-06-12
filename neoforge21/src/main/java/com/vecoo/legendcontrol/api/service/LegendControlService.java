@@ -16,6 +16,10 @@ public class LegendControlService {
         return LegendControl.getInstance().getServerService().getStorage().getLastLegend();
     }
 
+    public static long getRemainingSpawnTime() {
+        return LegendControl.getInstance().getServerService().getStorage().getRemainingSpawnTime();
+    }
+
     public static boolean setChanceLegend(@NotNull String source, float amount) {
         val event = new ChangeChanceLegendEvent.Set(source, amount);
 
@@ -53,5 +57,9 @@ public class LegendControlService {
 
     public static void setLastLegend(@NotNull String pokemonName) {
         LegendControl.getInstance().getServerService().modifyStorage(storage -> storage.setLastLegend(pokemonName));
+    }
+
+    public static void setRemainingSpawnTime(long time) {
+        LegendControl.getInstance().getServerService().modifyStorage(storage -> storage.setRemainingSpawnTime(time));
     }
 }

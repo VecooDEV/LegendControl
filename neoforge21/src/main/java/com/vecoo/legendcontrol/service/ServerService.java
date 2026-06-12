@@ -106,12 +106,12 @@ public class ServerService {
         }
 
         if (!Files.exists(this.filePath)) {
-            this.storage = new ServerStorage(LegendControl.getInstance().getServerConfig().getBaseChance(), "None");
+            this.storage = new ServerStorage(LegendControl.getInstance().getServerConfig().getBaseChance(), "None", -1);
         } else {
             val storage = GsonLoader.load(ServerStorage.class, this.filePath, true);
 
             if (storage == null) {
-                this.storage = new ServerStorage(LegendControl.getInstance().getServerConfig().getBaseChance(), "None");
+                this.storage = new ServerStorage(LegendControl.getInstance().getServerConfig().getBaseChance(), "None", -1);
                 throw new IOException(String.format("Failed to load file: %s. Data reset, create backup.", this.filePath));
             } else {
                 this.storage = storage;

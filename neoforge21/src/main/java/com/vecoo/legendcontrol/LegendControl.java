@@ -2,7 +2,9 @@ package com.vecoo.legendcontrol;
 
 import com.mojang.logging.LogUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.spawning.PixelmonSpawning;
 import com.vecoo.extralib.loader.YamlLoader;
+import com.vecoo.legendcontrol.api.service.LegendControlService;
 import com.vecoo.legendcontrol.command.CheckLegendaryCommand;
 import com.vecoo.legendcontrol.command.LegendControlCommand;
 import com.vecoo.legendcontrol.config.DiscordConfig;
@@ -20,6 +22,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
@@ -76,7 +79,21 @@ public class LegendControl {
     }
 
     @SubscribeEvent
+    public void onServerStarted(ServerStartedEvent event) {
+        long remainingSpawnTime = LegendControlService.getRemainingSpawnTime();
+
+        if (remainingSpawnTime > 0) {
+            if (remainingSpawnTime < this.serverConfig.getThresholdRemaining() * 60L * 1000L) {
+                remainingSpawnTime += this.serverConfig.getExtraTimeRemaining() * 60L * 1000L;
+            }
+
+            PixelmonSpawning.legendarySpawner.nextSpawnTime = System.currentTimeMillis() + remainingSpawnTime;
+        }
+    }
+
+    @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
+        LegendControlService.setRemainingSpawnTime(PixelmonSpawning.legendarySpawner.nextSpawnTime - System.currentTimeMillis());
         this.serverService.save(true);
     }
 

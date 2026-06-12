@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-@Mixin(value = LegendarySpawner.class, remap = false)
+@Mixin(value = LegendarySpawner.class)
 public abstract class LegendarySpawnerMixin extends TickingSpawner {
     public LegendarySpawnerMixin(String name) {
         super(name);
@@ -70,7 +70,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
         val baseSpawnTicks = this.firesChooseEvent ? PixelmonConfigProxy.getSpawningLegendary().getLegendarySpawnTicks()
                 : PixelmonConfigProxy.getSpawningBoss().getBossSpawnTicks();
         this.spawnFrequency = 1200.0F / (RandomHelper.getRandomNumberBetween(0.6F, 1.4F) * baseSpawnTicks
-                                         / (1.0F + (float) (numPlayers - 1) * PixelmonConfigProxy.getSpawningLegendary().getSpawnTicksPlayerMultiplier()));
+                / (1.0F + (float) (numPlayers - 1) * PixelmonConfigProxy.getSpawningLegendary().getSpawnTicksPlayerMultiplier()));
 
         val serverConfig = LegendControl.getInstance().getServerConfig();
 
@@ -112,8 +112,8 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
 
         players.removeIf(
                 player -> serverConfig.isBlacklistDimensions()
-                          && serverConfig.getBlacklistDimensionList().contains(player.level().dimension().location().getPath())
-                          || serverConfig.isBlacklistPlayers() && serverConfig.getBlacklistPlayersList().contains(player.getName().getString())
+                        && serverConfig.getBlacklistDimensionList().contains(player.level().dimension().location().getPath())
+                        || serverConfig.isBlacklistPlayers() && serverConfig.getBlacklistPlayersList().contains(player.getName().getString())
         );
 
         if (players.isEmpty()) {
@@ -140,8 +140,7 @@ public abstract class LegendarySpawnerMixin extends TickingSpawner {
                 possibleSpawns.forEach(SpawnAction::applyLocationMutations);
                 return possibleSpawns;
             } else {
-                LegendControlService.addChanceLegend(LegendSourceName.PIXELMON,
-                        LegendControl.getInstance().getServerConfig().getStepSpawnChance());
+                LegendControlService.addChanceLegend(LegendSourceName.PIXELMON, LegendControl.getInstance().getServerConfig().getStepSpawnChance());
                 return Collections.emptyList();
             }
         });
