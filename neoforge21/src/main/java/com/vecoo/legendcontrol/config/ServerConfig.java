@@ -26,7 +26,7 @@ public class ServerConfig {
     @Comment("The time threshold for a legendary pokemon when you need to add time.")
     private int thresholdRemaining = 300;
     @Comment("Additional time for legendary spawn time if threshold is exceeded.")
-    private int extraTimeRemaining = 300;
+    private int additionalTimeRemaining = 300;
     @Comment("Will legendary pokemon have particles?")
     private boolean legendaryParticle = true;
     @Comment("The name of the particle to display legendary pokemon.")

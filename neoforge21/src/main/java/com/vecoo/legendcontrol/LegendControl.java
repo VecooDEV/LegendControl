@@ -83,8 +83,8 @@ public class LegendControl {
         long remainingSpawnTime = LegendControlService.getRemainingSpawnTime();
 
         if (remainingSpawnTime > 0) {
-            if (remainingSpawnTime < this.serverConfig.getThresholdRemaining() * 60L * 1000L) {
-                remainingSpawnTime += this.serverConfig.getExtraTimeRemaining() * 60L * 1000L;
+            if (remainingSpawnTime < this.serverConfig.getThresholdRemaining() * 1000L) {
+                remainingSpawnTime += this.serverConfig.getAdditionalTimeRemaining() * 1000L;
             }
 
             PixelmonSpawning.legendarySpawner.nextSpawnTime = System.currentTimeMillis() + remainingSpawnTime;
