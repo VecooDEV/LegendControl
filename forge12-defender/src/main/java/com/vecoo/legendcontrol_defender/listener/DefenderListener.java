@@ -83,7 +83,7 @@ public class DefenderListener {
         TaskTimer.builder()
                 .delay(LegendControlDefender.getInstance().getServerConfig().getProtectedTime() * 20L)
                 .execute(() -> {
-                    if (hasLegendaryDefender(entityPixelmon.getUniqueID()) && entityPixelmon.isEntityAlive() && !entityPixelmon.hasOwner()) {
+                    if (removeLegendaryDefender(entityPixelmon.getUniqueID()) && entityPixelmon.isEntityAlive() && !entityPixelmon.hasOwner()) {
                         val event = new LegendControlDefenderEvent.ExpiredDefender(entityPixelmon);
 
                         if (!event.isCanceled()) {
