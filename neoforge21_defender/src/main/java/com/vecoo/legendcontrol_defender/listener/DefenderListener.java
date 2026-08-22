@@ -125,7 +125,7 @@ public class DefenderListener {
             return;
         }
 
-        val participants = event.getBattleController().participants;
+        val participants = event.getBattleController().participants();
 
         val player = participants.stream()
                 .filter(PlayerParticipant.class::isInstance)
