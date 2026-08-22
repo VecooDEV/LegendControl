@@ -1,2 +1,1 @@
-* Added functional save time legendary spawn.
-* [Defender] Fix defender expired (legacy).
+* Update Pixelmon 9.4.0.
